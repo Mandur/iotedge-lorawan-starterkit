@@ -9,6 +9,9 @@ namespace LoRaWan.IntegrationTest
     using System.Threading.Tasks;
     using LoRaWan.Test.Shared;
 
+    /// <summary>
+    /// Lora Arduino Serial Class.
+    /// </summary>
     public sealed partial class LoRaArduinoSerial
     {
         public static LoRaArduinoSerial CreateFromPort(string port)
@@ -21,7 +24,7 @@ namespace LoRaWan.IntegrationTest
             {
                 TestLogger.Log($"** Starting serial port '{port}' on non-Windows **");
 
-                var serialPort = new SerialDevice(port, BaudRate.B115200);
+                var serialPort = new SerialPort(port, 115200);
                 result = new LoRaArduinoSerial(serialPort);
 
                 TestLogger.Log($"Opening serial port");
@@ -42,11 +45,11 @@ namespace LoRaWan.IntegrationTest
                 var serialPortWin = new SerialPort(port)
                 {
                     BaudRate = 115200,
-                    Parity = Parity.None,
-                    StopBits = StopBits.One,
+                    Parity = System.IO.Ports.Parity.None,
+                    StopBits = System.IO.Ports.StopBits.One,
                     DataBits = 8,
                     DtrEnable = true,
-                    Handshake = Handshake.None
+                    Handshake = System.IO.Ports.Handshake.None
                 };
                 result = new LoRaArduinoSerial(serialPortWin);
 

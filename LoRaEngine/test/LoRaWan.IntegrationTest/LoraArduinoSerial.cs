@@ -49,13 +49,12 @@ namespace LoRaWan.IntegrationTest
     using LoRaWan.Test.Shared;
 
     /// <summary>
-    /// Arduino driver for the LoRaWAN device
+    /// Arduino driver for the LoRaWAN device.
     /// </summary>
     public sealed partial class LoRaArduinoSerial : IDisposable
     {
         private const int DEFAULT_TIMEWAIT = 100;
-        private SerialPort serialPortWin;
-        private SerialDevice serialPort;
+        private SerialPort serialPort;
 
         public enum _class_type_t
         {
@@ -136,35 +135,14 @@ namespace LoRaWan.IntegrationTest
             DR15
         }
 
-        // Creates a new instance based on port identifier
-        LoRaArduinoSerial(SerialDevice serialPort)
-        {
-            this.serialPort = serialPort;
-
-            this.serialPort.DataReceived += this.OnSerialDeviceData;
-        }
-
-        private void OnSerialDeviceData(object arg1, byte[] data)
-        {
-            try
-            {
-                var dataread = System.Text.Encoding.UTF8.GetString(data);
-                this.OnSerialDataReceived(dataread);
-            }
-            catch (Exception ex)
-            {
-                TestLogger.Log($"Error in serial data rx. {ex.ToString()}");
-            }
-        }
-
         byte[] windowsSerialPortBuffer = null;
 
         LoRaArduinoSerial(SerialPort sp)
         {
-            this.serialPortWin = sp;
-            this.windowsSerialPortBuffer = new byte[this.serialPortWin.ReadBufferSize];
+            this.serialPort = sp;
+            this.windowsSerialPortBuffer = new byte[this.serialPort.ReadBufferSize];
 
-            this.serialPortWin.DataReceived += this.OnSerialDeviceDataForWindows;
+            this.serialPort.DataReceived += this.OnSerialDeviceDataForWindows;
         }
 
         private void OnSerialDeviceDataForWindows(object sender, SerialDataReceivedEventArgs e)
@@ -1030,9 +1008,9 @@ namespace LoRaWan.IntegrationTest
             try
             {
                 if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    this.serialPort.Write(Encoding.UTF8.GetBytes(command));
+                    this.serialPort.Write(command);
                 else
-                    this.serialPortWin.Write(command);
+                    this.serialPort.Write(command);
 
                 if (this.LogWrites)
                     TestLogger.Log($"[SERIALW] {command}");
@@ -1046,20 +1024,9 @@ namespace LoRaWan.IntegrationTest
 
         public void Dispose()
         {
-            if (this.serialPort != null)
-            {
-                this.serialPort.DataReceived -= this.OnSerialDeviceData;
-                this.serialPort.Close();
-                this.serialPort = null;
-            }
-
-            if (this.serialPortWin != null)
-            {
-                this.serialPortWin.DataReceived -= this.OnSerialDeviceDataForWindows;
-                this.serialPortWin.Close();
-                this.serialPortWin = null;
-            }
-
+            this.serialPort.DataReceived -= this.OnSerialDeviceDataForWindows;
+            this.serialPort.Close();
+            this.serialPort = null;
             GC.SuppressFinalize(this);
         }
 
