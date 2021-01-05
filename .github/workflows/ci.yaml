@@ -6,8 +6,14 @@ on: # rebuild any PRs and main branch changes
     branches:
       - master
       - dev
-  repository_dispatch:
-    types: manual_trigger
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'manual ci run' 
 
 env: 
   buildConfiguration: "Release"
