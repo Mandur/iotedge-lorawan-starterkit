@@ -1,34 +1,33 @@
 name: LoRa CI
-
+# the lora ci
 on: # rebuild any PRs and main branch changes
   pull_request:
   push:
     branches:
       - master
       - dev
-  repository_dispatch:
-    types: manual_trigger
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'manual ci run' 
 
 env: 
   buildConfiguration: "Release"
-  RunTestsOnly: ${{ contains(github.event.pull_request.labels.*.name, 'RunTestsOnly') || contains(github.event.client_payload.labels.*.name, 'RunTestsOnly') || github.event_name == 'push' }}
-  FullCi: ${{ contains(github.event.pull_request.labels.*.name, 'fullci') }} || ${{ contains(github.event.client_payload.labels.*.name, 'fullci') }} || ${{ github.event_name == 'push' }}
+  RunTestsOnly: ${{ contains(github.event.pull_request.labels.*.name, 'RunTestsOnly') || contains(github.event.client_payload.labels.*.name, 'RunTestsOnly') }}
+  FullCi: ${{ contains(github.event.pull_request.labels.*.name, 'fullci') }} || ${{ contains(github.event.client_payload.labels.*.name, 'fullci') }} }}
+  os: ubuntu-20.04
 jobs:
   build_and_test:
     name: Build and Test Solution
-    runs-on: ubuntu-16.04
-    # env.RunTestsOnly == 'false'
-    if:  ${{ !(contains(github.event.pull_request.labels.*.name, 'RunTestsOnly') || contains(github.event.client_payload.labels.*.name, 'RunTestsOnly')) || github.event_name == 'push' }}
+    runs-on: ${{ env.os }}
+    if: !env.RunTestsOnly
     steps:
     - uses: actions/checkout@v2
-      name: Checkout branch pointed by dispatch event
-      if: github.event_name == 'repository_dispatch'
-      with:
-        ref: ${{ github.event_name.event.client_payload.target_branch }}
-
-    - uses: actions/checkout@v2
       name: Checkout current branch
-      if: github.event_name != 'repository_dispatch'
 
     # build LoRa Engine
     - name: Build LoRa Engine
@@ -61,23 +60,15 @@ jobs:
   # Build and deploy Facade Azure Function
   deploy_facade_function:
     name: Build and Deploy Facade Azure Function   
-    runs-on: ubuntu-16.04
-    if:  ${{ !(contains(github.event.pull_request.labels.*.name, 'RunTestsOnly') || contains(github.event.client_payload.labels.*.name, 'RunTestsOnly')) || github.event_name == 'push' }}
-    # env.RunTestsOnly == 'false'
+    runs-on: ${{ env.os }}
+    if: !env.RunTestsOnly
     env:
       AZURE_FUNCTIONAPP_NAME: ms-lora-function-app
       AZURE_FUNCTIONAPP_PACKAGE_PATH: 'LoRaEngine/LoraKeysManagerFacade/'
 
     steps:
     - uses: actions/checkout@v2
-      name: Checkout branch pointed by dispatch event
-      if: github.event_name == 'repository_dispatch'
-      with:
-        ref: ${{ github.event_name.event.client_payload.target_branch }}
-
-    - uses: actions/checkout@v2
       name: Checkout current branch
-      if: github.event_name != 'repository_dispatch'
 
     - name: 'Resolve Project Dependencies Using Dotnet'
       shell: bash
@@ -129,14 +120,7 @@ jobs:
     name: Run IoT Edge Deployment on ARM gateway
     steps:  
       - uses: actions/checkout@v2
-        name: Checkout branch pointed by dispatch event
-        if: github.event_name == 'repository_dispatch'
-        with:
-          ref: ${{ github.event_name.event.client_payload.target_branch }}
-  
-      - uses: actions/checkout@v2
         name: Checkout current branch
-        if: github.event_name != 'repository_dispatch'
 
       - run: |
           if [ ${{ github.ref	}} = "refs/heads/dev" ]; then
@@ -195,8 +179,7 @@ jobs:
       - deploy_facade_function
     runs-on: [ self-hosted, x64 ]
     timeout-minutes: 60
-    if: always()
-    #if: ${{ contains(github.event.pull_request.labels.*.name, 'fullci') }}
+    if: env.fullci
     env:      
       INTEGRATIONTEST_LeafDeviceSerialPort: '/dev/ttyACM0'
       INTEGRATIONTEST_IoTHubEventHubConsumerGroup: 'reserved_integrationtest_amd'
@@ -210,56 +193,35 @@ jobs:
       INTEGRATIONTEST_FunctionAppBaseUrl: "https://lora-function-app.azurewebsites.net/api/"
 
     steps:
-
-    - uses: actions/checkout@v2
-      name: Checkout branch pointed by dispatch event
-      if: github.event_name == 'repository_dispatch'
-      with:
-        ref: ${{ github.event_name.event.client_payload.target_branch }}
-
     - uses: actions/checkout@v2
       name: Checkout current branch
-      if: github.event_name != 'repository_dispatch'
-
-    - run: if [ ${{ contains(github.event.client_payload.labels.*.name, matrix.testsToRun) }} == 'true' ] ; then echo "::set-env name=run_test::true"; else echo "Skipping test ${{ matrix.testsToRun }}"; fi 
+    - run: |
+        if [ ${{ contains(github.event.pull_request.labels.*.name, matrix.testsToRun) }} == 'false' ] || [ ${{ contains(github.event.client_payload.labels.*.name, matrix.testsToRun) }} == 'true' ] ; then echo "Running test ${{ matrix.testsToRun }}"; else exit 1; fi 
       if: env.FullCi == 'true'
-      name: Check if labels is in dispatch message
-
-    - run: if [ ${{ contains(github.event.pull_request.labels.*.name, matrix.testsToRun) }} == 'true' ] ; then echo "::set-env name=run_test::true"; else echo "Skipping test ${{ matrix.testsToRun }}"; fi 
-      if: env.FullCi == 'true'
-      name: Check if labels is in PR
-
-    - run: echo "::set-env name=run_test::true"
-      if: github.event_name == 'push'
-      name: All tests run as push
+      name: Check if test should run
 
     - name: 'Configure test in **/test/LoRaWan.IntegrationTest/appsettings.json' 
       uses: cschleiden/replace-tokens@v1
-      if: env.run_test == 'true'
       with:
         files: '**/test/LoRaWan.IntegrationTest/appsettings.json'
     
     # Runs Integration tests
     - name: Build IntegrationTest
-      if: env.run_test == 'true'
       run: dotnet build --configuration ${{ env.buildConfiguration }} **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
 
     - name: Integration testing ${{ matrix.testsToRun }}
       id: integration_test
-      if: env.run_test == 'true'
       run: |
         echo ${{ matrix.testsToRun }}
         dotnet test --logger trx --no-build --configuration ${{ env.buildConfiguration }} -p:ParallelizeTestCollections=false --filter "${{ matrix.testsToRun }}" **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
     
     # Upload test results as artifact
     - uses: actions/upload-artifact@v1
-      if: env.run_test == 'true'
       with:
         name: ${{ matrix.testsToRun }}-results
         path: LoRaEngine/test/LoRaWan.IntegrationTest/TestResults
 
     - uses: LouisBrunner/checks-action@v0.1.0
-      if: env.run_test == 'true'
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         name: ${{ matrix.testsToRun }}
@@ -267,10 +229,10 @@ jobs:
 
     - name: Remove ${{ matrix.testsToRun }} Test Label
       uses: buildsville/add-remove-label@v1
-      if: steps.integration_test.conclusion == 'Success' && ${{ env.run_test }} == 'true'
+      if: github.event_name == 'pull_request' && steps.integration_test.conclusion == 'Success' 
       with:
         token: ${{secrets.GITHUB_TOKEN}}
         label: ${{ matrix.testsToRun }}
-        type: remove
+        type: add
 
 
