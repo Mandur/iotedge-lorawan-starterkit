@@ -261,14 +261,14 @@ jobs:
 
     - name: Integration test ${{ matrix.testsToRun }}
       id: integration_test
-      if: "!contains(github.event.pull_request.labels.*.name, ${{ matrix.testsToRun }} )"
+      if: contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != 'true'
       run: |
         echo ${{ matrix.testsToRun }}
         dotnet test --logger trx --no-build --configuration ${{ env.buildConfiguration }} -p:ParallelizeTestCollections=false --filter "${{ matrix.testsToRun }}" **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
     
     # Upload test results as artifact
     - uses: actions/upload-artifact@v1
-      if: "!contains(github.event.pull_request.labels.*.name, ${{ matrix.testsToRun }} )"
+      if: contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != 'true'
       with:
         name: ${{ matrix.testsToRun }}-results
         path: LoRaEngine/test/LoRaWan.IntegrationTest/TestResults
