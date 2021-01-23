@@ -247,7 +247,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       name: Checkout current branch
-
+    - run: |
+        echo ${{github.event.pull_request.labels.*.name }}
+        echo ${{ join(github.event.pull_request.labels.*.name) }}
+        echo ${{ contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) }}
     - name: 'Configure test in **/test/LoRaWan.IntegrationTest/appsettings.json' 
       uses: cschleiden/replace-tokens@v1
       if: contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != 'true'
