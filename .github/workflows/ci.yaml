@@ -12,8 +12,7 @@ on: # rebuild any PRs and main branch changes
         description: 'Run only tests?'
         default: false   
       TestsToRun:
-        # MultiGatewayTests, MacTest missing
-        default: '[\"SensorDecodingTest\",\"OTAAJoinTest\",\"ABPTest\",\"OTAATest\",\"MacTest\",\"ClassCTest\",\"C2DMessageTest\"]'
+        default: '[\"SensorDecodingTest\",\"OTAAJoinTest\",\"ABPTest\",\"OTAATest\",\"MacTest\",\"ClassCTest\",\"C2DMessageTest\",\"MultiGatewayTest\",\"MacTest\"]'
         description: 'tests to run'
 
 env: 
@@ -33,7 +32,7 @@ jobs:
           echo "::set-output name=IntegrationTestsToRun::${{ github.event.inputs.TestsToRun }}"
         else 
           echo "Set up for standard run"
-          echo "::set-output name=IntegrationTestsToRun::[\"SensorDecodingTest\",\"OTAAJoinTest\",\"ABPTest\",\"OTAATest\",\"MacTest\",\"ClassCTest\",\"C2DMessageTest\"]"
+          echo "::set-output name=IntegrationTestsToRun::[\"SensorDecodingTest\",\"OTAAJoinTest\",\"ABPTest\",\"OTAATest\",\"MacTest\",\"ClassCTest\",\"C2DMessageTest\",\"MultiGatewayTest\",\"MacTest\"]"
         fi
 
     - name: Avoid concurrent run
@@ -258,7 +257,8 @@ jobs:
     - name: Build IntegrationTest
       run: dotnet build --configuration ${{ env.buildConfiguration }} **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
 
-    - name: Integration testing ${{ matrix.testsToRun }}
+    - name: Integration test ${{ matrix.testsToRun }}
+      if: !github.event.label.contains( ${{ matrix.testsToRun}} )
       id: integration_test
       run: |
         echo ${{ matrix.testsToRun }}
