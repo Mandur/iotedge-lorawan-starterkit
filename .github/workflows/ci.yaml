@@ -218,7 +218,7 @@ jobs:
       max-parallel: 1
       matrix: 
         testsToRun: ${{ fromjson(needs.env_var.outputs.IntegrationTestsToRun) }}
-    if: always() && (needs.env_var.outputs.RunTestsOnly == 'true' || (needs.deploy_arm_gw_iot_edge.result == 'success' && needs.deploy_facade_function.result == 'success' && needs.build_and_test.result == 'success')) && contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
+    if: always() && (needs.env_var.outputs.RunTestsOnly == 'true' || (needs.deploy_arm_gw_iot_edge.result == 'success' && needs.deploy_facade_function.result == 'success' && needs.build_and_test.result == 'success')) 
     needs: 
       - deploy_arm_gw_iot_edge
       - deploy_facade_function
