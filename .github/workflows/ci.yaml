@@ -14,7 +14,6 @@ on: # rebuild any PRs and main branch changes
       TestsToRun:
         default: '[\"SensorDecodingTest\",\"OTAAJoinTest\",\"ABPTest\",\"OTAATest\",\"MacTest\",\"ClassCTest\",\"C2DMessageTest\",\"MultiGatewayTest\",\"MacTest\"]'
         description: 'tests to run'
-
 jobs:
   env_var:
     name: Set environment variables
@@ -241,21 +240,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      if: contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       name: Checkout current branch
-    - run: |
-        echo ${{ github.event.pull_request.labels.*.name }}
-        echo ${{ contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) }}
-        echo ${{ contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true }}
+
     - name: 'Configure test in **/test/LoRaWan.IntegrationTest/appsettings.json' 
       uses: cschleiden/replace-tokens@v1
+      if: contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       with:
         files: '**/test/LoRaWan.IntegrationTest/appsettings.json'
     
     # Runs Integration tests
     - name: Build IntegrationTest
+      if: contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       run: dotnet build --configuration ${{ env.buildConfiguration }} **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
 
     - name: Integration test ${{ matrix.testsToRun }}
+      if: contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       id: integration_test
       run: |
         echo ${{ matrix.testsToRun }}
@@ -263,11 +263,13 @@ jobs:
     
     # Upload test results as artifact
     - uses: actions/upload-artifact@v1
+      if: contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       with:
         name: ${{ matrix.testsToRun }}-results
         path: LoRaEngine/test/LoRaWan.IntegrationTest/TestResults
 
     - uses: LouisBrunner/checks-action@v0.1.0
+      if: contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         name: ${{ matrix.testsToRun }}
@@ -276,9 +278,9 @@ jobs:
         # output: |
         #   {"summary":${{ steps.integration_test.outputs.summary }} }
 
-    - name: Remove ${{ matrix.testsToRun }} Test Label
+    - name: Add ${{ matrix.testsToRun }} Test Label
       uses: buildsville/add-remove-label@v1
-      if: github.event_name == 'pull_request' && steps.integration_test.conclusion == 'Success' 
+      if: github.event_name == 'pull_request' && steps.integration_test.conclusion == 'Success' && contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       with:
         token: ${{secrets.GITHUB_TOKEN}}
         label: ${{ matrix.testsToRun }}
