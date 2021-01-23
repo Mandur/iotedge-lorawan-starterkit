@@ -39,7 +39,7 @@ jobs:
 
     outputs:
       AZURE_FUNCTIONAPP_NAME: aosdkaosdkadofunction
-      RunTestsOnly: ${{ github.event.inputs.RunTestsOnly == 'true' || contains(github.event.client_payload.labels.*.name, 'RunTestsOnly')}}
+      RunTestsOnly: ${{ github.event.inputs.RunTestsOnly == 'true' || contains(github.event.client_payload.labels.*.name, 'RunTestsOnly') == true}}
       IntegrationTestsToRun: ${{ steps.set-integration-matrix.outputs.IntegrationTestsToRun }}
   
   build_and_test:
