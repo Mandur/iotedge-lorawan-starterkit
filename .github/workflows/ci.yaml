@@ -258,7 +258,7 @@ jobs:
       run: dotnet build --configuration ${{ env.buildConfiguration }} **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
 
     - name: Integration test ${{ matrix.testsToRun }}
-      if: !github.event.label.contains( ${{ matrix.testsToRun}} )
+      if: !contains(github.event.pull_request.labels.*.name, ${{ matrix.testsToRun }} )
       id: integration_test
       run: |
         echo ${{ matrix.testsToRun }}
