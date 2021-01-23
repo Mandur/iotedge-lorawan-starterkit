@@ -253,36 +253,38 @@ jobs:
         echo ${{ contains(join(github.event.pull_request.labels.*.name), matrix.testsToRun ) }}
     - name: 'Configure test in **/test/LoRaWan.IntegrationTest/appsettings.json' 
       uses: cschleiden/replace-tokens@v1
-      if:  (contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != 'true')
+      if:  (contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != true)
       with:
         files: '**/test/LoRaWan.IntegrationTest/appsettings.json'
     
     # Runs Integration tests
     - name: Build IntegrationTest
-      if: (contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != 'true')
+      if: (contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != true)
       run: dotnet build --configuration ${{ env.buildConfiguration }} **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
 
     - name: Integration test ${{ matrix.testsToRun }}
       id: integration_test
-      if: (contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != 'true')
+      if: (contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != true)
       run: |
         echo ${{ matrix.testsToRun }}
         dotnet test --logger trx --no-build --configuration ${{ env.buildConfiguration }} -p:ParallelizeTestCollections=false --filter "${{ matrix.testsToRun }}" **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
     
     # Upload test results as artifact
     - uses: actions/upload-artifact@v1
-      if: (contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != 'true')
+      if: (contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != true)
       with:
         name: ${{ matrix.testsToRun }}-results
         path: LoRaEngine/test/LoRaWan.IntegrationTest/TestResults
 
     - uses: LouisBrunner/checks-action@v0.1.0
+      if: (contains(join(github.event.pull_request.labels.*.name), ${{ matrix.testsToRun }} ) != true)
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         name: ${{ matrix.testsToRun }}
         conclusion: ${{ job.status }}
-        output: |
-          {"summary":${{ steps.integration_test.outputs.summary }}}
+        # TODO can we enhance with some output?
+        # output: |
+        #   {"summary":${{ steps.integration_test.outputs.summary }} }
 
     - name: Remove ${{ matrix.testsToRun }} Test Label
       uses: buildsville/add-remove-label@v1
