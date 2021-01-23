@@ -250,22 +250,25 @@ jobs:
 
     - name: 'Configure test in **/test/LoRaWan.IntegrationTest/appsettings.json' 
       uses: cschleiden/replace-tokens@v1
+      if: "!contains(github.event.pull_request.labels.*.name, ${{ matrix.testsToRun }} )"
       with:
         files: '**/test/LoRaWan.IntegrationTest/appsettings.json'
     
     # Runs Integration tests
     - name: Build IntegrationTest
+      if: "!contains(github.event.pull_request.labels.*.name, ${{ matrix.testsToRun }} )"
       run: dotnet build --configuration ${{ env.buildConfiguration }} **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
 
     - name: Integration test ${{ matrix.testsToRun }}
-      if: "!contains(github.event.pull_request.labels.*.name, ${{ matrix.testsToRun }} )"
       id: integration_test
+      if: "!contains(github.event.pull_request.labels.*.name, ${{ matrix.testsToRun }} )"
       run: |
         echo ${{ matrix.testsToRun }}
         dotnet test --logger trx --no-build --configuration ${{ env.buildConfiguration }} -p:ParallelizeTestCollections=false --filter "${{ matrix.testsToRun }}" **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
     
     # Upload test results as artifact
     - uses: actions/upload-artifact@v1
+      if: "!contains(github.event.pull_request.labels.*.name, ${{ matrix.testsToRun }} )"
       with:
         name: ${{ matrix.testsToRun }}-results
         path: LoRaEngine/test/LoRaWan.IntegrationTest/TestResults
@@ -275,6 +278,8 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         name: ${{ matrix.testsToRun }}
         conclusion: ${{ job.status }}
+        output: |
+          {"summary":${{ steps.test.outputs.summary }}}
 
     - name: Remove ${{ matrix.testsToRun }} Test Label
       uses: buildsville/add-remove-label@v1
