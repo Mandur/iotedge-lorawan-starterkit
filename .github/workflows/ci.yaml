@@ -15,10 +15,6 @@ on: # rebuild any PRs and main branch changes
         default: '[\"SensorDecodingTest\",\"OTAAJoinTest\",\"ABPTest\",\"OTAATest\",\"MacTest\",\"ClassCTest\",\"C2DMessageTest\",\"MultiGatewayTest\",\"MacTest\"]'
         description: 'tests to run'
 
-env: 
-  buildConfiguration: "Release"
-  os: ubuntu-20.04
-  AZURE_FUNCTIONAPP_NAME: aosdkaosdkadofunction
 jobs:
   env_var:
     name: Set environment variables
@@ -44,8 +40,7 @@ jobs:
 
     outputs:
       AZURE_FUNCTIONAPP_NAME: aosdkaosdkadofunction
-      FullCi: ${{ contains(github.event.pull_request.labels.*.name, 'fullci') }} || ${{ contains(github.event.client_payload.labels.*.name, 'fullci') }} 
-      RunTestsOnly: ${{ github.event.inputs.RunTestsOnly == 'true' }}
+      RunTestsOnly: ${{ github.event.inputs.RunTestsOnly == 'true' || contains(github.event.client_payload.labels.*.name, 'RunTestsOnly')}}
       IntegrationTestsToRun: ${{ steps.set-integration-matrix.outputs.IntegrationTestsToRun }}
   
   build_and_test:
@@ -224,7 +219,7 @@ jobs:
       max-parallel: 1
       matrix: 
         testsToRun: ${{ fromjson(needs.env_var.outputs.IntegrationTestsToRun) }}
-    if: always() && (needs.env_var.outputs.RunTestsOnly == 'true' || (needs.deploy_arm_gw_iot_edge.result == 'success' && needs.deploy_facade_function.result == 'success' && needs.build_and_test.result == 'success'))
+    if: always() && (needs.env_var.outputs.RunTestsOnly == 'true' || (needs.deploy_arm_gw_iot_edge.result == 'success' && needs.deploy_facade_function.result == 'success' && needs.build_and_test.result == 'success')) && contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
     needs: 
       - deploy_arm_gw_iot_edge
       - deploy_facade_function
@@ -253,31 +248,26 @@ jobs:
         echo ${{ contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true }}
     - name: 'Configure test in **/test/LoRaWan.IntegrationTest/appsettings.json' 
       uses: cschleiden/replace-tokens@v1
-      if:  contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       with:
         files: '**/test/LoRaWan.IntegrationTest/appsettings.json'
     
     # Runs Integration tests
     - name: Build IntegrationTest
-      if: contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       run: dotnet build --configuration ${{ env.buildConfiguration }} **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
 
     - name: Integration test ${{ matrix.testsToRun }}
       id: integration_test
-      if: contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       run: |
         echo ${{ matrix.testsToRun }}
         dotnet test --logger trx --no-build --configuration ${{ env.buildConfiguration }} -p:ParallelizeTestCollections=false --filter "${{ matrix.testsToRun }}" **/test/LoRaWan.IntegrationTest/LoRaWan.IntegrationTest.csproj
     
     # Upload test results as artifact
     - uses: actions/upload-artifact@v1
-      if: contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       with:
         name: ${{ matrix.testsToRun }}-results
         path: LoRaEngine/test/LoRaWan.IntegrationTest/TestResults
 
     - uses: LouisBrunner/checks-action@v0.1.0
-      if: contains(github.event.pull_request.labels.*.name, matrix.testsToRun ) != true 
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         name: ${{ matrix.testsToRun }}
