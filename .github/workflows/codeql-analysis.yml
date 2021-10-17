@@ -32,7 +32,7 @@ jobs:
       uses: github/codeql-action/init@v1
       with:
         languages: ${{ matrix.language }}
-        queries: +security-and-quality,security-extended,mandur/iotedge-lorawan-starterkit/.github/codeql
+        queries: +security-and-quality,security-extended,./.github/codeql
 
 
     - name: Autobuild
