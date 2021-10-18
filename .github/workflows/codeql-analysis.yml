@@ -7,7 +7,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: [ dev ]
   schedule:
-    - cron: '38 5 * * 2'
+    - cron: '59 23 * * 2'
 
 jobs:
   analyze:
@@ -32,7 +32,7 @@ jobs:
       uses: github/codeql-action/init@v1
       with:
         languages: ${{ matrix.language }}
-        queries: +security-and-quality,security-extended,github/codeql/javascript/ql/src/experimental/Security/CWE-094@main
+        queries: +security-and-quality,security-extended
 
 
     - name: Autobuild
