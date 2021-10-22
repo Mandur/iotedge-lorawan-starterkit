@@ -7,7 +7,7 @@
 
 The LoRaWAN starter kit is an OSS cross platform private network implementation
 of the [LoRaWAN specification](https://lora-alliance.org/resource_hub/lorawan-specification-v1-0-2/)
-built for connectivity to Azure IoT Hub. It enables users to setup their own
+built for connectivity to Azure IoT Hub. It enables users to setup their ownads a
 LoRaWAN network that can connect to LoRa based nodes (sensors) and send decoded
 message packets to Azure IoT Hub for cloud based processing, analytics and other
 workloads. Alternatively, it allows sending commands from the cloud to the end
