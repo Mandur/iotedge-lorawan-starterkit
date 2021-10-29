@@ -109,7 +109,6 @@ jobs:
           - gateway: secondary
             architecture: arm32v7
     needs:
-    - env_var
     - check_if_deploy
     if: needs.env_var.outputs.RunE2ETestsOnly != 'true'
     env:
