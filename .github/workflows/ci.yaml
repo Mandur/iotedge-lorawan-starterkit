@@ -108,8 +108,6 @@ jobs:
             architecture: arm32v7
           - gateway: secondary
             architecture: arm32v7
-    needs:
-    - check_if_deploy
     if: needs.env_var.outputs.RunE2ETestsOnly != 'true'
     env:
       CONTAINER_REGISTRY_ADDRESS: "loramoduleintegrationtest.azurecr.io"
