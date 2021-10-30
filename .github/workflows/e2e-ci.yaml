@@ -48,7 +48,6 @@ jobs:
   deploy_facade_function:
     needs:
     - env_var
-    - check_if_deploy
     name: Build and Deploy Facade Azure Function
     runs-on: ubuntu-latest
     if: needs.env_var.outputs.RunE2ETestsOnly != 'true'
@@ -88,7 +87,6 @@ jobs:
             architecture: arm32v7
     needs:
     - env_var
-    - check_if_deploy
     if: needs.env_var.outputs.RunE2ETestsOnly != 'true'
     env:
       CONTAINER_REGISTRY_ADDRESS: "loramoduleintegrationtest.azurecr.io"
