@@ -1,4 +1,4 @@
-name: LoRa CI
+name: LoRa E2E CI
 concurrency: e2e
 on: # rebuild any PRs and main branch changes
   schedule:

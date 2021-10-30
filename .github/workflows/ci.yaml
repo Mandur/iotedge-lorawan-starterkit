@@ -1,4 +1,4 @@
-name: LoRa CI
+name: LoRa Build & Test CI
 on: # rebuild any PRs and main branch changes
   pull_request:
     branches:
