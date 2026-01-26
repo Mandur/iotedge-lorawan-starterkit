@@ -205,7 +205,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
 
             var tasks = new Task<ExclusiveProcessor<int>.ProcessingOutcome<string>>[processors.Length];
 
-            foreach (var (i, (id, process)) in processors.Index())
+            foreach (var (i, (id, process)) in MoreLinq.MoreEnumerable.Index(processors))
             {
                 tasks[i] = subject.ProcessAsync(id, () => process.Task);
 
@@ -219,7 +219,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
 
             // Complete each in some random (shuffled) order.
 
-            foreach (var ((_, processor), result) in processors.Zip(results).Shuffle())
+            foreach (var ((_, processor), result) in MoreLinq.MoreEnumerable.Shuffle(processors.Zip(results)))
                 processor.SetResult(result);
 
             Assert.Equal(results, from outcome in await task select outcome.Result);

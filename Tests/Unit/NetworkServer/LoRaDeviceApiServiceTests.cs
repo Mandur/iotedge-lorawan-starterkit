@@ -125,7 +125,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
 
             // assert
             var expectedBytes = new byte[contentBytes.Length];
-            await (await content.ReadAsStreamAsync()).ReadAsync(expectedBytes, CancellationToken.None);
+            await (await content.ReadAsStreamAsync()).ReadExactlyAsync(expectedBytes, CancellationToken.None);
             Assert.Equal(content.Headers.ContentLength, contentBytes.Length);
             Assert.Equal(expectedBytes, contentBytes);
         }

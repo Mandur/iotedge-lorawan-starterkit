@@ -17,8 +17,11 @@ namespace LoRaWan.Tests.Unit.NetworkServer.BasicsStation.JsonHandlers
     using static SpreadingFactor;
     using global::LoRaTools.Regions;
 
-    public class LnsStationConfigurationTests
+    public partial class LnsStationConfigurationTests
     {
+        [GeneratedRegex("\\s+")]
+        private static partial Regex WhitespaceRegex();
+
         internal static readonly string ValidStationConfiguration =
             GetTwinConfigurationJson(new[] { new NetId(1) },
                                      new[] { (new JoinEui(ulong.MinValue), new JoinEui(ulong.MaxValue)) },
@@ -746,7 +749,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer.BasicsStation.JsonHandlers
 
             static string Serialize(object obj) => JsonSerializer.Serialize(obj);
 
-            return string.Format(CultureInfo.InvariantCulture, Regex.Replace(template, "\\s+", string.Empty),
+            return string.Format(CultureInfo.InvariantCulture, WhitespaceRegex().Replace(template, string.Empty),
                                  Serialize(allowedNetIds.Select(nid => nid.NetworkId)),
                                  Serialize(joinEuiRanges?.Select(r => new[] { r.Min.ToString(), r.Max.ToString() })),
                                  Serialize(region), Serialize(hwspec),

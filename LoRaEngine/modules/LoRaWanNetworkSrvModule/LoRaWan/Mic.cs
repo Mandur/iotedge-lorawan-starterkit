@@ -124,12 +124,12 @@ namespace LoRaWan
             mac.Init(new KeyParameter(rawKey));
 
             byte[] block =
-            {
+            [
                 0x49, 0x00, 0x00, 0x00, 0x00, direction,
                 /* DevAddr */0x00, 0x00, 0x00, 0x00,
                 /* FCnt */0x00, 0x00, 0x00, 0x00,
                 0x00, (byte)message.Length
-            };
+            ];
 
             var pt = devAddr.Write(block.AsSpan(6));
             BinaryPrimitives.WriteUInt32LittleEndian(pt, fcnt);
