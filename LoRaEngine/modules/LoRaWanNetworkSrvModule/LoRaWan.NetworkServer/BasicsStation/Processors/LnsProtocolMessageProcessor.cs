@@ -22,25 +22,7 @@ namespace LoRaWan.NetworkServer.BasicsStation.Processors
     using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Logging;
 
-    internal class LnsProtocolMessageProcessor : ILnsProtocolMessageProcessor
-    {
-        private static readonly Action<ILogger, string, string, Exception> LogReceivedMessage =
-            LoggerMessage.Define<string, string>(LogLevel.Information, default, "Received '{Type}' message: '{Json}'.");
-
-        private readonly IBasicsStationConfigurationService basicsStationConfigurationService;
-        private readonly WebSocketWriterRegistry<StationEui, string> socketWriterRegistry;
-        private readonly IDownstreamMessageSender downstreamMessageSender;
-        private readonly IMessageDispatcher messageDispatcher;
-        private readonly ILoggerFactory loggerFactory;
-        private readonly ILogger<LnsProtocolMessageProcessor> logger;
-        private readonly RegistryMetricTagBag registryMetricTagBag;
-        private readonly ITracing tracing;
-        private readonly Counter<int> uplinkMessageCounter;
-        private readonly Counter<int> unhandledExceptionCount;
-
-        public static readonly DateTime GpsEpoch = new DateTime(1980, 1, 6, 0, 0, 0, DateTimeKind.Utc);
-
-        public LnsProtocolMessageProcessor(IBasicsStationConfigurationService basicsStationConfigurationService,
+    internal class LnsProtocolMessageProcessor(IBasicsStationConfigurationService basicsStationConfigurationService,
                                            WebSocketWriterRegistry<StationEui, string> socketWriterRegistry,
                                            IDownstreamMessageSender downstreamMessageSender,
                                            IMessageDispatcher messageDispatcher,
@@ -48,19 +30,23 @@ namespace LoRaWan.NetworkServer.BasicsStation.Processors
                                            ILogger<LnsProtocolMessageProcessor> logger,
                                            RegistryMetricTagBag registryMetricTagBag,
                                            Meter meter,
-                                           ITracing tracing)
-        {
-            this.basicsStationConfigurationService = basicsStationConfigurationService;
-            this.socketWriterRegistry = socketWriterRegistry;
-            this.downstreamMessageSender = downstreamMessageSender;
-            this.messageDispatcher = messageDispatcher;
-            this.loggerFactory = loggerFactory;
-            this.logger = logger;
-            this.registryMetricTagBag = registryMetricTagBag;
-            this.tracing = tracing;
-            this.uplinkMessageCounter = meter?.CreateCounter<int>(MetricRegistry.D2CMessagesReceived);
-            this.unhandledExceptionCount = meter?.CreateCounter<int>(MetricRegistry.UnhandledExceptions);
-        }
+                                           ITracing tracing) : ILnsProtocolMessageProcessor
+    {
+        private static readonly Action<ILogger, string, string, Exception> LogReceivedMessage =
+            LoggerMessage.Define<string, string>(LogLevel.Information, default, "Received '{Type}' message: '{Json}'.");
+
+        private readonly IBasicsStationConfigurationService basicsStationConfigurationService = basicsStationConfigurationService;
+        private readonly WebSocketWriterRegistry<StationEui, string> socketWriterRegistry = socketWriterRegistry;
+        private readonly IDownstreamMessageSender downstreamMessageSender = downstreamMessageSender;
+        private readonly IMessageDispatcher messageDispatcher = messageDispatcher;
+        private readonly ILoggerFactory loggerFactory = loggerFactory;
+        private readonly ILogger<LnsProtocolMessageProcessor> logger = logger;
+        private readonly RegistryMetricTagBag registryMetricTagBag = registryMetricTagBag;
+        private readonly ITracing tracing = tracing;
+        private readonly Counter<int> uplinkMessageCounter = meter?.CreateCounter<int>(MetricRegistry.D2CMessagesReceived);
+        private readonly Counter<int> unhandledExceptionCount = meter?.CreateCounter<int>(MetricRegistry.UnhandledExceptions);
+
+        public static readonly DateTime GpsEpoch = new DateTime(1980, 1, 6, 0, 0, 0, DateTimeKind.Utc);
 
         public Task HandleDiscoveryAsync(HttpContext httpContext, CancellationToken cancellationToken) =>
             ExecuteWithExceptionHandlingAsync(async () =>

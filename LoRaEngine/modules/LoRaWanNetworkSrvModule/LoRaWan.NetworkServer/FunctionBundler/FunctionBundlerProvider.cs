@@ -8,11 +8,13 @@ namespace LoRaWan.NetworkServer
     using LoRaTools.LoRaMessage;
     using Microsoft.Extensions.Logging;
 
-    public class FunctionBundlerProvider : IFunctionBundlerProvider
+    public class FunctionBundlerProvider(LoRaDeviceAPIServiceBase deviceApi,
+                                       ILoggerFactory loggerFactory,
+                                       ILogger<FunctionBundlerProvider> logger) : IFunctionBundlerProvider
     {
-        private readonly LoRaDeviceAPIServiceBase deviceApi;
-        private readonly ILoggerFactory loggerFactory;
-        private readonly ILogger<FunctionBundlerProvider> logger;
+        private readonly LoRaDeviceAPIServiceBase deviceApi = deviceApi;
+        private readonly ILoggerFactory loggerFactory = loggerFactory;
+        private readonly ILogger<FunctionBundlerProvider> logger = logger;
         private static readonly List<IFunctionBundlerExecutionItem> FunctionItems = new List<IFunctionBundlerExecutionItem>
         {
             new FunctionBundlerDeduplicationExecutionItem(),
@@ -20,15 +22,6 @@ namespace LoRaWan.NetworkServer
             new FunctionBundlerFCntDownExecutionItem(),
             new FunctionBundlerPreferredGatewayExecutionItem(),
         };
-
-        public FunctionBundlerProvider(LoRaDeviceAPIServiceBase deviceApi,
-                                       ILoggerFactory loggerFactory,
-                                       ILogger<FunctionBundlerProvider> logger)
-        {
-            this.deviceApi = deviceApi;
-            this.loggerFactory = loggerFactory;
-            this.logger = logger;
-        }
 
         public FunctionBundler CreateIfRequired(
                     string gatewayId,

@@ -81,16 +81,10 @@ namespace LoRaWan.NetworkServer
         void Start();
     }
 
-    internal sealed class CompositeMetricExporter : IMetricExporter
+    internal sealed class CompositeMetricExporter(IMetricExporter? first, IMetricExporter? second) : IMetricExporter
     {
-        private readonly IMetricExporter? first;
-        private readonly IMetricExporter? second;
-
-        public CompositeMetricExporter(IMetricExporter? first, IMetricExporter? second)
-        {
-            this.first = first;
-            this.second = second;
-        }
+        private readonly IMetricExporter? first = first;
+        private readonly IMetricExporter? second = second;
 
         public void Dispose()
         {
@@ -112,15 +106,10 @@ namespace LoRaWan.NetworkServer
     /// Container for station EUI tags that are used as a tag when raising metrics.
     /// This helps us avoiding passing the station EUI down the stack.
     /// </summary>
-    internal sealed class RegistryMetricTagBag
+    internal sealed class RegistryMetricTagBag(NetworkServerConfiguration networkServerConfiguration)
     {
-        public RegistryMetricTagBag(NetworkServerConfiguration networkServerConfiguration)
-        {
-            GatewayId = string.IsNullOrEmpty(networkServerConfiguration.GatewayID) ? "unknown" : networkServerConfiguration.GatewayID;
-        }
-
         public AsyncLocal<StationEui?> StationEui { get; } = new AsyncLocal<StationEui?>();
-        public string GatewayId { get; init; }
+        public string GatewayId { get; init; } = string.IsNullOrEmpty(networkServerConfiguration.GatewayID) ? "unknown" : networkServerConfiguration.GatewayID;
     }
 
     internal static class MetricExporterHelper

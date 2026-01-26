@@ -19,35 +19,22 @@ namespace LoRaWan.NetworkServer
     using Newtonsoft.Json;
     using static LoRaWan.ReceiveWindowNumber;
 
-    public class JoinRequestMessageHandler : IJoinRequestMessageHandler
-    {
-        private readonly ILoRaDeviceRegistry deviceRegistry;
-        private readonly Counter<int> joinRequestCounter;
-        private readonly ILogger<JoinRequestMessageHandler> logger;
-        private readonly LoRaDeviceAPIServiceBase apiService;
-        private readonly Counter<int> receiveWindowHits;
-        private readonly Counter<int> receiveWindowMisses;
-        private readonly Counter<int> unhandledExceptionCount;
-        private readonly NetworkServerConfiguration configuration;
-        private readonly IConcentratorDeduplication concentratorDeduplication;
-
-        public JoinRequestMessageHandler(NetworkServerConfiguration configuration,
+    public class JoinRequestMessageHandler(NetworkServerConfiguration configuration,
                                          IConcentratorDeduplication concentratorDeduplication,
                                          ILoRaDeviceRegistry deviceRegistry,
                                          ILogger<JoinRequestMessageHandler> logger,
                                          LoRaDeviceAPIServiceBase apiService,
-                                         Meter meter)
-        {
-            this.configuration = configuration;
-            this.concentratorDeduplication = concentratorDeduplication;
-            this.deviceRegistry = deviceRegistry;
-            this.joinRequestCounter = meter?.CreateCounter<int>(MetricRegistry.JoinRequests);
-            this.logger = logger;
-            this.apiService = apiService;
-            this.receiveWindowHits = meter?.CreateCounter<int>(MetricRegistry.ReceiveWindowHits);
-            this.receiveWindowMisses = meter?.CreateCounter<int>(MetricRegistry.ReceiveWindowMisses);
-            this.unhandledExceptionCount = meter?.CreateCounter<int>(MetricRegistry.UnhandledExceptions);
-        }
+                                         Meter meter) : IJoinRequestMessageHandler
+    {
+        private readonly ILoRaDeviceRegistry deviceRegistry = deviceRegistry;
+        private readonly Counter<int> joinRequestCounter = meter?.CreateCounter<int>(MetricRegistry.JoinRequests);
+        private readonly ILogger<JoinRequestMessageHandler> logger = logger;
+        private readonly LoRaDeviceAPIServiceBase apiService = apiService;
+        private readonly Counter<int> receiveWindowHits = meter?.CreateCounter<int>(MetricRegistry.ReceiveWindowHits);
+        private readonly Counter<int> receiveWindowMisses = meter?.CreateCounter<int>(MetricRegistry.ReceiveWindowMisses);
+        private readonly Counter<int> unhandledExceptionCount = meter?.CreateCounter<int>(MetricRegistry.UnhandledExceptions);
+        private readonly NetworkServerConfiguration configuration = configuration;
+        private readonly IConcentratorDeduplication concentratorDeduplication = concentratorDeduplication;
 
         public void DispatchRequest(LoRaRequest request)
         {

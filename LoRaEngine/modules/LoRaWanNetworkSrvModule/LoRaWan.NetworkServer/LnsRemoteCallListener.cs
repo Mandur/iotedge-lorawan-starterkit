@@ -21,18 +21,11 @@ namespace LoRaWan.NetworkServer
         Task UnsubscribeAsync(string lns, CancellationToken cancellationToken);
     }
 
-    internal sealed class RedisRemoteCallListener : ILnsRemoteCallListener
+    internal sealed class RedisRemoteCallListener(ConnectionMultiplexer redis, ILogger<RedisRemoteCallListener> logger, Meter meter) : ILnsRemoteCallListener
     {
-        private readonly ConnectionMultiplexer redis;
-        private readonly ILogger<RedisRemoteCallListener> logger;
-        private readonly Counter<int> unhandledExceptionCount;
-
-        public RedisRemoteCallListener(ConnectionMultiplexer redis, ILogger<RedisRemoteCallListener> logger, Meter meter)
-        {
-            this.redis = redis;
-            this.logger = logger;
-            this.unhandledExceptionCount = meter.CreateCounter<int>(MetricRegistry.UnhandledExceptions);
-        }
+        private readonly ConnectionMultiplexer redis = redis;
+        private readonly ILogger<RedisRemoteCallListener> logger = logger;
+        private readonly Counter<int> unhandledExceptionCount = meter.CreateCounter<int>(MetricRegistry.UnhandledExceptions);
 
         // Cancellation token to be passed when/if a future update to SubscribeAsync is allowing to use it
         public async Task SubscribeAsync(string lns, Func<LnsRemoteCall, Task> function, CancellationToken cancellationToken)

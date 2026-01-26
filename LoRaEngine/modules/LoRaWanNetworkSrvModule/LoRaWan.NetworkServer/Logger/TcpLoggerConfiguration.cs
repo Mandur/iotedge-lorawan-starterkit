@@ -5,29 +5,20 @@ namespace LoRaWan.NetworkServer.Logger
 {
     using Microsoft.Extensions.Logging;
 
-    // Defines the logger configuration
-    public sealed class TcpLoggerConfiguration
+    public sealed class TcpLoggerConfiguration(LogLevel logLevel, string logToTcpAddress, int logToTcpPort, string gatewayId)
     {
-        public TcpLoggerConfiguration(LogLevel logLevel, string logToTcpAddress, int logToTcpPort, string gatewayId)
-        {
-            LogLevel = logLevel;
-            LogToTcpAddress = logToTcpAddress;
-            LogToTcpPort = logToTcpPort;
-            GatewayId = gatewayId;
-        }
-
         // Gets the logging level
-        public LogLevel LogLevel { get; }
+        public LogLevel LogLevel { get; } = logLevel;
 
         // Gets TCP address to send log
-        public string LogToTcpAddress { get; }
+        public string LogToTcpAddress { get; } = logToTcpAddress;
 
         // Gets/sets TCP port to send logs
-        public int LogToTcpPort { get; }
+        public int LogToTcpPort { get; } = logToTcpPort;
 
         /// <summary>
         /// Gets or sets the id of the gateway running the logger.
         /// </summary>
-        public string GatewayId { get; }
+        public string GatewayId { get; } = gatewayId;
     }
 }

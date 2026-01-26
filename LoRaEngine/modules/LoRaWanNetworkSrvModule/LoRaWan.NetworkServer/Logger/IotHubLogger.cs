@@ -46,24 +46,17 @@ namespace LoRaWan.NetworkServer.Logger
         }
     }
 
-    internal class IotHubLogger : ILogger
+    internal class IotHubLogger(IotHubLoggerProvider iotHubLoggerProvider,
+                            Lazy<Task<ModuleClient>> moduleClientFactory,
+                            ITracing tracing) : ILogger
     {
         private const string SendOperationName = "SDK SendEvent";
         private const string LogTraceData = "log";
-        private readonly IotHubLoggerProvider iotHubLoggerProvider;
-        private readonly Lazy<Task<ModuleClient>> moduleClientFactory;
-        private readonly ITracing tracing;
+        private readonly IotHubLoggerProvider iotHubLoggerProvider = iotHubLoggerProvider;
+        private readonly Lazy<Task<ModuleClient>> moduleClientFactory = moduleClientFactory;
+        private readonly ITracing tracing = tracing;
 
         internal bool hasError;
-
-        public IotHubLogger(IotHubLoggerProvider iotHubLoggerProvider,
-                            Lazy<Task<ModuleClient>> moduleClientFactory,
-                            ITracing tracing)
-        {
-            this.iotHubLoggerProvider = iotHubLoggerProvider;
-            this.moduleClientFactory = moduleClientFactory;
-            this.tracing = tracing;
-        }
 
         public IDisposable BeginScope<TState>(TState state) =>
             this.iotHubLoggerProvider.LoggerConfigurationMonitor.ScopeProvider?.Push(state) ?? NoopDisposable.Instance;

@@ -16,19 +16,10 @@ namespace LoRaWan.NetworkServer
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    /// <summary>
-    /// LoRa payload decoder.
-    /// </summary>
-    public sealed class LoRaPayloadDecoder : ILoRaPayloadDecoder
+    public sealed class LoRaPayloadDecoder(IHttpClientFactory httpClientFactory, ILogger<LoRaPayloadDecoder> logger) : ILoRaPayloadDecoder
     {
-        private readonly IHttpClientFactory httpClientFactory;
-        private readonly ILogger<LoRaPayloadDecoder> logger;
-
-        public LoRaPayloadDecoder(IHttpClientFactory httpClientFactory, ILogger<LoRaPayloadDecoder> logger)
-        {
-            this.httpClientFactory = httpClientFactory;
-            this.logger = logger;
-        }
+        private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
+        private readonly ILogger<LoRaPayloadDecoder> logger = logger;
 
         public async ValueTask<DecodePayloadResult> DecodeMessageAsync(DevEui devEui, byte[] payload, FramePort fport, string sensorDecoder)
         {

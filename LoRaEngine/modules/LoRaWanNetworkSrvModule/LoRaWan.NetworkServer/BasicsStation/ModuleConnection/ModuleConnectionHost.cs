@@ -16,32 +16,22 @@ namespace LoRaWan.NetworkServer.BasicsStation.ModuleConnection
     using System.Threading;
     using System.Threading.Tasks;
 
-    internal sealed class ModuleConnectionHost : IAsyncDisposable
+    internal sealed class ModuleConnectionHost(
+        NetworkServerConfiguration networkServerConfiguration,
+        ILoRaModuleClientFactory loRaModuleClientFactory,
+        LoRaDeviceAPIServiceBase loRaDeviceAPIService,
+        ILnsRemoteCallHandler lnsRemoteCallHandler,
+        ILogger<ModuleConnectionHost> logger,
+        Meter meter) : IAsyncDisposable
     {
         private const string LnsVersionPropertyName = "LnsVersion";
-        private readonly NetworkServerConfiguration networkServerConfiguration;
-        private readonly LoRaDeviceAPIServiceBase loRaDeviceAPIService;
-        private readonly ILnsRemoteCallHandler lnsRemoteCallHandler;
-        private readonly ILogger<ModuleConnectionHost> logger;
-        private readonly Counter<int> unhandledExceptionCount;
+        private readonly NetworkServerConfiguration networkServerConfiguration = networkServerConfiguration ?? throw new ArgumentNullException(nameof(networkServerConfiguration));
+        private readonly LoRaDeviceAPIServiceBase loRaDeviceAPIService = loRaDeviceAPIService ?? throw new ArgumentNullException(nameof(loRaDeviceAPIService));
+        private readonly ILnsRemoteCallHandler lnsRemoteCallHandler = lnsRemoteCallHandler ?? throw new ArgumentNullException(nameof(lnsRemoteCallHandler));
+        private readonly ILogger<ModuleConnectionHost> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        private readonly Counter<int> unhandledExceptionCount = (meter ?? throw new ArgumentNullException(nameof(meter))).CreateCounter<int>(MetricRegistry.UnhandledExceptions);
         private ILoraModuleClient loRaModuleClient;
-        private readonly ILoRaModuleClientFactory loRaModuleClientFactory;
-
-        public ModuleConnectionHost(
-            NetworkServerConfiguration networkServerConfiguration,
-            ILoRaModuleClientFactory loRaModuleClientFactory,
-            LoRaDeviceAPIServiceBase loRaDeviceAPIService,
-            ILnsRemoteCallHandler lnsRemoteCallHandler,
-            ILogger<ModuleConnectionHost> logger,
-            Meter meter)
-        {
-            this.networkServerConfiguration = networkServerConfiguration ?? throw new ArgumentNullException(nameof(networkServerConfiguration));
-            this.loRaDeviceAPIService = loRaDeviceAPIService ?? throw new ArgumentNullException(nameof(loRaDeviceAPIService));
-            this.lnsRemoteCallHandler = lnsRemoteCallHandler ?? throw new ArgumentNullException(nameof(lnsRemoteCallHandler));
-            this.loRaModuleClientFactory = loRaModuleClientFactory ?? throw new ArgumentNullException(nameof(loRaModuleClientFactory));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.unhandledExceptionCount = (meter ?? throw new ArgumentNullException(nameof(meter))).CreateCounter<int>(MetricRegistry.UnhandledExceptions);
-        }
+        private readonly ILoRaModuleClientFactory loRaModuleClientFactory = loRaModuleClientFactory ?? throw new ArgumentNullException(nameof(loRaModuleClientFactory));
 
         public async Task CreateAsync(CancellationToken cancellationToken)
         {

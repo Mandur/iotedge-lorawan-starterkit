@@ -45,18 +45,11 @@ namespace LoRaWan.NetworkServer.Logger
             return builder;
         }
 
-        private sealed class TcpLogger : ILogger
+        private sealed class TcpLogger(LogLevel logLevel, IExternalScopeProvider externalScopeProvider, Action<string> logger) : ILogger
         {
-            private readonly LogLevel logLevel;
-            private readonly IExternalScopeProvider externalScopeProvider;
-            private readonly Action<string> logger;
-
-            public TcpLogger(LogLevel logLevel, IExternalScopeProvider externalScopeProvider, Action<string> logger)
-            {
-                this.externalScopeProvider = externalScopeProvider;
-                this.logLevel = logLevel;
-                this.logger = logger;
-            }
+            private readonly LogLevel logLevel = logLevel;
+            private readonly IExternalScopeProvider externalScopeProvider = externalScopeProvider;
+            private readonly Action<string> logger = logger;
 
             public IDisposable BeginScope<TState>(TState state) =>
                 this.externalScopeProvider is { } scopeProvider ? scopeProvider.Push(state) : NoopDisposable.Instance;

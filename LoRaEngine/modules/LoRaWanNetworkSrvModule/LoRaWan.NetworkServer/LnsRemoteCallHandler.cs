@@ -16,29 +16,20 @@ namespace LoRaWan.NetworkServer
         Task<HttpStatusCode> ExecuteAsync(LnsRemoteCall lnsRemoteCall, CancellationToken cancellationToken);
     }
 
-    internal sealed class LnsRemoteCallHandler : ILnsRemoteCallHandler
+    internal sealed class LnsRemoteCallHandler(NetworkServerConfiguration networkServerConfiguration,
+                                    IClassCDeviceMessageSender classCDeviceMessageSender,
+                                    ILoRaDeviceRegistry loRaDeviceRegistry,
+                                    ILogger<LnsRemoteCallHandler> logger,
+                                    Meter meter) : ILnsRemoteCallHandler
     {
         internal const string ClosedConnectionLog = "Device connection was closed ";
         private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-        private readonly NetworkServerConfiguration networkServerConfiguration;
-        private readonly IClassCDeviceMessageSender classCDeviceMessageSender;
-        private readonly ILoRaDeviceRegistry loRaDeviceRegistry;
-        private readonly ILogger<LnsRemoteCallHandler> logger;
-        private readonly Counter<int> forceClosedConnections;
-
-        public LnsRemoteCallHandler(NetworkServerConfiguration networkServerConfiguration,
-                                    IClassCDeviceMessageSender classCDeviceMessageSender,
-                                    ILoRaDeviceRegistry loRaDeviceRegistry,
-                                    ILogger<LnsRemoteCallHandler> logger,
-                                    Meter meter)
-        {
-            this.networkServerConfiguration = networkServerConfiguration;
-            this.classCDeviceMessageSender = classCDeviceMessageSender;
-            this.loRaDeviceRegistry = loRaDeviceRegistry;
-            this.logger = logger;
-            this.forceClosedConnections = meter.CreateCounter<int>(MetricRegistry.ForceClosedClientConnections);
-        }
+        private readonly NetworkServerConfiguration networkServerConfiguration = networkServerConfiguration;
+        private readonly IClassCDeviceMessageSender classCDeviceMessageSender = classCDeviceMessageSender;
+        private readonly ILoRaDeviceRegistry loRaDeviceRegistry = loRaDeviceRegistry;
+        private readonly ILogger<LnsRemoteCallHandler> logger = logger;
+        private readonly Counter<int> forceClosedConnections = meter.CreateCounter<int>(MetricRegistry.ForceClosedClientConnections);
 
         public Task<HttpStatusCode> ExecuteAsync(LnsRemoteCall lnsRemoteCall, CancellationToken cancellationToken)
         {
