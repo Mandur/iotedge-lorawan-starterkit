@@ -34,16 +34,10 @@ namespace LoRaWan.NetworkServer.BasicsStation
     using Prometheus;
     using StackExchange.Redis;
 
-    internal sealed class BasicsStationNetworkServerStartup
+    internal sealed class BasicsStationNetworkServerStartup(IConfiguration configuration)
     {
-        public IConfiguration Configuration { get; }
-        public NetworkServerConfiguration NetworkServerConfiguration { get; }
-
-        public BasicsStationNetworkServerStartup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-            NetworkServerConfiguration = NetworkServerConfiguration.CreateFromEnvironmentVariables();
-        }
+        public IConfiguration Configuration { get; } = configuration;
+        public NetworkServerConfiguration NetworkServerConfiguration { get; } = NetworkServerConfiguration.CreateFromEnvironmentVariables();
 
         public void ConfigureServices(IServiceCollection services)
         {
