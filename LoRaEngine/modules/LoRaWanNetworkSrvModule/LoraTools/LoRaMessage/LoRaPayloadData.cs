@@ -330,7 +330,8 @@ namespace LoRaTools.LoRaMessage
         /// <summary>
         /// Method to check if the mic is valid.
         /// </summary>
-        /// <param name="nwskey">the network security key.</param>
+        /// <param name="key">the network security key.</param>
+        /// <param name="server32BitFcnt">the server-side 32-bit frame counter.</param>
         /// <returns>if the Mic is valid or not.</returns>
         public bool CheckMic(NetworkSessionKey key, uint? server32BitFcnt = null)
         {

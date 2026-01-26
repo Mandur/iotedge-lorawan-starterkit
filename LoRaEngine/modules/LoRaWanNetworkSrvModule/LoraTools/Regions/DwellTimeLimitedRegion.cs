@@ -11,7 +11,7 @@ namespace LoRaTools.Regions
     /// Represents a Region that has potential dwell time limitations.
     /// Such a region should be understood as an "effective" region that applies to a single concentrator rather than a singleton.
     /// </summary>
-    public abstract class DwellTimeLimitedRegion : Region
+    public abstract class DwellTimeLimitedRegion(LoRaRegionType loRaRegionType) : Region(loRaRegionType)
     {
         private DwellTimeSetting? desiredDwellTimeSetting;
         public DwellTimeSetting DesiredDwellTimeSetting
@@ -19,10 +19,6 @@ namespace LoRaTools.Regions
             get => this.desiredDwellTimeSetting ?? throw new InvalidOperationException("DefaultDwellTimeSetting is null.");
             set => this.desiredDwellTimeSetting = value;
         }
-
-        protected DwellTimeLimitedRegion(LoRaRegionType loRaRegionType)
-            : base(loRaRegionType)
-        { }
 
         protected abstract DwellTimeSetting DefaultDwellTimeSetting { get; }
 
