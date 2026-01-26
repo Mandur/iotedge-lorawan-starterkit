@@ -40,17 +40,16 @@ namespace LoRaTools.Regions
                                               FskDataRate.Fsk50000);
 
         private static readonly ImmutableArray<IReadOnlyList<DataRateIndex>> RX1DROffsetTableNoDwell =
-            new IReadOnlyList<DataRateIndex>[]
-            {
-                new DataRateIndex[] { DR0, DR0, DR0, DR0, DR0, DR0, DR1, DR2 }.ToImmutableArray(),
-                new DataRateIndex[] { DR1, DR0, DR0, DR0, DR0, DR0, DR2, DR3 }.ToImmutableArray(),
-                new DataRateIndex[] { DR2, DR1, DR0, DR0, DR0, DR0, DR3, DR4 }.ToImmutableArray(),
-                new DataRateIndex[] { DR3, DR2, DR1, DR0, DR0, DR0, DR4, DR5 }.ToImmutableArray(),
-                new DataRateIndex[] { DR4, DR3, DR2, DR1, DR0, DR0, DR5, DR6 }.ToImmutableArray(),
-                new DataRateIndex[] { DR5, DR4, DR3, DR2, DR1, DR0, DR6, DR7 }.ToImmutableArray(),
-                new DataRateIndex[] { DR6, DR5, DR4, DR3, DR2, DR1, DR7, DR7 }.ToImmutableArray(),
-                new DataRateIndex[] { DR7, DR6, DR5, DR4, DR3, DR2, DR7, DR7 }.ToImmutableArray(),
-            }.ToImmutableArray();
+        [
+            [DR0, DR0, DR0, DR0, DR0, DR0, DR1, DR2],
+            [DR1, DR0, DR0, DR0, DR0, DR0, DR2, DR3],
+            [DR2, DR1, DR0, DR0, DR0, DR0, DR3, DR4],
+            [DR3, DR2, DR1, DR0, DR0, DR0, DR4, DR5],
+            [DR4, DR3, DR2, DR1, DR0, DR0, DR5, DR6],
+            [DR5, DR4, DR3, DR2, DR1, DR0, DR6, DR7],
+            [DR6, DR5, DR4, DR3, DR2, DR1, DR7, DR7],
+            [DR7, DR6, DR5, DR4, DR3, DR2, DR7, DR7],
+        ];
 
         private static readonly RegionLimits RegionLimitsNoDwell =
             new RegionLimits((Min: Mega(915), Max: Mega(928)), ValidDataRatesDr0Dr7, ValidDataRatesDr0Dr7, DR0, DR0);
@@ -69,17 +68,16 @@ namespace LoRaTools.Regions
             }.ToImmutableDictionary();
 
         private static readonly ImmutableArray<IReadOnlyList<DataRateIndex>> RX1DROffsetTableWithDwell =
-            new IReadOnlyList<DataRateIndex>[]
-            {
-                new DataRateIndex[] { DR2, DR2, DR2, DR2, DR2, DR2, DR2, DR2 }.ToImmutableArray(),
-                new DataRateIndex[] { DR2, DR2, DR2, DR2, DR2, DR2, DR2, DR3 }.ToImmutableArray(),
-                new DataRateIndex[] { DR2, DR2, DR2, DR2, DR2, DR2, DR3, DR4 }.ToImmutableArray(),
-                new DataRateIndex[] { DR3, DR2, DR2, DR2, DR2, DR2, DR4, DR5 }.ToImmutableArray(),
-                new DataRateIndex[] { DR4, DR3, DR2, DR2, DR2, DR2, DR5, DR6 }.ToImmutableArray(),
-                new DataRateIndex[] { DR5, DR4, DR3, DR2, DR2, DR2, DR6, DR7 }.ToImmutableArray(),
-                new DataRateIndex[] { DR6, DR5, DR4, DR3, DR2, DR2, DR7, DR7 }.ToImmutableArray(),
-                new DataRateIndex[] { DR7, DR6, DR5, DR4, DR3, DR2, DR7, DR7 }.ToImmutableArray(),
-            }.ToImmutableArray();
+        [
+            [DR2, DR2, DR2, DR2, DR2, DR2, DR2, DR2],
+            [DR2, DR2, DR2, DR2, DR2, DR2, DR2, DR3],
+            [DR2, DR2, DR2, DR2, DR2, DR2, DR3, DR4],
+            [DR3, DR2, DR2, DR2, DR2, DR2, DR4, DR5],
+            [DR4, DR3, DR2, DR2, DR2, DR2, DR5, DR6],
+            [DR5, DR4, DR3, DR2, DR2, DR2, DR6, DR7],
+            [DR6, DR5, DR4, DR3, DR2, DR2, DR7, DR7],
+            [DR7, DR6, DR5, DR4, DR3, DR2, DR7, DR7],
+        ];
 
         private static readonly ImmutableHashSet<DataRate> ValidDataRatesDr2Dr7 =
             ImmutableHashSet.Create<DataRate>(LoRaDataRate.SF10BW125,

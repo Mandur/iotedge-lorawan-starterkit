@@ -7,7 +7,7 @@ namespace LoRaTools
     using Newtonsoft.Json;
 
     /// <summary>
-    /// RXTimingSetupAns Upstream & RXTimingSetupReq Downstream.
+    /// RXTimingSetupAns Upstream and RXTimingSetupReq Downstream.
     /// </summary>
     public class RXTimingSetupRequest : MacCommand
     {

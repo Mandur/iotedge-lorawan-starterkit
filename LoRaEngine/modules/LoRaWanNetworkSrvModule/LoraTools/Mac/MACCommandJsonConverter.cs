@@ -21,7 +21,7 @@ namespace LoRaTools
 
         public override object ReadJson(Newtonsoft.Json.JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            if (serializer is null) throw new ArgumentNullException(nameof(serializer));
+            ArgumentNullException.ThrowIfNull(serializer);
 
             var item = JObject.Load(reader);
             var cidPropertyValue = item["cid"].Value<string>();

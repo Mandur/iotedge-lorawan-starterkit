@@ -43,17 +43,16 @@ namespace LoRaTools.Regions
         public override IReadOnlyDictionary<uint, double> TXPowertoMaxEIRP => MaxEirpByTxPower;
 
         private static readonly ImmutableArray<IReadOnlyList<DataRateIndex>> RX1DROffsetTableInternal =
-            new IReadOnlyList<DataRateIndex>[]
-            {
-                new[] { DR0, DR0, DR0, DR0, DR0, DR0 }.ToImmutableArray(),
-                new[] { DR1, DR0, DR0, DR0, DR0, DR0 }.ToImmutableArray(),
-                new[] { DR2, DR1, DR0, DR0, DR0, DR0 }.ToImmutableArray(),
-                new[] { DR3, DR2, DR1, DR0, DR0, DR0 }.ToImmutableArray(),
-                new[] { DR4, DR3, DR2, DR1, DR0, DR0 }.ToImmutableArray(),
-                new[] { DR5, DR4, DR3, DR2, DR1, DR0 }.ToImmutableArray(),
-                new[] { DR6, DR5, DR4, DR3, DR2, DR1 }.ToImmutableArray(),
-                new[] { DR7, DR6, DR5, DR4, DR3, DR2 }.ToImmutableArray(),
-            }.ToImmutableArray();
+        [
+            [DR0, DR0, DR0, DR0, DR0, DR0],
+            [DR1, DR0, DR0, DR0, DR0, DR0],
+            [DR2, DR1, DR0, DR0, DR0, DR0],
+            [DR3, DR2, DR1, DR0, DR0, DR0],
+            [DR4, DR3, DR2, DR1, DR0, DR0],
+            [DR5, DR4, DR3, DR2, DR1, DR0],
+            [DR6, DR5, DR4, DR3, DR2, DR1],
+            [DR7, DR6, DR5, DR4, DR3, DR2],
+        ];
 
         public override IReadOnlyList<IReadOnlyList<DataRateIndex>> RX1DROffsetTable => RX1DROffsetTableInternal;
 

@@ -8,16 +8,10 @@ namespace LoRaTools.Utils
     using System.Diagnostics.CodeAnalysis;
     using Microsoft.Extensions.Logging;
 
-    public sealed class TwinPropertiesReader
+    public sealed class TwinPropertiesReader(ITwinProperties twinCollection, ILogger logger)
     {
-        private readonly ITwinProperties twinCollection;
-        private readonly ILogger logger;
-
-        public TwinPropertiesReader(ITwinProperties twinCollection, ILogger logger)
-        {
-            this.twinCollection = twinCollection;
-            this.logger = logger;
-        }
+        private readonly ITwinProperties twinCollection = twinCollection;
+        private readonly ILogger logger = logger;
 
         public T? SafeRead<T>(string property, T? defaultValue = default)
             => this.twinCollection.SafeRead(property, defaultValue, this.logger);

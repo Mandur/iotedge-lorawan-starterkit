@@ -10,7 +10,7 @@ namespace LoRaTools.ADR
     /// <summary>
     /// A strategy based on the standard ADR strategy.
     /// </summary>
-    public sealed class LoRaADRStandardStrategy : ILoRaADRStrategy
+    public sealed class LoRaADRStandardStrategy(ILogger<LoRaADRStandardStrategy> logger) : ILoRaADRStrategy
     {
         private const int MarginDb = 5;
         private const int MaxTxPowerIndex = 0;
@@ -27,18 +27,13 @@ namespace LoRaTools.ADR
             { 2, 3, 3 },
             { 3, 3, 3 }
         };
-        private readonly ILogger<LoRaADRStandardStrategy> logger;
+        private readonly ILogger<LoRaADRStandardStrategy> logger = logger;
 
         public int MinimumNumberOfResult => 20;
 
         public int DefaultTxPower => 0;
 
         int ILoRaADRStrategy.DefaultNbRep => 1;
-
-        public LoRaADRStandardStrategy(ILogger<LoRaADRStandardStrategy> logger)
-        {
-            this.logger = logger;
-        }
 
         public LoRaADRResult ComputeResult(LoRaADRTable table, float requiredSnr, DataRateIndex upstreamDataRate, int minTxPower, DataRateIndex maxDr)
         {

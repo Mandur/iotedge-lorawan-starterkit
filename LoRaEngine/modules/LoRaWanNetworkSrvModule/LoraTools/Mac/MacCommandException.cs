@@ -19,10 +19,12 @@ namespace LoRaTools.Mac
         {
         }
 
+#pragma warning disable SYSLIB0051
         protected MacCommandException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
+#pragma warning restore SYSLIB0051
 
         public MacCommandException()
         {

@@ -18,7 +18,7 @@ namespace LoRaTools.NetworkServerDiscovery
         /// computed.</param>
         public static ulong Convert48To64(this PhysicalAddress address)
         {
-            if (address == null) throw new ArgumentNullException(nameof(address));
+            ArgumentNullException.ThrowIfNull(address);
 
             // As per specification (https://doc.sm.tc/station/glossary.html#term-mac)
             // for an ID6 based on a MAC Address we expect FFFE in the middle

@@ -10,7 +10,7 @@ namespace LoRaTools.NetworkServerDiscovery
 
     public interface ILnsDiscovery
     {
-        public const string EndpointName = "/router-info";
+        const string EndpointName = "/router-info";
 
         Task<Uri> ResolveLnsAsync(StationEui stationEui, CancellationToken cancellationToken);
     }

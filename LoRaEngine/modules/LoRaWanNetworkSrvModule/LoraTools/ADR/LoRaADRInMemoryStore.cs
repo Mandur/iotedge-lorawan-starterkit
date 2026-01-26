@@ -38,7 +38,7 @@ namespace LoRaTools.ADR
 
         public Task<LoRaADRTable> AddTableEntry(LoRaADRTableEntry entry)
         {
-            if (entry is null) throw new ArgumentNullException(nameof(entry));
+            ArgumentNullException.ThrowIfNull(entry);
 
             lock (this.cache)
             {

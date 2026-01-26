@@ -82,7 +82,7 @@ namespace LoRaTools.CommonAPI
 
         /// <summary>
         /// Gets 2019-07-05 version
-        /// Changed ARM template & release 1.0.1
+        /// Changed ARM template and release 1.0.1
         /// backward compatible.
         /// </summary>
         public static ApiVersion Version_2019_07_05 { get; }

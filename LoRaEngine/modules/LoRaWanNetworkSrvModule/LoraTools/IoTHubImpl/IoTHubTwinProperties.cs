@@ -6,18 +6,13 @@ namespace LoRaTools.IoTHubImpl
     using System;
     using Microsoft.Azure.Devices.Shared;
 
-    public class IoTHubTwinProperties : ITwinProperties
+    public class IoTHubTwinProperties(TwinCollection twinCollection) : ITwinProperties
     {
-        private readonly TwinCollection twinCollection;
+        private readonly TwinCollection twinCollection = twinCollection;
 
         public long Version => this.twinCollection.Version;
 
         public dynamic this[string propertyName] { get => this.twinCollection[propertyName]; set => this.twinCollection[propertyName] = value; }
-
-        public IoTHubTwinProperties(TwinCollection twinCollection)
-        {
-            this.twinCollection = twinCollection;
-        }
 
         public DateTime GetLastUpdated() =>
             this.twinCollection.GetLastUpdated();

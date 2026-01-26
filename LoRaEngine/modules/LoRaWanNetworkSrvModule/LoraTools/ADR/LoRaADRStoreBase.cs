@@ -10,8 +10,8 @@ namespace LoRaTools.ADR
     {
         protected static void AddEntryToTable(LoRaADRTable table, LoRaADRTableEntry entry)
         {
-            if (table is null) throw new ArgumentNullException(nameof(table));
-            if (entry is null) throw new ArgumentNullException(nameof(entry));
+            ArgumentNullException.ThrowIfNull(table);
+            ArgumentNullException.ThrowIfNull(entry);
 
             var existing = table.Entries.FirstOrDefault(itm => itm.FCnt == entry.FCnt);
 

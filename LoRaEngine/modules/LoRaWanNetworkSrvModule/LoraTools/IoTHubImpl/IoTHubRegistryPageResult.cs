@@ -7,17 +7,12 @@ namespace LoRaTools.IoTHubImpl
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices;
 
-    public abstract class IoTHubRegistryPageResult<TResultType> : IRegistryPageResult<TResultType>
+    public abstract class IoTHubRegistryPageResult<TResultType>(IQuery originalQuery) : IRegistryPageResult<TResultType>
         where TResultType : class
     {
-        protected IQuery OriginalQuery { get; }
+        protected IQuery OriginalQuery { get; } = originalQuery;
 
         public bool HasMoreResults => this.OriginalQuery.HasMoreResults;
-
-        protected IoTHubRegistryPageResult(IQuery originalQuery)
-        {
-            this.OriginalQuery = originalQuery;
-        }
 
         public abstract Task<IEnumerable<TResultType>> GetNextPageAsync();
     }

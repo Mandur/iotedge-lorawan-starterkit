@@ -17,7 +17,7 @@ namespace LoRaTools.Regions
     {
         private static readonly Mega FrequencyIncrement = new(0.2);
 
-        private readonly List<Hertz> rx2OTAADefaultFrequencies;
+        private readonly IReadOnlyList<Hertz> rx2OTAADefaultFrequencies;
 
         private readonly List<List<Hertz>> downstreamFrequenciesByPlanType;
 
@@ -57,17 +57,16 @@ namespace LoRaTools.Regions
         public override IReadOnlyDictionary<uint, double> TXPowertoMaxEIRP => MaxEirpByTxPower;
 
         private static readonly ImmutableArray<IReadOnlyList<DataRateIndex>> RX1DROffsetTableInternal =
-            new IReadOnlyList<DataRateIndex>[]
-            {
-                new[] { DR0, DR0, DR0, DR0, DR0, DR0 }.ToImmutableArray(),
-                new[] { DR1, DR1, DR1, DR1, DR1, DR1 }.ToImmutableArray(),
-                new[] { DR2, DR1, DR1, DR1, DR1, DR1 }.ToImmutableArray(),
-                new[] { DR3, DR2, DR1, DR1, DR1, DR1 }.ToImmutableArray(),
-                new[] { DR4, DR3, DR2, DR1, DR1, DR1 }.ToImmutableArray(),
-                new[] { DR5, DR4, DR3, DR2, DR1, DR1 }.ToImmutableArray(),
-                new[] { DR6, DR5, DR4, DR3, DR2, DR1 }.ToImmutableArray(),
-                new[] { DR7, DR6, DR5, DR4, DR3, DR2 }.ToImmutableArray(),
-            }.ToImmutableArray();
+        [
+            [DR0, DR0, DR0, DR0, DR0, DR0],
+            [DR1, DR1, DR1, DR1, DR1, DR1],
+            [DR2, DR1, DR1, DR1, DR1, DR1],
+            [DR3, DR2, DR1, DR1, DR1, DR1],
+            [DR4, DR3, DR2, DR1, DR1, DR1],
+            [DR5, DR4, DR3, DR2, DR1, DR1],
+            [DR6, DR5, DR4, DR3, DR2, DR1],
+            [DR7, DR6, DR5, DR4, DR3, DR2],
+        ];
 
         public override IReadOnlyList<IReadOnlyList<DataRateIndex>> RX1DROffsetTable => RX1DROffsetTableInternal;
 
@@ -113,13 +112,13 @@ namespace LoRaTools.Regions
                 [Mega(488.3)] = (Mega(502.5), 19)
             };
 
-            this.downstreamFrequenciesByPlanType = new List<List<Hertz>>
-            {
-                ListFrequencyPlan(Mega(483.9), 0, 31).Concat(ListFrequencyPlan(Mega(490.3), 32, 63)).ToList(),
-                ListFrequencyPlan(Mega(476.9), 0, 31).Concat(ListFrequencyPlan(Mega(496.9), 32, 63)).ToList(),
-                ListFrequencyPlan(Mega(490.1), 0, 23).ToList(),
-                ListFrequencyPlan(Mega(500.1), 0, 23).ToList()
-            };
+            this.downstreamFrequenciesByPlanType =
+            [
+                [.. ListFrequencyPlan(Mega(483.9), 0, 31).Concat(ListFrequencyPlan(Mega(490.3), 32, 63))],
+                [.. ListFrequencyPlan(Mega(476.9), 0, 31).Concat(ListFrequencyPlan(Mega(496.9), 32, 63))],
+                [.. ListFrequencyPlan(Mega(490.1), 0, 23)],
+                [.. ListFrequencyPlan(Mega(500.1), 0, 23)]
+            ];
 
             static IEnumerable<Hertz> ListFrequencyPlan(Hertz startFrequency, int startChannel, int endChannel)
             {
@@ -132,14 +131,14 @@ namespace LoRaTools.Regions
                 }
             }
 
-            this.rx2OTAADefaultFrequencies = new List<Hertz>
-            {
+            this.rx2OTAADefaultFrequencies =
+            [
                 // 20 MHz plan A devices
                 Mega(485.3), Mega(486.9), Mega(488.5), Mega(490.1),
                 Mega(491.7), Mega(493.3), Mega(494.9), Mega(496.5),
                 // 20 MHz plan B devices
                 Mega(478.3), Mega(498.3),
-            };
+            ];
         }
 
         /// <summary>
@@ -165,7 +164,7 @@ namespace LoRaTools.Regions
         /// </summary>
         public override bool TryGetDownstreamChannelFrequency(Hertz upstreamFrequency, DataRateIndex upstreamDataRate, DeviceJoinInfo deviceJoinInfo, out Hertz downstreamFrequency)
         {
-            if (deviceJoinInfo is null) throw new ArgumentNullException(nameof(deviceJoinInfo));
+            ArgumentNullException.ThrowIfNull(deviceJoinInfo);
 
             if (!IsValidUpstreamFrequency(upstreamFrequency))
                 throw new LoRaProcessingException($"Invalid upstream frequency {upstreamFrequency}", LoRaProcessingErrorCode.InvalidFrequency);
@@ -213,7 +212,7 @@ namespace LoRaTools.Regions
         /// <param name="deviceJoinInfo">Join info for the device.</param>
         public override ReceiveWindow GetDefaultRX2ReceiveWindow(DeviceJoinInfo deviceJoinInfo)
         {
-            if (deviceJoinInfo is null) throw new ArgumentNullException(nameof(deviceJoinInfo));
+            ArgumentNullException.ThrowIfNull(deviceJoinInfo);
 
             // Default data rate is always 1 for CN470
             const DataRateIndex dataRate = DR1;

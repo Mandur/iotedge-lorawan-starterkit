@@ -5,16 +5,10 @@ namespace LoRaTools.IoTHubImpl
 {
     using Microsoft.Azure.Devices.Shared;
 
-    public class IoTHubTwinPropertiesContainer : ITwinPropertiesContainer
+    public class IoTHubTwinPropertiesContainer(Twin twin) : ITwinPropertiesContainer
     {
-        public ITwinProperties Desired { get; }
+        public ITwinProperties Desired { get; } = new IoTHubTwinProperties(twin?.Properties?.Desired ?? new TwinCollection());
 
-        public ITwinProperties Reported { get; }
-
-        public IoTHubTwinPropertiesContainer(Twin twin)
-        {
-            this.Desired = new IoTHubTwinProperties(twin?.Properties?.Desired ?? new TwinCollection());
-            this.Reported = new IoTHubTwinProperties(twin?.Properties?.Reported ?? new TwinCollection());
-        }
+        public ITwinProperties Reported { get; } = new IoTHubTwinProperties(twin?.Properties?.Reported ?? new TwinCollection());
     }
 }

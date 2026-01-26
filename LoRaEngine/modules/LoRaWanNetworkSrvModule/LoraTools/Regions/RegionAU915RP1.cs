@@ -14,7 +14,7 @@ namespace LoRaTools.Regions
     public class RegionAU915RP1 : Region
     {
         private static readonly Hertz[] DownstreamChannelFrequencies =
-        {
+        [
             Mega(923.3),
             Mega(923.9),
             Mega(924.5),
@@ -23,7 +23,7 @@ namespace LoRaTools.Regions
             Mega(926.3),
             Mega(926.9),
             Mega(927.5)
-        };
+        ];
 
         private static readonly ImmutableDictionary<DataRateIndex, (DataRate DataRate, uint MaxPayloadSize)> DrToConfigurationByDrIndex =
             new Dictionary<DataRateIndex, (DataRate DataRate, uint MaxPayloadSize)>
@@ -64,16 +64,15 @@ namespace LoRaTools.Regions
         public override IReadOnlyDictionary<uint, double> TXPowertoMaxEIRP => MaxEirpByTxPower;
 
         private static readonly ImmutableArray<IReadOnlyList<DataRateIndex>> RX1DROffsetTableInternal =
-            new IReadOnlyList<DataRateIndex>[]
-            {
-                new[] { DR8, DR8, DR8, DR8, DR8, DR8  }.ToImmutableArray(),
-                new[] { DR9, DR8, DR8, DR8, DR8, DR8  }.ToImmutableArray(),
-                new[] { DR10, DR9, DR8, DR8, DR8, DR8  }.ToImmutableArray(),
-                new[] { DR11, DR10, DR9, DR8, DR8, DR8  }.ToImmutableArray(),
-                new[] { DR12, DR11, DR10, DR9, DR8, DR8  }.ToImmutableArray(),
-                new[] { DR13, DR12, DR11, DR10, DR9, DR8  }.ToImmutableArray(),
-                new[] { DR13, DR13, DR12, DR11, DR10, DR9  }.ToImmutableArray(),
-            }.ToImmutableArray();
+        [
+            [DR8, DR8, DR8, DR8, DR8, DR8],
+            [DR9, DR8, DR8, DR8, DR8, DR8],
+            [DR10, DR9, DR8, DR8, DR8, DR8],
+            [DR11, DR10, DR9, DR8, DR8, DR8],
+            [DR12, DR11, DR10, DR9, DR8, DR8],
+            [DR13, DR12, DR11, DR10, DR9, DR8],
+            [DR13, DR13, DR12, DR11, DR10, DR9],
+        ];
 
         public override IReadOnlyList<IReadOnlyList<DataRateIndex>> RX1DROffsetTable => RX1DROffsetTableInternal;
 

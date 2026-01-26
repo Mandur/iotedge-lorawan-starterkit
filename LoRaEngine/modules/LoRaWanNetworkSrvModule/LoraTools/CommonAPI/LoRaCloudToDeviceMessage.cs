@@ -43,7 +43,7 @@ namespace LoRaTools.CommonAPI
 
         public string MessageId { get; set; }
 
-        public IList<MacCommand> MacCommands { get; } = new List<MacCommand>();
+        public IList<MacCommand> MacCommands { get; } = [];
 
         /// <summary>
         /// Gets if the cloud to device message has any payload data (mac commands don't count).

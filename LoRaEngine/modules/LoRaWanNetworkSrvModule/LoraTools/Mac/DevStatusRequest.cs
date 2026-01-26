@@ -6,7 +6,7 @@ namespace LoRaTools
     using System.Collections.Generic;
 
     /// <summary>
-    /// DevStatusAns Upstream & DevStatusReq Downstream.
+    /// DevStatusAns Upstream and DevStatusReq Downstream.
     /// </summary>
     public class DevStatusRequest : MacCommand
     {

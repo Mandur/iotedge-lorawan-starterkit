@@ -94,8 +94,8 @@ namespace LoRaTools.LoRaMessage
                                Mic? mic,
                                ILogger logger)
         {
-            if (options is null) throw new ArgumentNullException(nameof(options));
-            if (payload is null) throw new ArgumentNullException(nameof(payload));
+            ArgumentNullException.ThrowIfNull(options);
+            ArgumentNullException.ThrowIfNull(payload);
 
             // Writing the DevAddr
             DevAddr = devAddress;
@@ -110,7 +110,7 @@ namespace LoRaTools.LoRaMessage
                                not MacMessageType.ConfirmedDataDown)
             {
                 throw new NotImplementedException();
-            };
+            }
 
             // in this case the payload is not downlink of our type
             Direction = messageType is MacMessageType.ConfirmedDataDown or
@@ -383,18 +383,18 @@ namespace LoRaTools.LoRaMessage
                     aesEngine.Init(true, new KeyParameter(rawSessionKey));
 
                     byte[] aBlock =
-                    {
+                    [
                         0x01,
                         0x00, 0x00, 0x00, 0x00,
                         (byte)Direction,
                         /* DevAddr */0x00, 0x00, 0x00, 0x00,
                         /* FCnt */0x00, 0x00, 0x00, 0x00,
                         0x00, 0x00
-                    };
+                    ];
                     var pt = DevAddr.Write(aBlock.AsSpan(6));
                     BinaryPrimitives.WriteUInt32LittleEndian(pt, Fcnt);
 
-                    byte[] sBlock = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+                    byte[] sBlock = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
                     var size = Frmpayload.Length;
                     var decrypted = new byte[size];
                     byte bufferIndex = 0;
@@ -503,7 +503,7 @@ namespace LoRaTools.LoRaMessage
                 messageArray.AddRange(micBytes);
             }
 
-            return messageArray.ToArray();
+            return [.. messageArray];
         }
 
         public bool RequiresConfirmation => IsConfirmed || IsMacAnswerRequired;
