@@ -116,7 +116,7 @@ namespace LoRaWan
 
         public static Mic ComputeForData(NetworkSessionKey networkSessionKey, byte direction, DevAddr devAddr, uint fcnt, byte[] message)
         {
-            if (message is null) throw new ArgumentNullException(nameof(message));
+            ArgumentNullException.ThrowIfNull(message);
 
             var mac = MacUtilities.GetMac("AESCMAC");
             var rawKey = new byte[NetworkSessionKey.Size];
