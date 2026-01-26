@@ -27,7 +27,7 @@
       <MicrosoftCSharpVersion>4.7.0</MicrosoftCSharpVersion>
       <ApplicationInsightsVersion>2.21.0</ApplicationInsightsVersion>
       <PrometheusNetVersion>7.0.0</PrometheusNetVersion>
-      <AzureIdentityVersion>1.13.0</AzureIdentityVersion>
+      <AzureIdentityVersion>1.17.1</AzureIdentityVersion>
       <MicrosoftRestClientRuntimeVersion>2.3.24</MicrosoftRestClientRuntimeVersion>
       <SystemDrawingCommonVersion>9.0.0</SystemDrawingCommonVersion>
       <MicrosoftAspNetCoreHttpAbstractionsVersion>2.2.0</MicrosoftAspNetCoreHttpAbstractionsVersion>
