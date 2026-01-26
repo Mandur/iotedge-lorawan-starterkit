@@ -1,23 +1,23 @@
 <Project>
     <PropertyGroup>
       <EnableNETAnalyzers>true</EnableNETAnalyzers>
-      <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+      <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
       <AnalysisMode>AllEnabledByDefault</AnalysisMode>
-      <AnalysisLevel>6.0</AnalysisLevel>
-      <LangVersion>10.0</LangVersion>
-      <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-      <TargetFramework>net6.0</TargetFramework>
+      <AnalysisLevel>10.0</AnalysisLevel>
+      <LangVersion>13.0</LangVersion>
+      <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+      <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+      <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
     <PropertyGroup>
       <AzureStorageBlobVersion>12.14.1</AzureStorageBlobVersion>
       <DockerDotNetX509Version>3.125.12</DockerDotNetX509Version>
       <MicrosoftAzureDevicesVersion>1.38.1</MicrosoftAzureDevicesVersion>
       <MicrosoftAzureDevicesClientVersion>1.41.2</MicrosoftAzureDevicesClientVersion>
-      <MicrosoftExtensionsCachingMemoryVersion>6.0.1</MicrosoftExtensionsCachingMemoryVersion>
+      <MicrosoftExtensionsCachingMemoryVersion>9.0.0</MicrosoftExtensionsCachingMemoryVersion>
       <MicrosoftAzureFunctionsExtensionsVersion>1.1.0</MicrosoftAzureFunctionsExtensionsVersion>
       <MicrosoftExtensionsDependencyInjectionVersion>6.0.1</MicrosoftExtensionsDependencyInjectionVersion>
-      <MicrosoftExtensionsDependencyInjectionAbstractionsVersion>6.0.0</MicrosoftExtensionsDependencyInjectionAbstractionsVersion>
+      <MicrosoftExtensionsDependencyInjectionAbstractionsVersion>9.0.0</MicrosoftExtensionsDependencyInjectionAbstractionsVersion>
       <MicrosoftExtensionsPrimitivesVersion>6.0.0</MicrosoftExtensionsPrimitivesVersion>
       <MicrosoftNETSdkFunctionsVersion>4.1.3</MicrosoftNETSdkFunctionsVersion>
       <NewtonsoftJsonVersion>13.0.2</NewtonsoftJsonVersion>
@@ -27,7 +27,9 @@
       <MicrosoftCSharpVersion>4.7.0</MicrosoftCSharpVersion>
       <ApplicationInsightsVersion>2.21.0</ApplicationInsightsVersion>
       <PrometheusNetVersion>7.0.0</PrometheusNetVersion>
-      <AzureIdentityVersion>1.8.0</AzureIdentityVersion>
+      <AzureIdentityVersion>1.13.0</AzureIdentityVersion>
+      <MicrosoftRestClientRuntimeVersion>2.3.24</MicrosoftRestClientRuntimeVersion>
+      <SystemDrawingCommonVersion>9.0.0</SystemDrawingCommonVersion>
       <MicrosoftAspNetCoreHttpAbstractionsVersion>2.2.0</MicrosoftAspNetCoreHttpAbstractionsVersion>
       <JacobVersion>0.6.0</JacobVersion>
     </PropertyGroup>

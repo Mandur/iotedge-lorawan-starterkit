@@ -15,10 +15,13 @@ namespace LoRaWan.NetworkServer.BasicsStation
     using LoRaTools;
     using Microsoft.Extensions.Logging;
 
-    internal sealed class ClientCertificateValidatorService : IClientCertificateValidatorService
+    internal sealed partial class ClientCertificateValidatorService : IClientCertificateValidatorService
     {
         private readonly IBasicsStationConfigurationService stationConfigurationService;
         private readonly ILogger<ClientCertificateValidatorService> logger;
+
+        [GeneratedRegex("([a-fA-F0-9]{2}[-:]?){8}")]
+        private static partial Regex StationEuiRegex();
 
         public ClientCertificateValidatorService(IBasicsStationConfigurationService stationConfigurationService,
                                                  ILogger<ClientCertificateValidatorService> logger)
@@ -33,7 +36,7 @@ namespace LoRaWan.NetworkServer.BasicsStation
             if (chain is null) throw new ArgumentNullException(nameof(chain));
 
             var commonName = certificate.GetNameInfo(X509NameType.SimpleName, false);
-            var regex = Regex.Match(commonName, "([a-fA-F0-9]{2}[-:]?){8}");
+            var regex = StationEuiRegex().Match(commonName);
             var parseSuccess = StationEui.TryParse(regex.Value, out var stationEui);
 
             if (!parseSuccess)

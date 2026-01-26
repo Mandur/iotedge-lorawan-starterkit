@@ -14,7 +14,7 @@ namespace LoRaWan
     {
         protected DataRate(ModulationKind modulationKind, object xpkDatrValue)
         {
-            if (xpkDatrValue is null) throw new ArgumentNullException(nameof(xpkDatrValue));
+            ArgumentNullException.ThrowIfNull(xpkDatrValue);
 
             ModulationKind = modulationKind;
             XpkDatr = xpkDatrValue.ToString()!;

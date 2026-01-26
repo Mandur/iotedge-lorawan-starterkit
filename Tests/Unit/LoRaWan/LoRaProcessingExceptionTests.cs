@@ -6,8 +6,11 @@ namespace LoRaWan.Tests.Unit
     using System.Text.RegularExpressions;
     using Xunit;
 
-    public class LoRaProcessingExceptionTests
+    public partial class LoRaProcessingExceptionTests
     {
+        [GeneratedRegex(@"\s")]
+        private static partial Regex WhitespaceRegex();
+
         [Fact]
         public void ToString_Success()
         {
@@ -19,7 +22,7 @@ namespace LoRaWan.Tests.Unit
             var result = ex.ToString();
 
             // assert
-            static string RemoveWhitespace(string input) => Regex.Replace(input, @"\s", "");
+            string RemoveWhitespace(string input) => WhitespaceRegex().Replace(input, "");
             var expected = @"LoRaWan.LoRaProcessingException: Device configuration not found.
                              ErrorCode: InvalidDeviceConfiguration";
             Assert.Equal(RemoveWhitespace(expected), RemoveWhitespace(result));

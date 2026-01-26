@@ -18,11 +18,14 @@ namespace LoRaTools.NetworkServerDiscovery
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
 
-    public sealed class DiscoveryService
+    public sealed partial class DiscoveryService
     {
         private const string DataEndpointPath = "router-data";
         private readonly ILnsDiscovery lnsDiscovery;
         private readonly ILogger<DiscoveryService> logger;
+
+        [GeneratedRegex(@"/router-data/?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex RouterDataRegex();
 
         internal static readonly IJsonReader<StationEui> QueryReader =
             JsonReader.Object(
@@ -76,7 +79,7 @@ namespace LoRaTools.NetworkServerDiscovery
 
                         // Ensure resilience against duplicate specification of `router-data` and make sure that LNS host address ends with slash
                         // to make sure that URI composes as expected.
-                        var lnsUriSanitized = Regex.Replace(lnsUri.AbsoluteUri, @"/router-data/?$", string.Empty, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+                        var lnsUriSanitized = RouterDataRegex().Replace(lnsUri.AbsoluteUri, string.Empty);
                         lnsUriSanitized = lnsUriSanitized.EndsWith('/') ? lnsUriSanitized : $"{lnsUriSanitized}/";
 
                         var url = new Uri(new Uri(lnsUriSanitized), $"{DataEndpointPath}/{stationEui}");

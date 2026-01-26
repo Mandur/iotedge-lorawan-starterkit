@@ -9,7 +9,7 @@ namespace LoRaWan
     {
         public static bool True(params Action[] actions)
         {
-            if (actions is null) throw new ArgumentNullException(nameof(actions));
+            ArgumentNullException.ThrowIfNull(actions);
 
             foreach (var a in actions)
                 a();
@@ -19,7 +19,7 @@ namespace LoRaWan
 
         public static bool False(params Action[] actions)
         {
-            if (actions is null) throw new ArgumentNullException(nameof(actions));
+            ArgumentNullException.ThrowIfNull(actions);
 
             foreach (var a in actions)
                 a();
