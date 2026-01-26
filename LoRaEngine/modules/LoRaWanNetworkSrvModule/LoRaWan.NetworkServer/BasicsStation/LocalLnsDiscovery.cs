@@ -8,13 +8,9 @@ namespace LoRaWan.NetworkServer.BasicsStation
     using System.Threading.Tasks;
     using LoRaTools.NetworkServerDiscovery;
 
-    public sealed class LocalLnsDiscovery : ILnsDiscovery
+    public sealed class LocalLnsDiscovery(Uri lnsUri) : ILnsDiscovery
     {
-        private readonly Uri lnsUri;
-
-        public LocalLnsDiscovery(Uri lnsUri) => this.lnsUri = lnsUri;
-
         public Task<Uri> ResolveLnsAsync(StationEui stationEui, CancellationToken cancellationToken) =>
-            Task.FromResult(this.lnsUri);
+            Task.FromResult(lnsUri);
     }
 }

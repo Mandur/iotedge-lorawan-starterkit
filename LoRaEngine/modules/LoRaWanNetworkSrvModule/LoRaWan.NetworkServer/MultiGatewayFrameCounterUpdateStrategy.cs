@@ -7,16 +7,8 @@ namespace LoRaWan.NetworkServer
 
     // Frame counter strategy for multi gateway scenarios
     // Frame Down counters is resolved by calling the LoRa device API. Only a single caller will received a valid frame counter (> 0)
-    public class MultiGatewayFrameCounterUpdateStrategy : ILoRaDeviceFrameCounterUpdateStrategy
+    public class MultiGatewayFrameCounterUpdateStrategy(string gatewayID, LoRaDeviceAPIServiceBase loRaDeviceAPIService) : ILoRaDeviceFrameCounterUpdateStrategy
     {
-        private readonly string gatewayID;
-        private readonly LoRaDeviceAPIServiceBase loRaDeviceAPIService;
-
-        public MultiGatewayFrameCounterUpdateStrategy(string gatewayID, LoRaDeviceAPIServiceBase loRaDeviceAPIService)
-        {
-            this.gatewayID = gatewayID;
-            this.loRaDeviceAPIService = loRaDeviceAPIService;
-        }
 
         public async Task<bool> ResetAsync(LoRaDevice loRaDevice, uint fcntUp, string gatewayId)
         {
@@ -24,18 +16,18 @@ namespace LoRaWan.NetworkServer
 
             loRaDevice.ResetFcnt();
 
-            return await this.loRaDeviceAPIService.ABPFcntCacheResetAsync(loRaDevice.DevEUI, fcntUp, gatewayId);
+            return await loRaDeviceAPIService.ABPFcntCacheResetAsync(loRaDevice.DevEUI, fcntUp, gatewayId);
         }
 
         public async ValueTask<uint> NextFcntDown(LoRaDevice loRaDevice, uint messageFcnt)
         {
             if (loRaDevice is null) throw new System.ArgumentNullException(nameof(loRaDevice));
 
-            var result = await this.loRaDeviceAPIService.NextFCntDownAsync(
+            var result = await loRaDeviceAPIService.NextFCntDownAsync(
                 devEUI: loRaDevice.DevEUI,
                 fcntDown: loRaDevice.FCntDown,
                 fcntUp: messageFcnt,
-                gatewayId: this.gatewayID);
+                gatewayId: gatewayID);
 
             if (result > 0)
             {

@@ -8,18 +8,12 @@ namespace LoRaWan.NetworkServer
     /// <summary>
     /// Represents a failed payload decoding.
     /// </summary>
-    public class DecodingFailedPayload
+    public class DecodingFailedPayload(string error, string errorDetail)
     {
         [JsonProperty("error")]
-        public string Error { get; set; }
+        public string Error { get; set; } = error;
 
         [JsonProperty("errorDetail", NullValueHandling = NullValueHandling.Ignore)]
-        public string ErrorDetail { get; set; }
-
-        public DecodingFailedPayload(string error, string errorDetail)
-        {
-            Error = error;
-            ErrorDetail = errorDetail;
-        }
+        public string ErrorDetail { get; set; } = errorDetail;
     }
 }

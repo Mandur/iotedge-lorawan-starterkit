@@ -9,16 +9,11 @@ namespace LoRaWan.NetworkServer
     /// <summary>
     /// Defines a payload that was not decoded (one was not configure for the device).
     /// </summary>
-    public class UndecodedPayload
+    public class UndecodedPayload(byte[] payloadData)
     {
-        private readonly string undecodedValue;
+        private readonly string undecodedValue = (payloadData == null) ? string.Empty : Convert.ToBase64String(payloadData);
 
         [JsonProperty("value")]
-        public object Value => this.undecodedValue;
-
-        public UndecodedPayload(byte[] payloadData)
-        {
-            this.undecodedValue = (payloadData == null) ? string.Empty : Convert.ToBase64String(payloadData);
-        }
+        public object Value => undecodedValue;
     }
 }
