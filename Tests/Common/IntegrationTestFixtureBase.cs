@@ -68,7 +68,7 @@ namespace LoRaWan.Tests.Common
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Console.WriteLine(("Unhandled exception: " + e.ExceptionObject?.ToString()) ?? string.Empty);
+            Console.WriteLine("Unhandled exception: " + e.ExceptionObject);
         }
 
         // Helper method to return all devices
