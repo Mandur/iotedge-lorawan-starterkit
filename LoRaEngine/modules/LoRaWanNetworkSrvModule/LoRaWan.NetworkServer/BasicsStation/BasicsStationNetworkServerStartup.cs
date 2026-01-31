@@ -50,7 +50,7 @@ namespace LoRaWan.NetworkServer.BasicsStation
                 {
                     _ = loggingBuilder.ClearProviders();
                     var logLevel = int.TryParse(NetworkServerConfiguration.LogLevel, NumberStyles.Integer, CultureInfo.InvariantCulture, out var logLevelNum)
-                        ? (LogLevel)logLevelNum is var level && Enum.IsDefined(level) ? level : throw new InvalidCastException()
+                        ? Enum.IsDefined(typeof(LogLevel), (LogLevel)logLevelNum) ? (LogLevel)logLevelNum : throw new InvalidCastException()
                         : Enum.Parse<LogLevel>(NetworkServerConfiguration.LogLevel, true);
 
                     _ = loggingBuilder.SetMinimumLevel(logLevel);
