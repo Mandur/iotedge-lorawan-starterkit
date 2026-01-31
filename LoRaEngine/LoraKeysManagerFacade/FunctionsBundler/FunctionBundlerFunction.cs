@@ -14,17 +14,11 @@ namespace LoraKeysManagerFacade.FunctionBundler
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
 
-    public class FunctionBundlerFunction
+    public class FunctionBundlerFunction(
+        IFunctionBundlerExecutionItem[] items, ILogger<FunctionBundlerFunction> logger)
     {
-        private readonly IFunctionBundlerExecutionItem[] executionItems;
-        private readonly ILogger<FunctionBundlerFunction> logger;
-
-        public FunctionBundlerFunction(
-            IFunctionBundlerExecutionItem[] items, ILogger<FunctionBundlerFunction> logger)
-        {
-            this.executionItems = items.OrderBy(x => x.Priority).ToArray();
-            this.logger = logger;
-        }
+        private readonly IFunctionBundlerExecutionItem[] executionItems = [.. items.OrderBy(x => x.Priority)];
+        private readonly ILogger<FunctionBundlerFunction> logger = logger;
 
         [FunctionName("FunctionBundler")]
         public async Task<IActionResult> FunctionBundler(

@@ -7,14 +7,9 @@ namespace LoRaWan.Tests.Common
     using System.Linq;
     using System.Runtime.CompilerServices;
 
-    public class IntegrationTestBase
+    public class IntegrationTestBase(IntegrationTestFixtureBase testFixture)
     {
-        protected IntegrationTestFixtureBase TestFixture { get; }
-
-        public IntegrationTestBase(IntegrationTestFixtureBase testFixture)
-        {
-            TestFixture = testFixture;
-        }
+        protected IntegrationTestFixtureBase TestFixture { get; } = testFixture;
 
         protected static void Log(string value) => TestLogger.Log(value);
 

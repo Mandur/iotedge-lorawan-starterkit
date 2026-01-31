@@ -32,7 +32,7 @@ namespace LoRaWan.NetworkServer
                                     Meter meter)
             : base(configuration)
         {
-            if (meter is null) throw new ArgumentNullException(nameof(meter));
+            ArgumentNullException.ThrowIfNull(meter);
 
             this.httpClientFactory = httpClientFactory;
             this.logger = logger;
@@ -151,7 +151,7 @@ namespace LoRaWan.NetworkServer
             }
 
             var result = await response.Content.ReadAsStringAsync();
-            var devices = (List<IoTHubDeviceInfo>)JsonConvert.DeserializeObject(result, typeof(List<IoTHubDeviceInfo>));
+            var devices = JsonConvert.DeserializeObject<List<IoTHubDeviceInfo>>(result);
             return new SearchDevicesResult(devices);
         }
 

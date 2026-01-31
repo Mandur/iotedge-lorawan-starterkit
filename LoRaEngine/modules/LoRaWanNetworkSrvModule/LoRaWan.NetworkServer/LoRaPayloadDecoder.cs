@@ -52,7 +52,7 @@ namespace LoRaWan.NetworkServer
 
                 if (toInvoke != null)
                 {
-                    return new DecodePayloadResult(toInvoke.Invoke(null, new object[] { devEui, payload, fport }));
+                    return new DecodePayloadResult(toInvoke.Invoke(null, [devEui, payload, fport]));
                 }
                 else
                 {
@@ -128,7 +128,7 @@ namespace LoRaWan.NetworkServer
         }
 
         /// <summary>
-        /// Value sensor decoding, from <see cref="byte[]"/> to <see cref="DecodePayloadResult"/>.
+        /// Value sensor decoding, from byte array to <see cref="DecodePayloadResult"/>.
         /// </summary>
         /// <param name="devEui">Device identifier.</param>
         /// <param name="payload">The payload to decode.</param>
@@ -157,7 +157,7 @@ namespace LoRaWan.NetworkServer
         }
 
         /// <summary>
-        /// Value Hex decoding, from <see cref="byte[]"/> to <see cref="DecodePayloadResult"/>.
+        /// Value Hex decoding, from byte array to <see cref="DecodePayloadResult"/>.
         /// </summary>
         /// <param name="devEui">Device identifier.</param>
         /// <param name="payload">The payload to decode.</param>

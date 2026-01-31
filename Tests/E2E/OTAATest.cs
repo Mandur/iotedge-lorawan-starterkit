@@ -14,13 +14,8 @@ namespace LoRaWan.Tests.E2E
     // Tests OTAA requests
     [Collection(Constants.TestCollectionName)] // run in serial
     [Trait("Category", "SkipWhenLiveUnitTesting")]
-    public sealed class OTAATest : IntegrationTestBaseCi
+    public sealed class OTAATest(IntegrationTestFixtureCi testFixture) : IntegrationTestBaseCi(testFixture)
     {
-        public OTAATest(IntegrationTestFixtureCi testFixture)
-            : base(testFixture)
-        {
-        }
-
         [RetryFact]
         public Task Test_OTAA_Confirmed_And_Unconfirmed_Message_With_Custom_RX1_DR_Offset_Single()
         {

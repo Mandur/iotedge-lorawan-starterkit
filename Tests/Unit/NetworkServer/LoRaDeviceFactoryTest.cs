@@ -100,26 +100,20 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             DevAddr = new DevAddr(0xffffffff),
         };
 
-        private class TestDeviceFactory : LoRaDeviceFactory
+        private class TestDeviceFactory(NetworkServerConfiguration configuration = null,
+                                 ILoRaDeviceClientConnectionManager connectionManager = null,
+                                 LoRaDeviceCache loRaDeviceCache = null,
+                                 Action<Mock<LoRaDevice>> deviceSetup = null,
+                                 Meter meter = null) : LoRaDeviceFactory(configuration ?? new NetworkServerConfiguration(),
+                   new Mock<ILoRaDataRequestHandler>().Object,
+                   connectionManager ?? new Mock<ILoRaDeviceClientConnectionManager>().Object,
+                   loRaDeviceCache,
+                   NullLoggerFactory.Instance,
+                   NullLogger<LoRaDeviceFactory>.Instance,
+                   meter,
+                   new NoopTracing())
         {
-            private readonly Action<Mock<LoRaDevice>> deviceSetup;
-
-            public TestDeviceFactory(NetworkServerConfiguration configuration = null,
-                                     ILoRaDeviceClientConnectionManager connectionManager = null,
-                                     LoRaDeviceCache loRaDeviceCache = null,
-                                     Action<Mock<LoRaDevice>> deviceSetup = null,
-                                     Meter meter = null)
-                : base(configuration ?? new NetworkServerConfiguration(),
-                       new Mock<ILoRaDataRequestHandler>().Object,
-                       connectionManager ?? new Mock<ILoRaDeviceClientConnectionManager>().Object,
-                       loRaDeviceCache,
-                       NullLoggerFactory.Instance,
-                       NullLogger<LoRaDeviceFactory>.Instance,
-                       meter,
-                       new NoopTracing())
-            {
-                this.deviceSetup = deviceSetup;
-            }
+            private readonly Action<Mock<LoRaDevice>> deviceSetup = deviceSetup;
 
             internal Mock<LoRaDevice> LastDeviceMock { get; private set; }
 

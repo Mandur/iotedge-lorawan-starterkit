@@ -45,8 +45,8 @@ namespace LoRaWan.Tests.Unit.LoRaTools
             Assert.Equal(400, httpContext.Object.Response.StatusCode);
         }
 
-        public static TheoryData<Uri, bool, Uri> HandleDiscoveryRequestAsync_Success_TheoryData() => TheoryDataFactory.From(new[]
-        {
+        public static TheoryData<Uri, bool, Uri> HandleDiscoveryRequestAsync_Success_TheoryData() => TheoryDataFactory.From(
+        [
             (new Uri("wss://localhost:5000"), true, new Uri("wss://localhost:5000/router-data/")),
             (new Uri("wss://localhost:5000"), false, new Uri("wss://localhost:5000/router-data/")),
             (new Uri("ws://localhost:5000"), true, new Uri("ws://localhost:5000/router-data/")),
@@ -59,7 +59,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools
             (new Uri("ws://localhost:5000/some-path/ROUTER-data/"), true, new Uri("ws://localhost:5000/some-path/router-data/")),
             (new Uri("ws://localhost:5000/router-data/some-path"), true, new Uri("ws://localhost:5000/router-data/some-path/router-data/")),
             (new Uri("ws://localhost:5000/router-data/some-path/router-data"), true, new Uri("ws://localhost:5000/router-data/some-path/router-data/")),
-        });
+        ]);
 
         [Theory]
         [MemberData(nameof(HandleDiscoveryRequestAsync_Success_TheoryData))]
@@ -81,7 +81,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools
             var connectionInfoMock = new Mock<ConnectionInfo>();
             _ = httpContextMock.Setup(h => h.Connection).Returns(connectionInfoMock.Object);
             var nic = isValidNic ? GetMostUsedNic() : null;
-            var ip = isValidNic ? nic?.GetIPProperties().UnicastAddresses.First().Address : new IPAddress(new byte[] { 192, 168, 1, 10 });
+            var ip = isValidNic ? nic?.GetIPProperties().UnicastAddresses.First().Address : new IPAddress([192, 168, 1, 10]);
             _ = connectionInfoMock.SetupGet(ci => ci.LocalIpAddress).Returns(ip);
             var muxs = Id6.Format(nic?.GetPhysicalAddress().Convert48To64() ?? 0, Id6.FormatOptions.FixedWidth);
 

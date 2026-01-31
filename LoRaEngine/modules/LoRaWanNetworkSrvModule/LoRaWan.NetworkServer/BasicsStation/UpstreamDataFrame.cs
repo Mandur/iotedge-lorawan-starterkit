@@ -3,37 +3,24 @@
 
 namespace LoRaWan.NetworkServer.BasicsStation
 {
-    public class UpstreamDataFrame
+    public class UpstreamDataFrame(MacHeader macHeader,
+                             DevAddr devAddress,
+                             FrameControlFlags fctrlFlags,
+                             ushort counter,
+                             string options,
+                             FramePort? port,
+                             string payload,
+                             Mic mic,
+                             RadioMetadata radioMetadata)
     {
-        public UpstreamDataFrame(MacHeader macHeader,
-                                 DevAddr devAddress,
-                                 FrameControlFlags fctrlFlags,
-                                 ushort counter,
-                                 string options,
-                                 FramePort? port,
-                                 string payload,
-                                 Mic mic,
-                                 RadioMetadata radioMetadata)
-        {
-            MacHeader = macHeader;
-            DevAddr = devAddress;
-            FrameControlFlags = fctrlFlags;
-            Counter = counter;
-            Options = options;
-            Port = port;
-            Payload = payload;
-            Mic = mic;
-            RadioMetadata = radioMetadata;
-        }
-
-        public MacHeader MacHeader { get; }
-        public DevAddr DevAddr { get; }
-        public FrameControlFlags FrameControlFlags { get; }
-        public ushort Counter { get; }
-        public string Options { get; }
-        public FramePort? Port { get; }
-        public string Payload { get; }
-        public Mic Mic { get; }
-        public RadioMetadata RadioMetadata { get; }
+        public MacHeader MacHeader { get; } = macHeader;
+        public DevAddr DevAddr { get; } = devAddress;
+        public FrameControlFlags FrameControlFlags { get; } = fctrlFlags;
+        public ushort Counter { get; } = counter;
+        public string Options { get; } = options;
+        public FramePort? Port { get; } = port;
+        public string Payload { get; } = payload;
+        public Mic Mic { get; } = mic;
+        public RadioMetadata RadioMetadata { get; } = radioMetadata;
     }
 }

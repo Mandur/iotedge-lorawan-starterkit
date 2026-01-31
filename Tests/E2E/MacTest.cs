@@ -15,12 +15,8 @@ namespace LoRaWan.Tests.E2E
     // Tests OTAA requests
     [Collection(Constants.TestCollectionName)] // run in serial
     [Trait("Category", "SkipWhenLiveUnitTesting")]
-    public sealed class MacTest : IntegrationTestBaseCi
+    public sealed class MacTest(IntegrationTestFixtureCi testFixture) : IntegrationTestBaseCi(testFixture)
     {
-        public MacTest(IntegrationTestFixtureCi testFixture)
-            : base(testFixture)
-        {
-        }
 
         // Send a LinkCheckCmd from the device and expect an answer.
         // Use Device22_ABP

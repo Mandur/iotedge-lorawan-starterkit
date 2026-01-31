@@ -3,23 +3,13 @@
 
 namespace LoRaWan.NetworkServer.BasicsStation
 {
-    public class JoinRequestFrame
+    public class JoinRequestFrame(MacHeader mHdr, JoinEui joinEui, DevEui devEui, DevNonce devNonce, Mic mic, RadioMetadata radioMetadata)
     {
-        public JoinRequestFrame(MacHeader mHdr, JoinEui joinEui, DevEui devEui, DevNonce devNonce, Mic mic, RadioMetadata radioMetadata)
-        {
-            MacHeader = mHdr;
-            JoinEui = joinEui;
-            DevEui = devEui;
-            DevNonce = devNonce;
-            Mic = mic;
-            RadioMetadata = radioMetadata;
-        }
-
-        public RadioMetadata RadioMetadata { get; }
-        public MacHeader MacHeader { get; }
-        public JoinEui JoinEui { get; }
-        public DevEui DevEui { get; }
-        public DevNonce DevNonce { get; }
-        public Mic Mic { get; }
+        public RadioMetadata RadioMetadata { get; } = radioMetadata;
+        public MacHeader MacHeader { get; } = mHdr;
+        public JoinEui JoinEui { get; } = joinEui;
+        public DevEui DevEui { get; } = devEui;
+        public DevNonce DevNonce { get; } = devNonce;
+        public Mic Mic { get; } = mic;
     }
 }

@@ -50,7 +50,7 @@ namespace LoRaWan.NetworkServer
         where TKey : notnull
         where TMessage : notnull
     {
-        private readonly Dictionary<TKey, (IWebSocketWriter<TMessage> Object, Handle Handle)> sockets = new();
+        private readonly Dictionary<TKey, (IWebSocketWriter<TMessage> Object, Handle Handle)> sockets = [];
         private readonly ILogger? logger;
         private readonly ObservableGauge<int>? activeStationConnectionsHistogram;
         private readonly Counter<int>? stationConnectivityLostCounter;

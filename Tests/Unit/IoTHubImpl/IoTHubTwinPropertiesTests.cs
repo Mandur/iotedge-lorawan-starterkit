@@ -6,8 +6,6 @@ namespace LoRaWan.Tests.Unit.IoTHubImpl
     using System;
     using global::LoRaTools.IoTHubImpl;
     using Microsoft.Azure.Devices.Shared;
-    using Moq;
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Xunit;
 

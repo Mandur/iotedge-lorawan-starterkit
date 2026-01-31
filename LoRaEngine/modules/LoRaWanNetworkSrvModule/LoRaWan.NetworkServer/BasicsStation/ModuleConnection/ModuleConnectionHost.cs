@@ -76,7 +76,7 @@ namespace LoRaWan.NetworkServer.BasicsStation.ModuleConnection
         // handlers on device -- to be replaced with redis subscriber
         internal async Task<MethodResponse> OnDirectMethodCalled(MethodRequest methodRequest, object userContext)
         {
-            if (methodRequest == null) throw new ArgumentNullException(nameof(methodRequest));
+            ArgumentNullException.ThrowIfNull(methodRequest);
 
             try
             {

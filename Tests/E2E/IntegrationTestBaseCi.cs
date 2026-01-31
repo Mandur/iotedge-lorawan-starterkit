@@ -9,19 +9,13 @@ namespace LoRaWan.Tests.E2E
     using LoRaWan.Tests.Common;
     using Xunit;
 
-    public class IntegrationTestBaseCi : IntegrationTestBase, IClassFixture<IntegrationTestFixtureCi>, IDisposable
+    public class IntegrationTestBaseCi(IntegrationTestFixtureCi testFixture) : IntegrationTestBase(testFixture), IClassFixture<IntegrationTestFixtureCi>, IDisposable
     {
         private bool isDisposed; // To detect redundant calls
 
         protected IntegrationTestFixtureCi TestFixtureCi => (IntegrationTestFixtureCi)TestFixture;
 
-        protected LoRaArduinoSerial ArduinoDevice { get; }
-
-        public IntegrationTestBaseCi(IntegrationTestFixtureCi testFixture)
-            : base(testFixture)
-        {
-            ArduinoDevice = testFixture.ArduinoDevice;
-        }
+        protected LoRaArduinoSerial ArduinoDevice { get; } = testFixture.ArduinoDevice;
 
         protected static string ToHexString(string str)
         {

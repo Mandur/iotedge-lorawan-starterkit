@@ -8,14 +8,9 @@ namespace XunitRetryHelper
     using Xunit.Abstractions;
     using Xunit.Sdk;
 
-    public class RetryFactTestDiscoverer : IXunitTestCaseDiscoverer
+    public class RetryFactTestDiscoverer(IMessageSink diagnosticMessageSink) : IXunitTestCaseDiscoverer
     {
-        private readonly IMessageSink diagnosticMessageSink;
-
-        public RetryFactTestDiscoverer(IMessageSink diagnosticMessageSink)
-        {
-            this.diagnosticMessageSink = diagnosticMessageSink;
-        }
+        private readonly IMessageSink diagnosticMessageSink = diagnosticMessageSink;
 
         public IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo factAttribute)
         {

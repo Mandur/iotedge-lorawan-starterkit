@@ -32,9 +32,9 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         {
             this.registry = new[]
             {
-                new CustomMetric($"counter{Guid.NewGuid():N}", "Counter", MetricType.Counter, new[] { MetricRegistry.ConcentratorIdTagName }),
-                new CustomMetric($"histogram{Guid.NewGuid():N}", "Histogram", MetricType.Histogram, new[] { MetricRegistry.ConcentratorIdTagName }),
-                new CustomMetric($"observablegauge{Guid.NewGuid():N}", "Observable Gauge", MetricType.ObservableGauge, new[] { MetricRegistry.ConcentratorIdTagName })
+                new CustomMetric($"counter{Guid.NewGuid():N}", "Counter", MetricType.Counter, [MetricRegistry.ConcentratorIdTagName]),
+                new CustomMetric($"histogram{Guid.NewGuid():N}", "Histogram", MetricType.Histogram, [MetricRegistry.ConcentratorIdTagName]),
+                new CustomMetric($"observablegauge{Guid.NewGuid():N}", "Observable Gauge", MetricType.ObservableGauge, [MetricRegistry.ConcentratorIdTagName])
             };
             this.incCounterMock = new Mock<Action<string, string[], double>>();
             this.recordHistogramMock = new Mock<Action<string, string[], double>>();
@@ -82,10 +82,10 @@ namespace LoRaWan.Tests.Unit.NetworkServer
 
         [Fact]
         public void When_Double_Counter_Series_Is_Recorded_Should_Export_To_Prometheus() =>
-            When_Counter_Is_Recorded_Should_Export_To_Prometheus(new[] { 1.0, 3.0 }, new[] { 1.0, 3.0 });
+            When_Counter_Is_Recorded_Should_Export_To_Prometheus([1.0, 3.0], [1.0, 3.0]);
 
         private void When_Counter_Is_Recorded_Should_Export_To_Prometheus<T>(T value, double expectedReportedValue)
-            where T : struct => When_Counter_Is_Recorded_Should_Export_To_Prometheus(new[] { value }, new[] { expectedReportedValue });
+            where T : struct => When_Counter_Is_Recorded_Should_Export_To_Prometheus([value], [expectedReportedValue]);
 
         private void When_Counter_Is_Recorded_Should_Export_To_Prometheus<T>(T[] values, double[] expectedReportedValues)
             where T : struct
@@ -193,23 +193,15 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             this.incCounterMock.Verify(me => me.Invoke(Counter.Name, new[] { stationEui.ToString() }, value), Times.Once);
         }
 
-        private class TestablePrometheusMetricExporter : PrometheusMetricExporter
+        private class TestablePrometheusMetricExporter(Action<string, string[], double> incCounter,
+                                                Action<string, string[], double> recordHistogram,
+                                                Action<string, string[], double> recordObservableGauge,
+                                                IDictionary<string, CustomMetric> registryLookup,
+                                                RegistryMetricTagBag registryMetricTagBag) : PrometheusMetricExporter(registryLookup, registryMetricTagBag, NullLogger<PrometheusMetricExporter>.Instance)
         {
-            private readonly Action<string, string[], double> incCounter;
-            private readonly Action<string, string[], double> observeHistogram;
-            private readonly Action<string, string[], double> recordObservableGauge;
-
-            public TestablePrometheusMetricExporter(Action<string, string[], double> incCounter,
-                                                    Action<string, string[], double> recordHistogram,
-                                                    Action<string, string[], double> recordObservableGauge,
-                                                    IDictionary<string, CustomMetric> registryLookup,
-                                                    RegistryMetricTagBag registryMetricTagBag)
-                : base(registryLookup, registryMetricTagBag, NullLogger<PrometheusMetricExporter>.Instance)
-            {
-                this.incCounter = incCounter;
-                this.observeHistogram = recordHistogram;
-                this.recordObservableGauge = recordObservableGauge;
-            }
+            private readonly Action<string, string[], double> incCounter = incCounter;
+            private readonly Action<string, string[], double> observeHistogram = recordHistogram;
+            private readonly Action<string, string[], double> recordObservableGauge = recordObservableGauge;
 
             internal override void IncCounter(string metricName, string[] tags, double measurement) =>
                 this.incCounter(metricName, tags, measurement);

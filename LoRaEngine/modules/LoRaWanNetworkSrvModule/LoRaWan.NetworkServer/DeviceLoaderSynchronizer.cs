@@ -46,7 +46,7 @@ namespace LoRaWan.NetworkServer
         private readonly HashSet<ILoRaDeviceInitializer> initializers;
         private readonly ILogger<DeviceLoaderSynchronizer> logger;
         private volatile LoaderState state;
-        private readonly object queueLock;
+        private readonly Lock queueLock;
         private volatile List<LoRaRequest> queuedRequests;
 
         protected virtual bool LoadingDevicesFailed { get; set; }
@@ -68,8 +68,8 @@ namespace LoRaWan.NetworkServer
             this.initializers = initializers;
             this.logger = logger;
             this.state = LoaderState.QueryingDevices;
-            this.queueLock = new object();
-            this.queuedRequests = new List<LoRaRequest>();
+            this.queueLock = new Lock();
+            this.queuedRequests = [];
         }
 
         internal async Task LoadAsync()
@@ -142,7 +142,7 @@ namespace LoRaWan.NetworkServer
                             // device in cache from a previous join that we didn't complete
                             // (lost race with another gw) - refresh the twins now and keep it
                             // in the cache
-                            refreshTasks ??= new List<Task>();
+                            refreshTasks ??= [];
                             refreshTasks.Add(RefreshDeviceAsync(cachedDevice));
                             this.logger.LogDebug("refreshing device to fetch DevAddr");
                         }
@@ -209,7 +209,7 @@ namespace LoRaWan.NetworkServer
 #pragma warning restore CA1031 // Do not catch general exception types
                             {
 #pragma warning disable CA1508 // Avoid dead conditional code (false positive)
-                                deviceInitExceptionList ??= new List<Exception>();
+                                deviceInitExceptionList ??= [];
 #pragma warning restore CA1508 // Avoid dead conditional code
                                 deviceInitExceptionList.Add(ex);
                             }
@@ -238,7 +238,7 @@ namespace LoRaWan.NetworkServer
             lock (this.queueLock)
             {
                 failedRequests = this.queuedRequests;
-                this.queuedRequests = new List<LoRaRequest>();
+                this.queuedRequests = [];
                 LoadingDevicesFailed = true;
             }
 

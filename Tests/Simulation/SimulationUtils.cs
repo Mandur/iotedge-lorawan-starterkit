@@ -118,7 +118,7 @@ namespace LoRaWan.Tests.Simulation
         internal static List<SimulatedDevice> InitializeSimulatedDevices(IReadOnlyCollection<TestDeviceInfo> testDeviceInfos,
                                                                          IReadOnlyCollection<SimulatedBasicsStation> simulatedBasicsStations,
                                                                          TestOutputLogger logger) =>
-            testDeviceInfos.Select(d => InitializeSimulatedDevice(d, simulatedBasicsStations, logger)).ToList();
+            [.. testDeviceInfos.Select(d => InitializeSimulatedDevice(d, simulatedBasicsStations, logger))];
 
         internal static SimulatedDevice InitializeSimulatedDevice(TestDeviceInfo testDeviceInfo,
                                                                  IReadOnlyCollection<SimulatedBasicsStation> simulatedBasicsStations,

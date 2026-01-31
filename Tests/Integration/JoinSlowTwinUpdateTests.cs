@@ -15,9 +15,8 @@ namespace LoRaWan.Tests.Integration
     using Xunit.Abstractions;
 
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
-    public class JoinSlowTwinUpdateTests : MessageProcessorTestBase
+    public class JoinSlowTwinUpdateTests(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        public JoinSlowTwinUpdateTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
 
         /// <summary>
         /// Verifies that if the update twin takes too long that no join accepts are sent.

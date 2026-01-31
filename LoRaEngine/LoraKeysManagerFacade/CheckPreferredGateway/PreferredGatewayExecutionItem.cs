@@ -54,7 +54,7 @@ namespace LoraKeysManagerFacade.FunctionBundler
 
         public async Task<FunctionBundlerExecutionState> ExecuteAsync(IPipelineExecutionContext context)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(context);
 
             await ComputeAndSetPreferredGateway(context);
 
@@ -68,7 +68,7 @@ namespace LoraKeysManagerFacade.FunctionBundler
 
         public async Task OnAbortExecutionAsync(IPipelineExecutionContext context)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(context);
 
             await ComputeAndSetPreferredGateway(context);
         }
@@ -117,7 +117,7 @@ namespace LoraKeysManagerFacade.FunctionBundler
                         preferredGateway = LoRaDevicePreferredGateway.LoadFromCache(this.cacheStore, devEUI);
                         if (preferredGateway == null || preferredGateway.FcntUp < fcntUp)
                         {
-                            var items = this.cacheStore.ListGet(listCacheKey).Select(x => PreferredGatewayTableItem.CreateFromCachedString(x));
+                            var items = this.cacheStore.ListGet(listCacheKey).Select(PreferredGatewayTableItem.CreateFromCachedString);
 
                             // if no table item was found (redis restarted, or delayed processing)?
                             // Return error, we don't want to save a value for each gateway or overwrite with a delayed request

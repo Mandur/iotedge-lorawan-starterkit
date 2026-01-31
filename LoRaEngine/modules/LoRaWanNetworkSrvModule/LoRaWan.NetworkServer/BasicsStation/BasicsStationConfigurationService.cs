@@ -16,7 +16,10 @@ namespace LoRaWan.NetworkServer.BasicsStation
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json.Linq;
 
-    internal sealed class BasicsStationConfigurationService : IBasicsStationConfigurationService, IDisposable
+    internal sealed class BasicsStationConfigurationService(LoRaDeviceAPIServiceBase loRaDeviceApiService,
+                                             ILoRaDeviceFactory loRaDeviceFactory,
+                                             IMemoryCache cache,
+                                             ILogger<BasicsStationConfigurationService> logger) : IBasicsStationConfigurationService, IDisposable
     {
         internal const string RouterConfigPropertyName = "routerConfig";
         private const string DwellTimeConfigurationPropertyName = "desiredTxParams";
@@ -32,21 +35,12 @@ namespace LoRaWan.NetworkServer.BasicsStation
 
         private static readonly TimeSpan CacheTimeout = TimeSpan.FromHours(2);
         private readonly SemaphoreSlim cacheSemaphore = new SemaphoreSlim(1);
-        private readonly LoRaDeviceAPIServiceBase loRaDeviceApiService;
-        private readonly ILoRaDeviceFactory loRaDeviceFactory;
-        private readonly IMemoryCache cache;
-        private readonly ILogger<BasicsStationConfigurationService> logger;
-
-        public BasicsStationConfigurationService(LoRaDeviceAPIServiceBase loRaDeviceApiService,
-                                                 ILoRaDeviceFactory loRaDeviceFactory,
-                                                 IMemoryCache cache,
-                                                 ILogger<BasicsStationConfigurationService> logger)
-        {
-            this.loRaDeviceApiService = loRaDeviceApiService;
-            this.loRaDeviceFactory = loRaDeviceFactory;
-            this.cache = cache;
-            this.logger = logger;
-        }
+        private readonly LoRaDeviceAPIServiceBase loRaDeviceApiService = loRaDeviceApiService;
+        private readonly ILoRaDeviceFactory loRaDeviceFactory = loRaDeviceFactory;
+#pragma warning disable CA2213 // Disposable field is injected via DI and should not be disposed by this class
+        private readonly IMemoryCache cache = cache;
+#pragma warning restore CA2213
+        private readonly ILogger<BasicsStationConfigurationService> logger = logger;
 
         public void Dispose() => this.cacheSemaphore.Dispose();
 

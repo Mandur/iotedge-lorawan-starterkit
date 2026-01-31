@@ -3,7 +3,6 @@
 
 namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade
 {
-    using System;
     using System.Threading.Tasks;
     using global::LoraKeysManagerFacade;
     using global::LoRaTools;
@@ -60,7 +59,7 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade
 
             query.Setup(x => x.HasMoreResults).Returns(false);
             query.Setup(x => x.GetNextPageAsync())
-                .ReturnsAsync(Array.Empty<IDeviceTwin>());
+                .ReturnsAsync([]);
 
             this.mockRegistryManager.Setup(c => c.GetEdgeDevices())
                 .Returns(query.Object);

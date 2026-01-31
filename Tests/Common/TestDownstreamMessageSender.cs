@@ -14,7 +14,7 @@ namespace LoRaWan.Tests.Common
 
         public TestDownstreamMessageSender()
         {
-            DownlinkMessages = new List<DownlinkMessage>();
+            DownlinkMessages = [];
         }
 
         public Task SendDownstreamAsync(DownlinkMessage message)

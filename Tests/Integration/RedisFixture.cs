@@ -8,7 +8,6 @@ namespace LoRaWan.Tests.Integration
     using System.Globalization;
     using System.Linq;
     using System.Net;
-    using System.Net.Sockets;
     using System.Threading.Tasks;
     using Docker.DotNet;
     using Docker.DotNet.Models;
@@ -35,7 +34,7 @@ namespace LoRaWan.Tests.Integration
 
         private async Task StartRedisContainer()
         {
-            IList<ContainerListResponse> containers = new List<ContainerListResponse>();
+            IList<ContainerListResponse> containers = [];
             var dockerConnection = Environment.OSVersion.Platform.ToString().Contains("Win", StringComparison.Ordinal) ?
                     "npipe://./pipe/docker_engine" :
                     "unix:///var/run/docker.sock";

@@ -30,7 +30,7 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade
             var apiCalls = new Func<HttpRequest, Task<IActionResult>>[]
             {
                 (req) => Task.Run(() => new FCntCacheCheck(null, NullLogger<FCntCacheCheck>.Instance).NextFCntDownInvoke(req)),
-                (req) => Task.Run(() => new FunctionBundlerFunction(Array.Empty<IFunctionBundlerExecutionItem>(), NullLogger<FunctionBundlerFunction>.Instance).FunctionBundler(req, string.Empty)),
+                (req) => Task.Run(() => new FunctionBundlerFunction([], NullLogger<FunctionBundlerFunction>.Instance).FunctionBundler(req, string.Empty)),
                 (req) => new DeviceGetter(null, null, NullLogger<DeviceGetter>.Instance).GetDevice(req)
             };
 

@@ -10,8 +10,8 @@ namespace LoRaWan.NetworkServer
     {
         public void Prepare(FunctionBundlerExecutionContext context, FunctionBundlerRequest request)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
-            if (request is null) throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(context);
+            ArgumentNullException.ThrowIfNull(request);
 
             request.FunctionItems |= FunctionBundlerItemType.PreferredGateway;
         }
@@ -22,7 +22,7 @@ namespace LoRaWan.NetworkServer
 
         public bool RequiresExecution(FunctionBundlerExecutionContext context)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(context);
             return context.LoRaDevice.ClassType == LoRaDeviceClassType.C && string.IsNullOrEmpty(context.LoRaDevice.GatewayID);
         }
     }

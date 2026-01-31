@@ -15,49 +15,38 @@ namespace LoRaWan.NetworkServer
     /// <summary>
     /// LoRa device registry.
     /// </summary>
-    public sealed class LoRaDeviceRegistry : ILoRaDeviceRegistry
+    public sealed class LoRaDeviceRegistry(
+        NetworkServerConfiguration configuration,
+        IMemoryCache cache,
+        LoRaDeviceAPIServiceBase loRaDeviceAPIService,
+        ILoRaDeviceFactory deviceFactory,
+        LoRaDeviceCache deviceCache,
+        ILoggerFactory loggerFactory,
+        ILogger<LoRaDeviceRegistry> logger) : ILoRaDeviceRegistry
     {
         // Caches a device making join for 30 minutes
         private const int INTERVAL_TO_CACHE_DEVICE_IN_JOIN_PROCESS_IN_MINUTES = 30;
 
-        private readonly LoRaDeviceAPIServiceBase loRaDeviceAPIService;
-        private readonly ILoRaDeviceFactory deviceFactory;
-        private readonly ILoggerFactory loggerFactory;
-        private readonly ILogger<LoRaDeviceRegistry> logger;
-        private readonly HashSet<ILoRaDeviceInitializer> initializers;
-        private readonly NetworkServerConfiguration configuration;
-        private readonly object getOrCreateLoadingDevicesRequestQueueLock;
-        private readonly object getOrCreateJoinDeviceLoaderLock;
-        private readonly IMemoryCache cache;
-        private readonly LoRaDeviceCache deviceCache;
+        private readonly LoRaDeviceAPIServiceBase loRaDeviceAPIService = loRaDeviceAPIService;
+        private readonly ILoRaDeviceFactory deviceFactory = deviceFactory;
+#pragma warning disable CA2213 // Disposable field is injected via DI and should not be disposed by this class
+        private readonly ILoggerFactory loggerFactory = loggerFactory;
+#pragma warning restore CA2213
+        private readonly ILogger<LoRaDeviceRegistry> logger = logger;
+        private readonly HashSet<ILoRaDeviceInitializer> initializers = [];
+        private readonly NetworkServerConfiguration configuration = configuration;
+        private readonly Lock getOrCreateLoadingDevicesRequestQueueLock = new Lock();
+        private readonly Lock getOrCreateJoinDeviceLoaderLock = new Lock();
+#pragma warning disable CA2213 // Disposable field is injected via DI and should not be disposed by this class
+        private readonly IMemoryCache cache = cache;
+#pragma warning restore CA2213
+        private readonly LoRaDeviceCache deviceCache = deviceCache;
 
         /// <summary>
         /// Gets or sets the interval in which devices will be loaded
         /// Only affect reload attempts for same DevAddr.
         /// </summary>
-        public TimeSpan DevAddrReloadInterval { get; set; }
-
-        public LoRaDeviceRegistry(
-            NetworkServerConfiguration configuration,
-            IMemoryCache cache,
-            LoRaDeviceAPIServiceBase loRaDeviceAPIService,
-            ILoRaDeviceFactory deviceFactory,
-            LoRaDeviceCache deviceCache,
-            ILoggerFactory loggerFactory,
-            ILogger<LoRaDeviceRegistry> logger)
-        {
-            this.configuration = configuration;
-            this.cache = cache;
-            this.loRaDeviceAPIService = loRaDeviceAPIService;
-            this.deviceFactory = deviceFactory;
-            this.loggerFactory = loggerFactory;
-            this.logger = logger;
-            this.initializers = new HashSet<ILoRaDeviceInitializer>();
-            DevAddrReloadInterval = TimeSpan.FromSeconds(30);
-            this.getOrCreateLoadingDevicesRequestQueueLock = new object();
-            this.getOrCreateJoinDeviceLoaderLock = new object();
-            this.deviceCache = deviceCache;
-        }
+        public TimeSpan DevAddrReloadInterval { get; set; } = TimeSpan.FromSeconds(30);
 
         /// <summary>
         /// Constructor should be used for test code only.
@@ -120,7 +109,7 @@ namespace LoRaWan.NetworkServer
 
         public ILoRaDeviceRequestQueue GetLoRaRequestQueue(LoRaRequest request)
         {
-            if (request is null) throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
 
             var devAddr = request.Payload.DevAddr;
 
@@ -249,7 +238,7 @@ namespace LoRaWan.NetworkServer
         /// </summary>
         public void UpdateDeviceAfterJoin(LoRaDevice loRaDevice, DevAddr? oldDevAddr)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
 
             // once added, call initializers
             foreach (var initializer in this.initializers)

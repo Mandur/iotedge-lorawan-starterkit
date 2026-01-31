@@ -11,21 +11,14 @@ namespace LoraKeysManagerFacade
     using LoRaTools;
     using Microsoft.Extensions.Logging;
 
-    public class EdgeDeviceGetter : IEdgeDeviceGetter
+    public class EdgeDeviceGetter(IDeviceRegistryManager registryManager,
+                            ILoRaDeviceCacheStore cacheStore,
+                            ILogger<EdgeDeviceGetter> logger) : IEdgeDeviceGetter
     {
-        private readonly IDeviceRegistryManager registryManager;
-        private readonly ILoRaDeviceCacheStore cacheStore;
-        private readonly ILogger<EdgeDeviceGetter> logger;
+        private readonly IDeviceRegistryManager registryManager = registryManager;
+        private readonly ILoRaDeviceCacheStore cacheStore = cacheStore;
+        private readonly ILogger<EdgeDeviceGetter> logger = logger;
         private DateTimeOffset? lastUpdateTime;
-
-        public EdgeDeviceGetter(IDeviceRegistryManager registryManager,
-                                ILoRaDeviceCacheStore cacheStore,
-                                ILogger<EdgeDeviceGetter> logger)
-        {
-            this.registryManager = registryManager;
-            this.cacheStore = cacheStore;
-            this.logger = logger;
-        }
 
         private async Task<IEnumerable<IDeviceTwin>> GetEdgeDevicesAsync(CancellationToken cancellationToken)
         {
@@ -52,7 +45,7 @@ namespace LoraKeysManagerFacade
             {
                 if (await this.cacheStore.LockTakeAsync(keyLock, owner, TimeSpan.FromSeconds(10)))
                 {
-                    var findInCache = () => this.cacheStore.GetObject<DeviceKind>(RedisLnsDeviceCacheKey(lnsId));
+                    DeviceKind findInCache() => this.cacheStore.GetObject<DeviceKind>(RedisLnsDeviceCacheKey(lnsId));
                     var firstSearch = findInCache();
                     if (firstSearch is null)
                     {
@@ -111,16 +104,12 @@ namespace LoraKeysManagerFacade
         public async Task<ICollection<string>> ListEdgeDevicesAsync(CancellationToken cancellationToken)
         {
             var edgeDevices = await GetEdgeDevicesAsync(cancellationToken);
-            return edgeDevices.Select(e => e.DeviceId).ToList();
+            return [.. edgeDevices.Select(e => e.DeviceId)];
         }
     }
 
-    internal class DeviceKind
+    internal class DeviceKind(bool isEdge)
     {
-        public bool IsEdge { get; private set; }
-        public DeviceKind(bool isEdge)
-        {
-            IsEdge = isEdge;
-        }
+        public bool IsEdge { get; private set; } = isEdge;
     }
 }

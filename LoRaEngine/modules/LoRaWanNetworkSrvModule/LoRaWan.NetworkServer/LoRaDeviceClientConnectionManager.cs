@@ -21,11 +21,19 @@ namespace LoRaWan.NetworkServer
     /// <summary>
     /// Manages <see cref="ILoRaDeviceClient"/> connections for <see cref="LoRaDevice"/>.
     /// </summary>
-    public sealed class LoRaDeviceClientConnectionManager : ILoRaDeviceClientConnectionManager
+    [method: ActivatorUtilitiesConstructor]
+    /// <summary>
+    /// Manages <see cref="ILoRaDeviceClient"/> connections for <see cref="LoRaDevice"/>.
+    /// </summary>
+    public sealed class LoRaDeviceClientConnectionManager(IMemoryCache cache,
+                                             ILoggerFactory? loggerFactory,
+                                             ILogger<LoRaDeviceClientConnectionManager> logger) : ILoRaDeviceClientConnectionManager
     {
-        private readonly IMemoryCache cache;
-        private readonly ILoggerFactory? loggerFactory;
-        private readonly ILogger logger;
+#pragma warning disable CA2213 // Disposable fields are injected via DI and should not be disposed by this class
+        private readonly IMemoryCache cache = cache ?? throw new ArgumentNullException(nameof(cache));
+        private readonly ILoggerFactory? loggerFactory = loggerFactory;
+#pragma warning restore CA2213
+        private readonly ILogger logger = logger ?? throw new ArgumentNullException(nameof(logger));
         private readonly ConcurrentDictionary<DevEui, SynchronizedLoRaDeviceClient> clientByDevEui = new();
 
         /// <remarks>
@@ -41,19 +49,9 @@ namespace LoRaWan.NetworkServer
             this(cache, null, logger)
         { }
 
-        [ActivatorUtilitiesConstructor]
-        public LoRaDeviceClientConnectionManager(IMemoryCache cache,
-                                                 ILoggerFactory? loggerFactory,
-                                                 ILogger<LoRaDeviceClientConnectionManager> logger)
-        {
-            this.cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            this.loggerFactory = loggerFactory;
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
-
         public ILoRaDeviceClient GetClient(LoRaDevice loRaDevice)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
 
             return this.clientByDevEui.TryGetValue(loRaDevice.DevEUI, out var client)
                  ? client
@@ -62,7 +60,7 @@ namespace LoRaWan.NetworkServer
 
         public void Register(LoRaDevice loRaDevice, ILoRaDeviceClient loraDeviceClient)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
 
             var loRaDeviceClient = new SynchronizedLoRaDeviceClient(loraDeviceClient, loRaDevice,
                                                                     this.loggerFactory?.CreateLogger<SynchronizedLoRaDeviceClient>());
@@ -88,8 +86,9 @@ namespace LoRaWan.NetworkServer
                     // unnoticed (in either case) is mitigated by logging it.
                     _ = ce.RegisterPostEvictionCallback(state: this.logger, callback: static async (_, value, _, state) =>
                     {
-                        var client = (SynchronizedLoRaDeviceClient)value;
-                        var logger = (ILogger)state;
+                        if (value is not SynchronizedLoRaDeviceClient client || state is not ILogger logger)
+                            return;
+
                         try
                         {
                             using var scope = logger.BeginDeviceScope(client.DevEui);
@@ -146,7 +145,9 @@ namespace LoRaWan.NetworkServer
             private readonly LoRaDevice device;
             private readonly ILogger? logger;
             private int operationSequenceNumber;
+#pragma warning disable CA2213 // Disposable field is disposed in DisconnectAsync method
             private readonly ExclusiveProcessor<Process> exclusiveProcessor = new();
+#pragma warning restore CA2213
             private bool disconnectedDuringActivity;
             private int activities;
 
@@ -282,6 +283,7 @@ namespace LoRaWan.NetworkServer
                     {
                         this.disconnectedDuringActivity = false;
                         await client.DisconnectAsync(cancellationToken);
+                        this.exclusiveProcessor.Dispose();
                         result = DisconnectionResult.Disconnected;
                     }
 

@@ -12,7 +12,7 @@ namespace LoRaWan.Tests.Unit
 
     internal static class EuiTests
     {
-        public static readonly char?[] SupportedFormats = { null, 'G', 'g', 'D', 'd', 'I', 'i', 'N', 'n', 'E', 'e' };
+        public static readonly char?[] SupportedFormats = [null, 'G', 'g', 'D', 'd', 'I', 'i', 'N', 'n', 'E', 'e'];
     }
 
     public abstract class EuiTests<T> where T : struct, IEquatable<T>, IFormattable

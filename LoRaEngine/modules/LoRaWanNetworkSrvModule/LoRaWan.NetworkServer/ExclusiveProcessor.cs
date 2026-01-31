@@ -12,12 +12,12 @@ namespace LoRaWan.NetworkServer
     using System.Threading;
     using System.Threading.Tasks;
 
-    public sealed class ExclusiveProcessor<T>
+    public sealed class ExclusiveProcessor<T>(ExclusiveProcessor<T>.IScheduler scheduler, IEqualityComparer<T>? comparer) : IDisposable
     {
-        private readonly IScheduler scheduler;
-        private readonly IEqualityComparer<T> comparer;
+        private readonly IScheduler scheduler = scheduler;
+        private readonly IEqualityComparer<T> comparer = comparer ?? EqualityComparer<T>.Default;
         private readonly SemaphoreSlim processingLock = new(1);
-        private readonly List<T> queue = new();
+        private readonly List<T> queue = [];
 
         public event EventHandler<T>? Submitted;
         public event EventHandler<(T InterruptedProcessor, T InterruptingProcessor)>? Interrupted;
@@ -41,12 +41,6 @@ namespace LoRaWan.NetworkServer
         public ExclusiveProcessor() : this(DefaultScheduler) { }
 
         public ExclusiveProcessor(IScheduler scheduler) : this(scheduler, null) { }
-
-        public ExclusiveProcessor(IScheduler scheduler, IEqualityComparer<T>? comparer)
-        {
-            this.scheduler = scheduler;
-            this.comparer = comparer ?? EqualityComparer<T>.Default;
-        }
 
 #pragma warning disable CA1034 // Nested types should not be visible (by design)
 
@@ -138,6 +132,11 @@ namespace LoRaWan.NetworkServer
                     _ = this.processingLock.Release();
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            this.processingLock.Dispose();
         }
     }
 }

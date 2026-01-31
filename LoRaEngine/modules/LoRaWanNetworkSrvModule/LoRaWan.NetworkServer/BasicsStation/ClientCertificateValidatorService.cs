@@ -23,8 +23,8 @@ namespace LoRaWan.NetworkServer.BasicsStation
 
         public async Task<bool> ValidateAsync(X509Certificate2 certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors, CancellationToken token)
         {
-            if (certificate is null) throw new ArgumentNullException(nameof(certificate));
-            if (chain is null) throw new ArgumentNullException(nameof(chain));
+            ArgumentNullException.ThrowIfNull(certificate);
+            ArgumentNullException.ThrowIfNull(chain);
 
             var commonName = certificate.GetNameInfo(X509NameType.SimpleName, false);
             var regex = StationEuiRegex().Match(commonName);

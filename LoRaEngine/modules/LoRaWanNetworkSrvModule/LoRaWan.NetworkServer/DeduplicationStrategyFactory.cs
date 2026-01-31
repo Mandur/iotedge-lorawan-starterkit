@@ -11,7 +11,7 @@ namespace LoRaWan.NetworkServer
 
         public ILoRaDeviceMessageDeduplicationStrategy Create(LoRaDevice loRaDevice)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
 
             if (!string.IsNullOrEmpty(loRaDevice.GatewayID))
             {

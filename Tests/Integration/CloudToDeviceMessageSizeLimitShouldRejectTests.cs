@@ -14,10 +14,8 @@ namespace LoRaWan.Tests.Integration
     using Xunit.Abstractions;
 
     [Collection(TestConstants.C2D_Size_Limit_TestCollectionName)]
-    public class CloudToDeviceMessageSizeLimitShouldRejectTests : CloudToDeviceMessageSizeLimitBaseTests
+    public class CloudToDeviceMessageSizeLimitShouldRejectTests(ITestOutputHelper testOutputHelper) : CloudToDeviceMessageSizeLimitBaseTests(testOutputHelper)
     {
-        public CloudToDeviceMessageSizeLimitShouldRejectTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
-
         [Theory]
         [CombinatorialData]
         public async Task Should_Reject(

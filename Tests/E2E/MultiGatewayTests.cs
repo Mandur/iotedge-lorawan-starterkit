@@ -14,13 +14,8 @@ namespace LoRaWan.Tests.E2E
     // Tests OTAA requests
     [Collection(Constants.TestCollectionName)] // run in serial
     [Trait("Category", "SkipWhenLiveUnitTesting")]
-    public sealed class MultiGatewayTests : IntegrationTestBaseCi
+    public sealed class MultiGatewayTests(IntegrationTestFixtureCi testFixture) : IntegrationTestBaseCi(testFixture)
     {
-        public MultiGatewayTests(IntegrationTestFixtureCi testFixture)
-            : base(testFixture)
-        {
-        }
-
         [RetryFact]
         public Task Test_OTAA_Deduplication_Strategy_Drop()
         {

@@ -17,28 +17,20 @@ namespace LoraKeysManagerFacade
     using Microsoft.Azure.WebJobs.Extensions.Http;
     using Microsoft.Extensions.Logging;
 
-    public sealed class ClearLnsCache
+    public sealed class ClearLnsCache(IEdgeDeviceGetter edgeDeviceGetter,
+                         IServiceClient serviceClient,
+                         IChannelPublisher channelPublisher,
+                         ILogger<ClearLnsCache> logger)
     {
-        private readonly IEdgeDeviceGetter edgeDeviceGetter;
-        private readonly IServiceClient serviceClient;
-        private readonly IChannelPublisher channelPublisher;
-        private readonly ILogger<ClearLnsCache> logger;
-
-        public ClearLnsCache(IEdgeDeviceGetter edgeDeviceGetter,
-                             IServiceClient serviceClient,
-                             IChannelPublisher channelPublisher,
-                             ILogger<ClearLnsCache> logger)
-        {
-            this.edgeDeviceGetter = edgeDeviceGetter;
-            this.serviceClient = serviceClient;
-            this.channelPublisher = channelPublisher;
-            this.logger = logger;
-        }
+        private readonly IEdgeDeviceGetter edgeDeviceGetter = edgeDeviceGetter;
+        private readonly IServiceClient serviceClient = serviceClient;
+        private readonly IChannelPublisher channelPublisher = channelPublisher;
+        private readonly ILogger<ClearLnsCache> logger = logger;
 
         [FunctionName(nameof(ClearNetworkServerCache))]
         public async Task<IActionResult> ClearNetworkServerCache([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req, CancellationToken cancellationToken)
         {
-            if (req is null) throw new ArgumentNullException(nameof(req));
+            ArgumentNullException.ThrowIfNull(req);
 
             try
             {

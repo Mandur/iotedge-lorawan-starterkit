@@ -11,15 +11,9 @@ namespace LoRaWan.Tests.Common
     /// <summary>
     /// Helper operation timer that returns a constant elapsed time.
     /// </summary>
-    internal class TestLoRaOperationTimeWatcher : LoRaOperationTimeWatcher
+    internal class TestLoRaOperationTimeWatcher(Region loraRegion, IEnumerable<TimeSpan> elapsedTimes) : LoRaOperationTimeWatcher(loraRegion)
     {
-        private readonly IEnumerator<TimeSpan> elapsedTimes;
-
-        public TestLoRaOperationTimeWatcher(Region loraRegion, IEnumerable<TimeSpan> elapsedTimes)
-            : base(loraRegion)
-        {
-            this.elapsedTimes = elapsedTimes.GetEnumerator();
-        }
+        private readonly IEnumerator<TimeSpan> elapsedTimes = elapsedTimes.GetEnumerator();
 
         /// <summary>
         /// Gets time passed since start.

@@ -50,7 +50,7 @@ namespace LoRaTools.LoRaPhysical
                                StationEui stationEui = default,
                                uint? antennaPreference = null)
         {
-            if (payload is null) throw new ArgumentNullException(nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload);
             Data = payload;
 
             DevEui = devEui;

@@ -23,11 +23,9 @@ namespace LoRaWan.Tests.Integration
 
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
     // Cloud to device message processing tests (Join tests are handled in other class)
-    public class CloudToDeviceMessageTests : MessageProcessorTestBase
+    public class CloudToDeviceMessageTests(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
         private const FramePort TestPort = FramePorts.App1;
-
-        public CloudToDeviceMessageTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
 
         [Theory]
         [InlineData(ServerGatewayID)]

@@ -16,16 +16,11 @@ namespace LoRaWan.Tests.E2E
     // Tests multi-concentrator scenarios
     [Collection(Constants.TestCollectionName)] // run in serial
     [Trait("Category", "SkipWhenLiveUnitTesting")]
-    public sealed class MultiConcentratorTests : IntegrationTestBaseCi, IAsyncLifetime
+    public sealed class MultiConcentratorTests(IntegrationTestFixtureCi testFixture) : IntegrationTestBaseCi(testFixture), IAsyncLifetime
     {
         private string temporaryDirectoryName;
         private bool initializationSucceeded;
         private readonly string expectedLog = $"{ConcentratorDeduplicationResult.Duplicate} {NetworkServer.Constants.MessageAlreadyEncountered}";
-
-        public MultiConcentratorTests(IntegrationTestFixtureCi testFixture)
-            : base(testFixture)
-        {
-        }
 
         public async Task DisposeAsync()
         {

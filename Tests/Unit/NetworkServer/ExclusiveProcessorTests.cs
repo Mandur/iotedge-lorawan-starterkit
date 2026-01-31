@@ -11,8 +11,6 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using System.Threading.Tasks;
     using LoRaWan.NetworkServer;
     using Xunit;
-    using static MoreLinq.Extensions.IndexExtension;
-    using static MoreLinq.Extensions.ShuffleExtension;
 
     public class ExclusiveProcessorTests
     {
@@ -167,7 +165,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
 
         private sealed class LifoScheduler<T> : ExclusiveProcessor<T>.IScheduler
         {
-            public List<T> SelectionList { get; } = new();
+            public List<T> SelectionList { get; } = [];
 
             public T SelectNext(IReadOnlyList<T> processes)
             {

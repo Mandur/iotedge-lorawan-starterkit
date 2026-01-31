@@ -37,8 +37,8 @@ namespace LoRaWan.NetworkServerDiscovery
         private readonly ILogger<TagBasedLnsDiscovery> logger;
         private readonly IMemoryCache memoryCache;
         private readonly IDeviceRegistryManager registryManager;
-        private readonly Dictionary<StationEui, Uri> lastLnsUriByStationId = new();
-        private readonly object lastLnsUriByStationIdLock = new();
+        private readonly Dictionary<StationEui, Uri> lastLnsUriByStationId = [];
+        private readonly Lock lastLnsUriByStationIdLock = new();
         private readonly SemaphoreSlim lnsByNetworkCacheSemaphore = new SemaphoreSlim(1);
 
         public TagBasedLnsDiscovery(IMemoryCache memoryCache, IConfiguration configuration, ILogger<TagBasedLnsDiscovery> logger, ILogger<IDeviceRegistryManager> registryManagerLogger, IHttpClientFactory httpClientFactory)
@@ -81,10 +81,7 @@ namespace LoRaWan.NetworkServerDiscovery
                                            this.logger.LogInformation("Loaded twin for station '{Station}'", stationEui);
                                            return this.registryManager.GetStationTwinAsync(stationEui, cancellationToken);
                                        },
-                                       null, cancellationToken);
-
-            if (twin is null)
-                throw new LoRaProcessingException($"Could not find twin for station '{stationEui}'", LoRaProcessingErrorCode.TwinFetchFailed);
+                                       null, cancellationToken) ?? throw new LoRaProcessingException($"Could not find twin for station '{stationEui}'", LoRaProcessingErrorCode.TwinFetchFailed);
 
             // Protect against SQL injection.
             if (twin.NetworkId.Any(n => !char.IsLetterOrDigit(n)))
@@ -152,11 +149,11 @@ namespace LoRaWan.NetworkServerDiscovery
 
             try
             {
-                return await this.memoryCache.GetOrCreateAsync(key, ce =>
+                return (await this.memoryCache.GetOrCreateAsync(key, ce =>
                 {
                     _ = ce.SetAbsoluteExpiration(CacheItemExpiration);
                     return factory(ce);
-                });
+                }))!;
             }
             finally
             {

@@ -10,11 +10,10 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     {
         public static IReadOnlyCollection<T> WrapInReadOnlyCollection<T>(this IList<T> list) => new ReadOnlyCollection<T>(list);
 
-        internal sealed class ReadOnlyCollection<T> : IReadOnlyCollection<T>
+        internal sealed class ReadOnlyCollection<T>(IList<T> list) : IReadOnlyCollection<T>
         {
-            private readonly IList<T> list;
+            private readonly IList<T> list = list;
 
-            public ReadOnlyCollection(IList<T> list) => this.list = list;
             public int Count => this.list.Count;
             public IEnumerator<T> GetEnumerator() => this.list.GetEnumerator();
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)this.list).GetEnumerator();

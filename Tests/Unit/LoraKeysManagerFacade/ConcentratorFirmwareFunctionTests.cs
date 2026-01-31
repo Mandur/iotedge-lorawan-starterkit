@@ -3,7 +3,6 @@
 
 namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Text;

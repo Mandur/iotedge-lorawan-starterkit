@@ -14,7 +14,7 @@ namespace LoRaWan.NetworkServer
                                      ILnsRemoteCallHandler lnsRemoteCallHandler,
                                      NetworkServerConfiguration networkServerConfiguration) : IHostedService
     {
-        private readonly string[] subscriptionChannels = new string[] { networkServerConfiguration.GatewayID, Constants.CloudToDeviceClearCache };
+        private readonly string[] subscriptionChannels = [networkServerConfiguration.GatewayID, Constants.CloudToDeviceClearCache];
 
         public Task StartAsync(CancellationToken cancellationToken) =>
             Task.WhenAll(subscriptionChannels.Select(c => lnsRemoteCallListener.SubscribeAsync(c,

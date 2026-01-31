@@ -135,7 +135,7 @@ namespace LoRaWan.NetworkServer.BasicsStation.JsonHandlers
                                                                             select new NetId((int)id))),
                               JsonReader.Property("JoinEui", JsonReader.Array(JsonReader.Tuple(JoinEuiReader, JoinEuiReader))
                                                                        .OrNull(),
-                                                  (true, Array.Empty<(JoinEui, JoinEui)>())),
+                                                  (true, [])),
                               JsonReader.Property("region", JsonReader.String()),
                               JsonReader.Property("hwspec", JsonReader.String()),
                               JsonReader.Property("freq_range", JsonReader.Tuple(HertzReader, HertzReader)),
@@ -167,9 +167,7 @@ namespace LoRaWan.NetworkServer.BasicsStation.JsonHandlers
                                       JsonReader.Property("freqs", JsonReader.Array(JsonReader.UInt32())),
                                       (dRs, layout, freqs) => new Beaconing(dRs, layout, freqs)),
                                   (true, null)),
-                              (netId, joinEui, region, hwspec, freqRange, drs, sx1301conf, nocca, nodc, nodwell, bcning) =>
-                                    WriteRouterConfig(netId, joinEui, region, hwspec, freqRange, drs,
-                                                      sx1301conf, nocca, nodc, nodwell, bcning));
+                              WriteRouterConfig);
 
 
         private static readonly IJsonReader<Region> RegionConfigurationConverter =
@@ -228,7 +226,7 @@ namespace LoRaWan.NetworkServer.BasicsStation.JsonHandlers
             if (string.IsNullOrEmpty(region)) throw new JsonException("Region must not be null.");
             if (string.IsNullOrEmpty(hwspec)) throw new JsonException("hwspec must not be null.");
             if (freqRange is var (minFreq, maxFreq) && minFreq == maxFreq) throw new JsonException("Minimum and maximum frequencies must differ.");
-            if (dataRates.Count() is 0) throw new JsonException("Datarates list must not be empty.");
+            if (!dataRates.Any()) throw new JsonException("Datarates list must not be empty.");
             if (sx1301Config.Length == 0) throw new JsonException("sx1301_conf must not be empty.");
 
             using var ms = new MemoryStream();

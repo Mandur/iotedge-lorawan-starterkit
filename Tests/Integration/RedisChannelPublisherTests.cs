@@ -26,7 +26,7 @@ namespace LoRaWan.Tests.Integration
 
         public RedisChannelPublisherTests(RedisFixture redis, ITestOutputHelper testOutputHelper)
         {
-            if (redis is null) throw new ArgumentNullException(nameof(redis));
+            ArgumentNullException.ThrowIfNull(redis);
             this.channelPublisher = new RedisChannelPublisher(redis.Redis, NullLogger<RedisChannelPublisher>.Instance);
             this.testOutputHelper = testOutputHelper;
             this.redis = redis.Redis;

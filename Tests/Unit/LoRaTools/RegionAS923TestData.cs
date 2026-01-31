@@ -13,11 +13,10 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
 
     public static class RegionAS923TestData
     {
-        private static readonly List<DataRateIndex> DataRates = new() { DR0, DR1, DR2, DR3, DR4, DR5, DR6, DR7 };
+        private static readonly List<DataRateIndex> DataRates = [DR0, DR1, DR2, DR3, DR4, DR5, DR6, DR7];
 
         private static readonly List<Hertz> Frequencies =
-            new List<ulong> { 923_200_000, 923_400_000, 921_400_000, 916_600_000, 917_500_000 }
-            .Select(fr => new Hertz(fr)).ToList();
+            [.. new List<ulong> { 923_200_000, 923_400_000, 921_400_000, 916_600_000, 917_500_000 }.Select(fr => new Hertz(fr))];
 
         private static readonly DwellTimeLimitedRegion Region;
         private static readonly DwellTimeLimitedRegion RegionWithDwellTime;
@@ -63,12 +62,12 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
             });
 
         public static TheoryData<DwellTimeLimitedRegion, DataRateIndex, int> TestRegionDataRateData_InvalidOffset =>
-            TheoryDataFactory.From(new[]
-            {
+            TheoryDataFactory.From(
+            [
                 (Region, DR1, 8),
                 (Region, DR1, 9),
                 (RegionWithDwellTime, DR1, 10),
-            });
+            ]);
 
         public static TheoryData<Region, Hertz, DataRateIndex> TestRegionLimitData =>
             TheoryDataFactory.From(new (Region, Hertz, DataRateIndex)[]
@@ -121,20 +120,20 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
             });
 
         public static TheoryData<DwellTimeLimitedRegion, LoRaRegionType> TestTranslateToRegionData =>
-           TheoryDataFactory.From(new[] { (Region, LoRaRegionType.AS923) });
+           TheoryDataFactory.From([(Region, LoRaRegionType.AS923)]);
 
         public static TheoryData<DwellTimeLimitedRegion, Hertz, int> TestTryGetJoinChannelIndexData =>
             TheoryDataFactory.From(from freq in new Hertz[] { Mega(923.4), Mega(928.0) }
                                    select (Region, freq, /* expected index */ -1));
 
         public static TheoryData<DwellTimeLimitedRegion, int, bool> TestIsValidRX1DROffsetData =>
-           TheoryDataFactory.From(new[]
-           {
+           TheoryDataFactory.From(
+           [
                 (Region, 0, true),
                 (Region, 7, true),
                 (Region, 8, false),
                 (Region, 10, false),
-           });
+           ]);
 
         public static TheoryData<DwellTimeLimitedRegion, DataRateIndex, bool, bool> TestIsDRIndexWithinAcceptableValuesData =>
             TheoryDataFactory.From<DwellTimeLimitedRegion, DataRateIndex, bool, bool>(new[]

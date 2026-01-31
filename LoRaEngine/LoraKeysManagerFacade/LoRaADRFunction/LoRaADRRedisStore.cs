@@ -11,12 +11,12 @@ namespace LoraKeysManagerFacade
     using Newtonsoft.Json;
     using StackExchange.Redis;
 
-    public class LoRaADRRedisStore : LoRaADRStoreBase, ILoRaADRStore
+    public class LoRaADRRedisStore(IDatabase redisCache, ILogger<LoRaADRRedisStore> logger) : LoRaADRStoreBase, ILoRaADRStore
     {
         private const string CacheToken = ":ADR";
         private const string LockToken = ":lock";
-        private readonly IDatabase redisCache;
-        private readonly ILogger<LoRaADRRedisStore> logger;
+        private readonly IDatabase redisCache = redisCache;
+        private readonly ILogger<LoRaADRRedisStore> logger = logger;
 
         private sealed class RedisLockWrapper : IDisposable
         {
@@ -57,12 +57,6 @@ namespace LoraKeysManagerFacade
             }
         }
 
-        public LoRaADRRedisStore(IDatabase redisCache, ILogger<LoRaADRRedisStore> logger)
-        {
-            this.redisCache = redisCache;
-            this.logger = logger;
-        }
-
         public async Task UpdateADRTable(DevEui devEUI, LoRaADRTable table)
         {
             using var redisLock = new RedisLockWrapper(devEUI, this.redisCache);
@@ -74,7 +68,7 @@ namespace LoraKeysManagerFacade
 
         public async Task<LoRaADRTable> AddTableEntry(LoRaADRTableEntry entry)
         {
-            if (entry is null) throw new ArgumentNullException(nameof(entry));
+            ArgumentNullException.ThrowIfNull(entry);
 
             LoRaADRTable table = null;
             using (var redisLock = new RedisLockWrapper(entry.DevEUI, this.redisCache))
@@ -110,12 +104,10 @@ namespace LoraKeysManagerFacade
 
         public async Task<bool> Reset(DevEui devEUI)
         {
-            using (var redisLock = new RedisLockWrapper(devEUI, this.redisCache))
+            using var redisLock = new RedisLockWrapper(devEUI, this.redisCache);
+            if (await redisLock.TakeLockAsync())
             {
-                if (await redisLock.TakeLockAsync())
-                {
-                    return await this.redisCache.KeyDeleteAsync(GetEntryKey(devEUI));
-                }
+                return await this.redisCache.KeyDeleteAsync(GetEntryKey(devEUI));
             }
 
             return false;

@@ -19,7 +19,7 @@ namespace LoRaWan.Tests.Common
         private readonly Action dispose;
 
         public DisposableValue(T value, IDisposable disposable)
-            : this(value, () => disposable.Dispose())
+            : this(value, disposable.Dispose)
         { }
 
         public DisposableValue(T value, Action dispose) =>
@@ -35,7 +35,7 @@ namespace LoRaWan.Tests.Common
         private readonly Func<ValueTask> dispose;
 
         public AsyncDisposableValue(T value, IAsyncDisposable disposable)
-            : this(value, () => disposable.DisposeAsync())
+            : this(value, disposable.DisposeAsync)
         { }
 
         public AsyncDisposableValue(T value, Func<ValueTask> dispose) =>

@@ -17,22 +17,16 @@ namespace LoRaWan.Tests.Common
     using System.Text.Json.Serialization;
     using LoRaTools;
 
-    public sealed class SimulatedBasicsStation : IDisposable
+    public sealed class SimulatedBasicsStation(StationEui stationEUI, Uri lnsUri) : IDisposable
     {
-        private readonly StationEui stationEUI;
+        private readonly StationEui stationEUI = stationEUI;
         private ClientWebSocket clientWebSocket = CreateClientWebSocket();
-        private readonly Uri lnsUri;
+        private readonly Uri lnsUri = lnsUri;
         private CancellationTokenSource cancellationTokenSource;
         private bool started;
         private Task processMessagesAsync;
 
         public event EventHandler<EventArgs<string>> MessageReceived;
-
-        public SimulatedBasicsStation(StationEui stationEUI, Uri lnsUri)
-        {
-            this.stationEUI = stationEUI;
-            this.lnsUri = lnsUri;
-        }
 
         public async Task StartAsync(CancellationToken cancellationToken = default)
         {

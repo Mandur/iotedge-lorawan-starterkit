@@ -33,7 +33,7 @@ namespace LoRaWan.Tests.Unit.IoTHubImpl
             IoTHubDeviceTwin deviceTwin = null;
 
             // Act
-            Assert.Throws<ArgumentNullException>(() => deviceTwin.ToIoTHubDeviceTwin());
+            Assert.Throws<ArgumentNullException>(deviceTwin.ToIoTHubDeviceTwin);
         }
 
         [Fact]
@@ -43,7 +43,7 @@ namespace LoRaWan.Tests.Unit.IoTHubImpl
             IDeviceTwin deviceTwin = new FakeIoTHubDeviceTwinTests();
 
             // Act
-            Assert.Throws<ArgumentException>(() => deviceTwin.ToIoTHubDeviceTwin());
+            Assert.Throws<ArgumentException>(deviceTwin.ToIoTHubDeviceTwin);
         }
     }
 }

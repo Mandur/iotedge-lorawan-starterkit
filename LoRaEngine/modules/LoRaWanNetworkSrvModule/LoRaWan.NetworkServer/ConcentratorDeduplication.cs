@@ -6,6 +6,7 @@
 namespace LoRaWan.NetworkServer
 {
     using System;
+    using System.Threading;
     using LoRaTools.LoRaMessage;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Logging;
@@ -16,7 +17,7 @@ namespace LoRaWan.NetworkServer
     {
         private static readonly TimeSpan DefaultExpiration = TimeSpan.FromMinutes(1);
 
-        private static readonly object CacheLock = new object();
+        private static readonly Lock CacheLock = new Lock();
 
         internal sealed record DataMessageKey(DevEui DevEui, Mic Mic, ushort FCnt);
 

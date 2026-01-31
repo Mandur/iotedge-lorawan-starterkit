@@ -84,7 +84,7 @@ namespace LoRaWan.Tests.Unit
             var result = nonce.Write(buffer);
 
             Assert.Equal(expected, buffer[..3]);
-            Assert.Equal(Enumerable.Repeat(fill, 7).ToArray(), result.ToArray());
+            Assert.Equal([.. Enumerable.Repeat(fill, 7)], result.ToArray());
         }
     }
 }

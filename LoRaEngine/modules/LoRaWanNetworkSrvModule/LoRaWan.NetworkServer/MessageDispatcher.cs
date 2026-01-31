@@ -51,7 +51,7 @@ namespace LoRaWan.NetworkServer
         /// </summary>
         public void DispatchRequest(LoRaRequest request)
         {
-            if (request is null) throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
 
             if (request.Payload is null)
             {

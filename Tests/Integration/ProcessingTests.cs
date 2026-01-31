@@ -22,10 +22,8 @@ namespace LoRaWan.Tests.Integration
 
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
     // General message processor tests (Join tests are handled in other class)
-    public class ProcessingTests : MessageProcessorTestBase
+    public class ProcessingTests(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        public ProcessingTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
-
         [Theory]
         [InlineData(ServerGatewayID, 0, 0, 0)]
         [InlineData(ServerGatewayID, 0, 1, 1)]
@@ -1167,10 +1165,10 @@ namespace LoRaWan.Tests.Integration
             var devAddr = simulatedDevice.LoRaDevice.DevAddr.Value;
 
             // Add this device to the allowed dev address list
-            ServerConfiguration.AllowedDevAddresses = new HashSet<DevAddr>(1)
-            {
+            ServerConfiguration.AllowedDevAddresses =
+            [
                 simulatedDevice.DevAddr.Value
-            };
+            ];
 
             // Send to message processor
             await using var messageDispatcherDisposableValue = SetupMessageDispatcherAsync();

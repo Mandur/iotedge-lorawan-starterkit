@@ -10,13 +10,13 @@ namespace LoRaWan.NetworkServer
     {
         public void Prepare(FunctionBundlerExecutionContext context, FunctionBundlerRequest request)
         {
-            if (request is null) throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
             request.FunctionItems |= FunctionBundlerItemType.FCntDown;
         }
 
         public bool RequiresExecution(FunctionBundlerExecutionContext context)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(context);
             return context.LoRaPayload.IsConfirmed || context.LoRaPayload.IsMacAnswerRequired;
         }
 

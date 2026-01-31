@@ -16,21 +16,14 @@ namespace LoRaWan.NetworkServer
         IDisposable TrackIotHubDependency(string dependencyName, string data);
     }
 
-    internal sealed class ApplicationInsightsTracing : ITracing
+    internal sealed class ApplicationInsightsTracing(TelemetryClient telemetryClient, NetworkServerConfiguration networkServerConfiguration) : ITracing
     {
         // Equal to https://github.com/microsoft/ApplicationInsights-dotnet/blob/main/WEB/Src/DependencyCollector/DependencyCollector/Implementation/RemoteDependencyConstants.cs.
         private const string IotHubDependencyTypeName = "Azure IoT Hub";
 
-        private readonly TelemetryClient telemetryClient;
-        private readonly string iotHubHostName;
-        private readonly string iotHubDependencySuffix;
-
-        public ApplicationInsightsTracing(TelemetryClient telemetryClient, NetworkServerConfiguration networkServerConfiguration)
-        {
-            this.telemetryClient = telemetryClient;
-            this.iotHubHostName = networkServerConfiguration.IoTHubHostName;
-            this.iotHubDependencySuffix = networkServerConfiguration.EnableGateway ? "(Gateway)" : "(Direct)";
-        }
+        private readonly TelemetryClient telemetryClient = telemetryClient;
+        private readonly string iotHubHostName = networkServerConfiguration.IoTHubHostName;
+        private readonly string iotHubDependencySuffix = networkServerConfiguration.EnableGateway ? "(Gateway)" : "(Direct)";
 
         public IDisposable TrackDataMessage() => this.telemetryClient.StartOperation<RequestTelemetry>("Data message");
 

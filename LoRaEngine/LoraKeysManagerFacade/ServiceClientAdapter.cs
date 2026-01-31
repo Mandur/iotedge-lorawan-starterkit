@@ -7,14 +7,9 @@ namespace LoraKeysManagerFacade
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices;
 
-    public class ServiceClientAdapter : IServiceClient
+    public class ServiceClientAdapter(ServiceClient serviceClient) : IServiceClient
     {
-        private readonly ServiceClient serviceClient;
-
-        public ServiceClientAdapter(ServiceClient serviceClient)
-        {
-            this.serviceClient = serviceClient ?? throw new System.ArgumentNullException(nameof(serviceClient));
-        }
+        private readonly ServiceClient serviceClient = serviceClient ?? throw new System.ArgumentNullException(nameof(serviceClient));
 
         public Task<CloudToDeviceMethodResult> InvokeDeviceMethodAsync(string deviceId,
                                                                        string moduleId,

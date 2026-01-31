@@ -97,7 +97,7 @@ namespace LoRaWan.Tests.Common
 
         public static void KillBasicsStation(TestConfiguration config, string temporaryDirectoryName, out string logFilePath)
         {
-            if (config is null) throw new ArgumentNullException(nameof(config));
+            ArgumentNullException.ThrowIfNull(config);
 
             logFilePath = Path.GetTempFileName();
             var connection = config.RemoteConcentratorConnection;
@@ -131,7 +131,7 @@ namespace LoRaWan.Tests.Common
 
         public static void StartBasicsStation(TestConfiguration config, Dictionary<string, string> scriptParameters, out string randomDirectoryName)
         {
-            if (config is null) throw new ArgumentNullException(nameof(config));
+            ArgumentNullException.ThrowIfNull(config);
 
             var connection = config.RemoteConcentratorConnection;
             var sshPrivateKeyPath = config.SshPrivateKeyPath;

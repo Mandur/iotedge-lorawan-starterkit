@@ -4,7 +4,6 @@
 namespace LoRaWan.NetworkServer.BasicsStation.JsonHandlers
 {
     using System.Text.Json.Serialization;
-    using LoRaWan.NetworkServer.BasicsStation;
 
     internal class TimeSyncMessage
     {

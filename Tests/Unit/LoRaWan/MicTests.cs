@@ -29,15 +29,15 @@ namespace LoRaWan.Tests.Unit
             var bytes = new byte[4];
             var remainingBytes = this.subject.Write(bytes);
             Assert.Equal(0, remainingBytes.Length);
-            Assert.Equal(new byte[] { 120, 86, 52, 18 }, bytes);
+            Assert.Equal([120, 86, 52, 18], bytes);
         }
 
-        public static TheoryData<Mic, byte[]> Read_Success_TheoryData() => TheoryDataFactory.From(new[]
-        {
+        public static TheoryData<Mic, byte[]> Read_Success_TheoryData() => TheoryDataFactory.From(
+        [
             (new Mic(1), new byte[] { 1, 0, 0, 0 }),
-            (new Mic(1), new byte[] { 1, 0, 0, 0, 0 }),
-            (new Mic(0x04030201), new byte[] { 1, 2, 3, 4 }),
-        });
+            (new Mic(1), [1, 0, 0, 0, 0]),
+            (new Mic(0x04030201), [1, 2, 3, 4]),
+        ]);
 
         [Theory]
         [MemberData(nameof(Read_Success_TheoryData))]
@@ -51,7 +51,7 @@ namespace LoRaWan.Tests.Unit
         {
             var joinEui = JoinEui.Parse("00-05-10-00-00-00-00-04");
             var devEui = DevEui.Parse("00-05-10-00-00-00-00-04");
-            var devNonce = DevNonce.Read(new byte[] { 0xab, 0xcd });
+            var devNonce = DevNonce.Read([0xab, 0xcd]);
             var key = TestKeys.CreateAppKey(0x0005100000000004);
             var mhdr = new MacHeader(0);
             var mic = Mic.ComputeForJoinRequest(key, mhdr, joinEui, devEui, devNonce);
@@ -63,7 +63,7 @@ namespace LoRaWan.Tests.Unit
         {
             var joinEui = JoinEui.Parse("00-05-10-00-00-00-00-04");
             var devEui = DevEui.Parse("00-05-10-00-00-00-00-04");
-            var devNonce = DevNonce.Read(new byte[] { 0xab, 0xcd });
+            var devNonce = DevNonce.Read([0xab, 0xcd]);
             var key = TestKeys.CreateNetworkSessionKey(0x0005100000000004);
             var mhdr = new MacHeader(0);
             var mic = Mic.ComputeForJoinRequest(key, mhdr, joinEui, devEui, devNonce);

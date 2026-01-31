@@ -11,15 +11,10 @@ namespace LoraKeysManagerFacade
     using Newtonsoft.Json;
     using StackExchange.Redis;
 
-    public class LoRaDeviceCacheRedisStore : ILoRaDeviceCacheStore
+    public class LoRaDeviceCacheRedisStore(IDatabase redisCache) : ILoRaDeviceCacheStore
     {
-        private readonly IDatabase redisCache;
+        private readonly IDatabase redisCache = redisCache;
         private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(10);
-
-        public LoRaDeviceCacheRedisStore(IDatabase redisCache)
-        {
-            this.redisCache = redisCache;
-        }
 
         public async Task<bool> LockTakeAsync(string key, string owner, TimeSpan expiration, bool block = true)
         {
@@ -102,7 +97,7 @@ namespace LoraKeysManagerFacade
         public IReadOnlyList<string> ListGet(string key)
         {
             var list = this.redisCache.ListRange(key);
-            return list.Select(x => (string)x).ToList();
+            return [.. list.Select(x => (string)x)];
         }
 
         public void SetHashObject(string key, string subkey, string value, TimeSpan? timeToExpire = null)
@@ -122,7 +117,7 @@ namespace LoraKeysManagerFacade
         public void ReplaceHashObjects<T>(string cacheKey, IDictionary<string, T> input, TimeSpan? timeToExpire = null, bool removeOldOccurence = false)
             where T : class
         {
-            if (input is null) throw new ArgumentNullException(nameof(input));
+            ArgumentNullException.ThrowIfNull(input);
 
             if (removeOldOccurence)
             {

@@ -35,7 +35,7 @@ namespace LoRaWan.NetworkServer
 
             using var semaphore = new SemaphoreSlim(concurrency);
 
-            var tasks = capacity is { } someCapacity ? new List<Task>(someCapacity) : new List<Task>();
+            var tasks = capacity is { } someCapacity ? new List<Task>(someCapacity) : [];
             tasks.AddRange(disposables.Select(DisposeAsync));
 
             // NOTE! "IAsyncDisposable.DisposeAsync" implementations are not meant to throw

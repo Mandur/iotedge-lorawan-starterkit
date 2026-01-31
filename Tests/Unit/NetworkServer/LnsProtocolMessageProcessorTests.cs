@@ -123,7 +123,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             // mocking localIpAddress
             var connectionInfoMock = new Mock<ConnectionInfo>();
             var nic = isValidNic ? DiscoveryServiceTests.GetMostUsedNic() : null;
-            var ip = isValidNic ? nic?.GetIPProperties().UnicastAddresses.First().Address : new IPAddress(new byte[] { 192, 168, 1, 10 });
+            var ip = isValidNic ? nic?.GetIPProperties().UnicastAddresses.First().Address : new IPAddress([192, 168, 1, 10]);
             _ = connectionInfoMock.SetupGet(ci => ci.LocalIpAddress).Returns(ip);
             this.httpContextMock.Setup(h => h.Connection).Returns(connectionInfoMock.Object);
 
@@ -279,7 +279,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             var expectedRadioMetadata = GetExpectedRadioMetadata();
             var expectedMhdr = new MacHeader(MacMessageType.ConfirmedDataUp);
             var expectedDevAddr = new DevAddr(50244358);
-            var expectedMic = Mic.Read(new byte[] { 100, 58, 178, 2 });
+            var expectedMic = Mic.Read([100, 58, 178, 2]);
             SetDataPathParameter();
             SetupSocketReceiveAsync(message);
             _ = SetupWebSocketConnection();
@@ -312,10 +312,10 @@ namespace LoRaWan.Tests.Unit.NetworkServer
                                                 'xtime':68116944405337035,'gpstime':0,'fts':-1,'rssi':-53,'snr':8.25,'rxtime':1636131701.731686}}");
             var expectedRadioMetadata = GetExpectedRadioMetadata();
             var expectedMhdr = new MacHeader(MacMessageType.JoinRequest);
-            var expectedMic = Mic.Read(new byte[] { 101, 116, 5, 193 });
-            var expectedJoinEui = JoinEui.Read(new byte[] { 181, 196, 210, 229, 200, 120, 98, 71 });
-            var expectedDevEui = DevEui.Read(new byte[] { 158, 22, 164, 238, 223, 193, 39, 133 });
-            var expectedDevNonce = DevNonce.Read(new byte[] { 88, 212 });
+            var expectedMic = Mic.Read([101, 116, 5, 193]);
+            var expectedJoinEui = JoinEui.Read([181, 196, 210, 229, 200, 120, 98, 71]);
+            var expectedDevEui = DevEui.Read([158, 22, 164, 238, 223, 193, 39, 133]);
+            var expectedDevNonce = DevNonce.Read([88, 212]);
             SetDataPathParameter();
             SetupSocketReceiveAsync(message);
             _ = SetupWebSocketConnection();

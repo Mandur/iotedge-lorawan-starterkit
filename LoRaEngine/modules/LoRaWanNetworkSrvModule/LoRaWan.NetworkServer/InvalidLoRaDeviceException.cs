@@ -4,12 +4,10 @@
 namespace LoRaWan.NetworkServer
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Defines a error loading a LoRaDevice.
     /// </summary>
-    [Serializable]
     public class InvalidLoRaDeviceException : Exception
     {
         public InvalidLoRaDeviceException()
@@ -23,11 +21,6 @@ namespace LoRaWan.NetworkServer
 
         public InvalidLoRaDeviceException(string message, Exception innerException)
             : base(message, innerException)
-        {
-        }
-
-        protected InvalidLoRaDeviceException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

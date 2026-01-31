@@ -15,29 +15,23 @@ namespace LoRaWan.Tests.Unit.LoRaTools
     using Newtonsoft.Json;
     using Xunit;
 
-    public abstract class MacCommandTests<T> where T : MacCommand
+    public abstract class MacCommandTests<T>(Cid cid, T subject, IReadOnlyList<byte> dataBytes) where T : MacCommand
     {
-        protected MacCommandTests(Cid cid, T subject, IReadOnlyList<byte> dataBytes)
-        {
-            Cid = cid;
-            Subject = subject;
-            DataBytes = dataBytes;
-        }
 
         /// <summary>
         /// Gets the CID of the MAC command.
         /// </summary>
-        protected Cid Cid { get; }
+        protected Cid Cid { get; } = cid;
 
         /// <summary>
         /// Gets a default MAC command test subject.
         /// </summary>
-        protected T Subject { get; }
+        protected T Subject { get; } = subject;
 
         /// <summary>
         /// Gets the list of data bytes (excluding the CID).
         /// </summary>
-        protected IReadOnlyList<byte> DataBytes { get; }
+        protected IReadOnlyList<byte> DataBytes { get; } = dataBytes;
 
         /// <summary>
         /// Gets the expected length of the MAC command.
@@ -62,7 +56,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools
         protected void FromBytesTest(Func<T, object> transform, Func<byte[], T> subject) =>
             Assert.Equal(transform(Subject), transform(subject(GetFullBytes(DataBytes))));
 
-        private byte[] GetFullBytes(IReadOnlyList<byte> dataBytes) => dataBytes.Prepend((byte)Cid).ToArray();
+        private byte[] GetFullBytes(IReadOnlyList<byte> dataBytes) => [.. dataBytes.Prepend((byte)Cid)];
     }
 
     public sealed class TxParamSetupRequestTests : MacCommandTests<TxParamSetupRequest>
@@ -101,7 +95,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools
         public TxParamSetupAnswerTests() :
             base(Cid.TxParamSetupCmd,
                  new TxParamSetupAnswer(),
-                 Array.Empty<byte>())
+                 [])
         { }
     }
 
@@ -123,7 +117,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools
         public DevStatusRequestTests() :
             base(Cid.DevStatusCmd,
                  new DevStatusRequest(),
-                 Array.Empty<byte>())
+                 [])
         { }
 
         [Fact]
@@ -136,7 +130,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools
         public DutyCycleAnswerTests() :
             base(Cid.DutyCycleCmd,
                  new DutyCycleAnswer(),
-                 Array.Empty<byte>())
+                 [])
         { }
     }
 
@@ -210,7 +204,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools
         public LinkCheckRequestTests() :
             base(Cid.LinkCheckCmd,
                  new LinkCheckRequest(),
-                 Array.Empty<byte>())
+                 [])
         { }
     }
 
@@ -273,7 +267,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools
         public RxTimingSetupAnswerTests() :
             base(Cid.RXTimingCmd,
                  new RXTimingSetupAnswer(),
-                 Array.Empty<byte>())
+                 [])
         { }
     }
 

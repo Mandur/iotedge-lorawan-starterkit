@@ -53,7 +53,7 @@ namespace LoRaWan.Core
         /// <returns></returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (request is null) throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
 
             // adds the version to the request
             request.RequestUri = new Uri(string.Concat(request.RequestUri.ToString(), string.IsNullOrEmpty(request.RequestUri.Query) ? "?" : "&", ApiVersion.QueryStringParamName, "=", MinFunctionVersion.Version));

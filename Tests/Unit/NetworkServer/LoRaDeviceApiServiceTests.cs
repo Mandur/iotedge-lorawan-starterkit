@@ -177,7 +177,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             await callApiAsync(subject);
 
             // assert
-            _ = Assert.Throws<ObjectDisposedException>(() => httpClientFactoryMock.Value.HttpClient.CancelPendingRequests());
+            _ = Assert.Throws<ObjectDisposedException>(httpClientFactoryMock.Value.HttpClient.CancelPendingRequests);
         }
 
         private static DisposableValue<MockHttpClientFactory> SetupHttpClientFactoryMock(HttpContent content)

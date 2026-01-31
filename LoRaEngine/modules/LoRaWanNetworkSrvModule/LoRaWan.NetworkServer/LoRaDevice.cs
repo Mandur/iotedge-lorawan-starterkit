@@ -165,7 +165,7 @@ namespace LoRaWan.NetworkServer
 #pragma warning disable CA2213 // Disposable fields should be disposed (disposed in async)
         private readonly SemaphoreSlim syncSave = new SemaphoreSlim(1, 1);
 #pragma warning restore CA2213 // Disposable fields should be disposed
-        private readonly object processingSyncLock = new object();
+        private readonly Lock processingSyncLock = new Lock();
         private readonly Queue<LoRaRequest> queuedRequests = new Queue<LoRaRequest>();
 
         public DataRateIndex? DesiredRX2DataRate { get; set; }
@@ -241,12 +241,7 @@ namespace LoRaWan.NetworkServer
         {
             _ = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
-            var connection = Client;
-            if (connection == null)
-            {
-                throw new LoRaProcessingException("No connection registered.", LoRaProcessingErrorCode.DeviceInitializationFailed);
-            }
-
+            var connection = Client ?? throw new LoRaProcessingException("No connection registered.", LoRaProcessingErrorCode.DeviceInitializationFailed);
             Twin twin;
 
             try
@@ -891,7 +886,7 @@ namespace LoRaWan.NetworkServer
 
         private Task RunAndQueueNext(LoRaRequest request)
         {
-            return TaskUtil.RunOnThreadPool(() => CoreAsync(),
+            return TaskUtil.RunOnThreadPool(CoreAsync,
                                             ex => this.logger.LogError(ex, $"error processing request: {ex.Message}"),
                                             this.unhandledExceptionCount);
 

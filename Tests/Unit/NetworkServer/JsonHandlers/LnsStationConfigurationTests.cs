@@ -414,8 +414,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer.BasicsStation.JsonHandlers
         public void WriteRouterConfig_Throws_WhenRegionOrHwspecIsNullOrEmpty(string region, string hwspec)
         {
             // arrange
-            var input = GetTwinConfigurationJson(Array.Empty<NetId>(),
-                                                 Array.Empty<(JoinEui, JoinEui)>(),
+            var input = GetTwinConfigurationJson([],
+                                                 [],
                                                  region,
                                                  hwspec,
                                                  (new Hertz(863000000), new Hertz(870000000)),
@@ -568,8 +568,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer.BasicsStation.JsonHandlers
         public void WriteRouterConfig_ThrowsArgumentException_WithInvalidFrequencyRange()
         {
             // arrange
-            var input = GetTwinConfigurationJson(Array.Empty<NetId>(),
-                                                 Array.Empty<(JoinEui, JoinEui)>(),
+            var input = GetTwinConfigurationJson([],
+                                                 [],
                                                  "region",
                                                  "hwspec",
                                                  (new Hertz(0), new Hertz(0)),
@@ -585,8 +585,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer.BasicsStation.JsonHandlers
         public void WriteRouterConfig_Throws_WithNullOrEmptyDataRates(int? dataRates)
         {
             // arrange
-            var input = GetTwinConfigurationJson(Array.Empty<NetId>(),
-                                                 Array.Empty<(JoinEui, JoinEui)>(),
+            var input = GetTwinConfigurationJson([],
+                                                 [],
                                                  "region",
                                                  "hwspec",
                                                  (new Hertz(863000000), new Hertz(870000000)),
@@ -601,8 +601,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer.BasicsStation.JsonHandlers
         public void WriteRouterConfig_Throws_WhenInvalidBandwidth(int bandwidth)
         {
             // arrange
-            var input = GetTwinConfigurationJson(Array.Empty<NetId>(),
-                                                 Array.Empty<(JoinEui, JoinEui)>(),
+            var input = GetTwinConfigurationJson([],
+                                                 [],
                                                  "region",
                                                  "hwspec",
                                                  (new Hertz(863000000), new Hertz(870000000)),
@@ -616,8 +616,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer.BasicsStation.JsonHandlers
         public void WriteRouterConfig_Throws_WhenInvalidSpreadFactor()
         {
             // arrange
-            var input = GetTwinConfigurationJson(Array.Empty<NetId>(),
-                                                 Array.Empty<(JoinEui, JoinEui)>(),
+            var input = GetTwinConfigurationJson([],
+                                                 [],
                                                  "region",
                                                  "hwspec",
                                                  (new Hertz(863000000), new Hertz(870000000)),
@@ -634,8 +634,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer.BasicsStation.JsonHandlers
         public void WriteRouterConfig_Throws_WhenInvalidSx1301Conf(string sx1301Conf)
         {
             // arrange
-            var input = GetTwinConfigurationJson(Array.Empty<NetId>(),
-                                                 Array.Empty<(JoinEui, JoinEui)>(),
+            var input = GetTwinConfigurationJson([],
+                                                 [],
                                                  "region",
                                                  "hwspec",
                                                  (new Hertz(863000000), new Hertz(870000000)),

@@ -17,6 +17,11 @@ namespace LoRaWan.NetworkServer.BasicsStation
                                            IBasicsStationConfigurationService basicsStationConfigurationService,
                                            ILogger<DownstreamMessageSender> logger) : IDownstreamMessageSender
     {
+        // basicsStationConfigurationService is intentionally unused - kept for potential future use
+#pragma warning disable CA1823 // Unused field
+        private readonly IBasicsStationConfigurationService _ = basicsStationConfigurationService;
+#pragma warning restore CA1823
+
         private static readonly Action<ILogger, StationEui, int, string, Exception> LogSendingMessage =
             LoggerMessage.Define<StationEui, int, string>(LogLevel.Debug, default,
                                                      "sending message to station with EUI '{StationEui}' with diid {Diid}. Payload '{Payload}'.");
@@ -25,7 +30,7 @@ namespace LoRaWan.NetworkServer.BasicsStation
 
         public async Task SendDownstreamAsync(DownlinkMessage message)
         {
-            if (message is null) throw new ArgumentNullException(nameof(message));
+            ArgumentNullException.ThrowIfNull(message);
             if (message.StationEui == default) throw new ArgumentException($"A proper StationEui needs to be set. Received '{message.StationEui}'.");
 
             if (socketWriterRegistry.TryGetHandle(message.StationEui, out var webSocketWriterHandle))

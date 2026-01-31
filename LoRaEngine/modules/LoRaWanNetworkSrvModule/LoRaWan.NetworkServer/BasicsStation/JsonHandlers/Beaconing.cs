@@ -3,18 +3,10 @@
 
 namespace LoRaWan.NetworkServer.BasicsStation.JsonHandlers
 {
-    internal class Beaconing
+    internal class Beaconing(uint dR, uint[] layout, uint[] freqs)
     {
-
-        public Beaconing(uint dR, uint[] layout, uint[] freqs)
-        {
-            DR = dR;
-            this.Layout = layout;
-            this.Freqs = freqs;
-        }
-
-        public uint DR { get; set; }
-        public uint[] Layout { get; set; }
-        public uint[] Freqs { get; set; }
+        public uint DR { get; set; } = dR;
+        public uint[] Layout { get; set; } = layout;
+        public uint[] Freqs { get; set; } = freqs;
     }
 }

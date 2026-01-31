@@ -7,15 +7,10 @@ namespace XunitRetryHelper
     using Xunit.Abstractions;
     using Xunit.Sdk;
 
-    public sealed class DelayedMessageBus : IMessageBus
+    public sealed class DelayedMessageBus(IMessageBus innerBus) : IMessageBus
     {
-        private readonly IMessageBus innerBus;
-        private readonly IList<IMessageSinkMessage> delayedMessages = new List<IMessageSinkMessage>();
-
-        public DelayedMessageBus(IMessageBus innerBus)
-        {
-            this.innerBus = innerBus;
-        }
+        private readonly IMessageBus innerBus = innerBus;
+        private readonly IList<IMessageSinkMessage> delayedMessages = [];
 
         public bool QueueMessage(IMessageSinkMessage message)
         {

@@ -47,7 +47,7 @@ namespace LoRaWan.NetworkServer
                                 ITracing tracing)
         {
             if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException($"'{nameof(connectionString)}' cannot be null or empty.", nameof(connectionString));
-            if (meter is null) throw new ArgumentNullException(nameof(meter));
+            ArgumentNullException.ThrowIfNull(meter);
 
             this.transportSettings = transportSettings ?? throw new ArgumentNullException(nameof(transportSettings));
             this.deviceIdTracingData = $"id={deviceId}";
@@ -190,7 +190,7 @@ namespace LoRaWan.NetworkServer
 
         private async Task<bool> ExecuteC2DOperationAsync(Message cloudToDeviceMessage, Func<DeviceClient, Message, Task> executeAsync, string operationName)
         {
-            if (cloudToDeviceMessage is null) throw new ArgumentNullException(nameof(cloudToDeviceMessage));
+            ArgumentNullException.ThrowIfNull(cloudToDeviceMessage);
             var messageId = cloudToDeviceMessage.MessageId ?? "undefined";
 
             try

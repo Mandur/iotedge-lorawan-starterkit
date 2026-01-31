@@ -66,7 +66,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
                 case DisposablesSourceKind.Sequence:
                     break;
                 case DisposablesSourceKind.Array:
-                    disposables = disposables.ToArray();
+                    disposables = [.. disposables];
                     break;
                 case DisposablesSourceKind.ReadOnlyCollection:
                     disposables = disposables.ToArray().WrapInReadOnlyCollection();

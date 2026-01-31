@@ -6,13 +6,8 @@ namespace LoRaWan.Tests.Simulation
     using LoRaWan.Tests.Common;
     using Xunit;
 
-    public class IntegrationTestBaseSim : IntegrationTestBase, IClassFixture<IntegrationTestFixtureSim>
+    public class IntegrationTestBaseSim(IntegrationTestFixtureSim testFixture) : IntegrationTestBase(testFixture), IClassFixture<IntegrationTestFixtureSim>
     {
         protected IntegrationTestFixtureSim TestFixtureSim => (IntegrationTestFixtureSim)TestFixture;
-
-        public IntegrationTestBaseSim(IntegrationTestFixtureSim testFixture)
-            : base(testFixture)
-        {
-        }
     }
 }

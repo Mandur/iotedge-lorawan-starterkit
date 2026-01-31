@@ -16,18 +16,11 @@ namespace LoraKeysManagerFacade
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
 
-    public class DeviceGetter
+    public class DeviceGetter(IDeviceRegistryManager registryManager, ILoRaDeviceCacheStore cacheStore, ILogger<DeviceGetter> logger)
     {
-        private readonly IDeviceRegistryManager registryManager;
-        private readonly ILoRaDeviceCacheStore cacheStore;
-        private readonly ILogger<DeviceGetter> logger;
-
-        public DeviceGetter(IDeviceRegistryManager registryManager, ILoRaDeviceCacheStore cacheStore, ILogger<DeviceGetter> logger)
-        {
-            this.registryManager = registryManager;
-            this.cacheStore = cacheStore;
-            this.logger = logger;
-        }
+        private readonly IDeviceRegistryManager registryManager = registryManager;
+        private readonly ILoRaDeviceCacheStore cacheStore = cacheStore;
+        private readonly ILogger<DeviceGetter> logger = logger;
 
         /// <summary>
         /// Entry point function for getting devices.
@@ -36,7 +29,7 @@ namespace LoraKeysManagerFacade
         public async Task<IActionResult> GetDevice(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req)
         {
-            if (req is null) throw new ArgumentNullException(nameof(req));
+            ArgumentNullException.ThrowIfNull(req);
 
             try
             {

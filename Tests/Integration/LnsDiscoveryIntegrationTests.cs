@@ -52,7 +52,7 @@ namespace LoRaWan.Tests.Integration
 
     public sealed class LnsDiscoveryIntegrationTests : IDisposable
     {
-        private static readonly string[] HostAddresses = new[] { "ws://foo:5000", "wss://bar:5001" };
+        private static readonly string[] HostAddresses = ["ws://foo:5000", "wss://bar:5001"];
         private static readonly StationEui StationEui = new StationEui(1);
 
         private readonly LnsDiscoveryApplication subject;
@@ -93,10 +93,10 @@ namespace LoRaWan.Tests.Integration
             }
         }
 
-        public static TheoryData<string> Erroneous_Host_Address_TheoryData() => TheoryDataFactory.From(new[]
-        {
+        public static TheoryData<string> Erroneous_Host_Address_TheoryData() => TheoryDataFactory.From(
+        [
             "", "http://mylns:5000", "htt://mylns:5000", "ws:/mylns:5000"
-        });
+        ]);
 
         [Theory]
         [MemberData(nameof(Erroneous_Host_Address_TheoryData))]
@@ -121,7 +121,7 @@ namespace LoRaWan.Tests.Integration
             // arrange
             var cancellationToken = CancellationToken.None;
             var client = this.subject.Server.CreateWebSocketClient();
-            SetupIotHubResponse(StationEui, HostAddresses.Append(hostAddress).ToList());
+            SetupIotHubResponse(StationEui, [.. HostAddresses, hostAddress]);
 
             // act + assert
             for (var i = 0; i < HostAddresses.Length; ++i)

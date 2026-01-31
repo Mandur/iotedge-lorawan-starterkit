@@ -12,7 +12,7 @@ namespace LoRaWan.NetworkServer
 
         public async Task<bool> ResetAsync(LoRaDevice loRaDevice, uint fcntUp, string gatewayId)
         {
-            if (loRaDevice is null) throw new System.ArgumentNullException(nameof(loRaDevice));
+            System.ArgumentNullException.ThrowIfNull(loRaDevice);
 
             loRaDevice.ResetFcnt();
 
@@ -21,7 +21,7 @@ namespace LoRaWan.NetworkServer
 
         public async ValueTask<uint> NextFcntDown(LoRaDevice loRaDevice, uint messageFcnt)
         {
-            if (loRaDevice is null) throw new System.ArgumentNullException(nameof(loRaDevice));
+            System.ArgumentNullException.ThrowIfNull(loRaDevice);
 
             var result = await loRaDeviceAPIService.NextFCntDownAsync(
                 devEUI: loRaDevice.DevEUI,
@@ -39,7 +39,7 @@ namespace LoRaWan.NetworkServer
 
         public Task<bool> SaveChangesAsync(LoRaDevice loRaDevice)
         {
-            if (loRaDevice is null) throw new System.ArgumentNullException(nameof(loRaDevice));
+            System.ArgumentNullException.ThrowIfNull(loRaDevice);
             return InternalSaveChangesAsync(loRaDevice, force: false);
         }
 

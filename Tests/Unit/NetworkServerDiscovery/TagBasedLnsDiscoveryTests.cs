@@ -24,7 +24,7 @@ namespace LoRaWan.Tests.Unit.NetworkServerDiscovery
     public sealed class TagBasedLnsDiscoveryTests : IDisposable
     {
         private static readonly StationEui StationEui = new StationEui(1);
-        private static readonly string[] LnsUris = new[] { "ws://foo:5000/bar/baz", "wss://baz:5001/baz", "ws://baz" };
+        private static readonly string[] LnsUris = ["ws://foo:5000/bar/baz", "wss://baz:5001/baz", "ws://baz"];
 
         private readonly Mock<IDeviceRegistryManager> registryManagerMock;
         private readonly MemoryCache memoryCache;
@@ -149,10 +149,10 @@ namespace LoRaWan.Tests.Unit.NetworkServerDiscovery
             Assert.Equal(LoRaProcessingErrorCode.TwinFetchFailed, ex.ErrorCode);
         }
 
-        public static TheoryData<string?> Erroneous_Host_Address_TheoryData() => TheoryDataFactory.From(new[]
-        {
+        public static TheoryData<string?> Erroneous_Host_Address_TheoryData() => TheoryDataFactory.From(
+        [
             null, "", "http://mylns:5000", "htt://mylns:5000", "ws:/mylns:5000"
-        });
+        ]);
 
         [Theory]
         [MemberData(nameof(Erroneous_Host_Address_TheoryData))]
@@ -161,7 +161,7 @@ namespace LoRaWan.Tests.Unit.NetworkServerDiscovery
             // arrange
             const string networkId = "foo";
             SetupLbsTwinResponse(StationEui, networkId);
-            SetupIotHubQueryResponse(networkId, LnsUris.Concat(new[] { hostAddress }).ToList());
+            SetupIotHubQueryResponse(networkId, [.. LnsUris, .. new[] { hostAddress }]);
 
             // act
             var result = await this.subject.ResolveLnsAsync(StationEui, CancellationToken.None);

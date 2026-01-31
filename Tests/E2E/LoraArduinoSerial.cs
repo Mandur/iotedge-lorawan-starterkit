@@ -42,7 +42,6 @@ namespace LoRaWan.Tests.E2E
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO.Ports;
-    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading;
     using System.Threading.Tasks;
@@ -486,7 +485,7 @@ namespace LoRaWan.Tests.E2E
                 ClearSerialLogs();
                 await Task.Delay(delayTime);
 
-                if (!SerialLogs.Any())
+                if (SerialLogs.Count == 0)
                     return true;
             }
             while (start.Subtract(DateTime.UtcNow) <= timeoutToUse);

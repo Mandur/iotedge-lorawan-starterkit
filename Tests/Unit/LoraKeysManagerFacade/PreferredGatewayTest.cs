@@ -28,15 +28,15 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade.FunctionBundler
             const uint fcntUp = 1;
 
             var req1 = new FunctionBundlerRequest() { GatewayId = "gateway1", ClientFCntUp = fcntUp, Rssi = -180 };
-            var pipeline1 = new FunctionBundlerPipelineExecuter(new IFunctionBundlerExecutionItem[] { this.preferredGatewayExecutionItem }, devEUI, req1);
+            var pipeline1 = new FunctionBundlerPipelineExecuter([this.preferredGatewayExecutionItem], devEUI, req1);
             var t1 = Task.Run(() => this.preferredGatewayExecutionItem.ExecuteAsync(pipeline1));
 
             var req2 = new FunctionBundlerRequest() { GatewayId = "gateway2", ClientFCntUp = fcntUp, Rssi = -179 };
-            var pipeline2 = new FunctionBundlerPipelineExecuter(new IFunctionBundlerExecutionItem[] { this.preferredGatewayExecutionItem }, devEUI, req2);
+            var pipeline2 = new FunctionBundlerPipelineExecuter([this.preferredGatewayExecutionItem], devEUI, req2);
             var t2 = Task.Run(() => this.preferredGatewayExecutionItem.ExecuteAsync(pipeline2));
 
             var req3 = new FunctionBundlerRequest() { GatewayId = "gateway3", ClientFCntUp = fcntUp, Rssi = -39 };
-            var pipeline3 = new FunctionBundlerPipelineExecuter(new IFunctionBundlerExecutionItem[] { this.preferredGatewayExecutionItem }, devEUI, req3);
+            var pipeline3 = new FunctionBundlerPipelineExecuter([this.preferredGatewayExecutionItem], devEUI, req3);
             var t3 = Task.Run(() => this.preferredGatewayExecutionItem.ExecuteAsync(pipeline3));
 
             await Task.WhenAll(t1, t2, t3);
@@ -63,11 +63,11 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade.FunctionBundler
             const uint fcntUp = 1;
 
             var req1 = new FunctionBundlerRequest() { GatewayId = "gateway1", ClientFCntUp = fcntUp + 1, Rssi = -180 };
-            var pipeline1 = new FunctionBundlerPipelineExecuter(new IFunctionBundlerExecutionItem[] { this.preferredGatewayExecutionItem }, devEUI, req1);
+            var pipeline1 = new FunctionBundlerPipelineExecuter([this.preferredGatewayExecutionItem], devEUI, req1);
             await this.preferredGatewayExecutionItem.ExecuteAsync(pipeline1);
 
             var req2 = new FunctionBundlerRequest() { GatewayId = "gateway2", ClientFCntUp = fcntUp, Rssi = -90 };
-            var pipeline2 = new FunctionBundlerPipelineExecuter(new IFunctionBundlerExecutionItem[] { this.preferredGatewayExecutionItem }, devEUI, req2);
+            var pipeline2 = new FunctionBundlerPipelineExecuter([this.preferredGatewayExecutionItem], devEUI, req2);
             var res2 = await this.preferredGatewayExecutionItem.ExecuteAsync(pipeline2);
 
             Assert.Equal(FunctionBundlerExecutionState.Continue, res2);
@@ -86,11 +86,11 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade.FunctionBundler
             const uint currentFcntUp = 2;
 
             var req1 = new FunctionBundlerRequest() { GatewayId = "gateway1", ClientFCntUp = currentFcntUp, Rssi = -180 };
-            var pipeline1 = new FunctionBundlerPipelineExecuter(new IFunctionBundlerExecutionItem[] { this.preferredGatewayExecutionItem }, devEUI, req1);
+            var pipeline1 = new FunctionBundlerPipelineExecuter([this.preferredGatewayExecutionItem], devEUI, req1);
             await this.preferredGatewayExecutionItem.ExecuteAsync(pipeline1);
 
             var req2 = new FunctionBundlerRequest() { GatewayId = "gateway2", ClientFCntUp = staleFcntUp, Rssi = -90 };
-            var pipeline2 = new FunctionBundlerPipelineExecuter(new IFunctionBundlerExecutionItem[] { this.preferredGatewayExecutionItem }, devEUI, req2);
+            var pipeline2 = new FunctionBundlerPipelineExecuter([this.preferredGatewayExecutionItem], devEUI, req2);
             _ = await this.preferredGatewayExecutionItem.ExecuteAsync(pipeline2);
 
             var t1 = Task.Run(() => this.preferredGatewayExecutionItem.ExecuteAsync(pipeline1));

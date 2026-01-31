@@ -41,10 +41,9 @@ namespace LoRaWan.Tests.Simulation
             this.uniqueMessageFragment = Guid.NewGuid().ToString();
             this.logger = new TestOutputLogger(testOutputHelper);
             this.simulatedBasicsStations =
-                testFixture.DeviceRange5000_BasicsStationSimulators
+                [.. testFixture.DeviceRange5000_BasicsStationSimulators
                            .Zip(Configuration.LnsEndpointsForSimulator.Repeat(),
-                                (tdi, lnsNameToUrl) => new SimulatedBasicsStation(StationEui.Parse(tdi.DeviceID), lnsNameToUrl.Value))
-                           .ToList();
+                                (tdi, lnsNameToUrl) => new SimulatedBasicsStation(StationEui.Parse(tdi.DeviceID), lnsNameToUrl.Value))];
 
             Assert.True(this.simulatedBasicsStations.Count % Configuration.LnsEndpointsForSimulator.Count == 0, "Since Basics Stations are round-robin distributed to LNS, we must have the same number of stations per LNS for well-defined test assertions.");
         }
@@ -291,7 +290,7 @@ namespace LoRaWan.Tests.Simulation
                     {
                         messagesBeforeJoin + initialMessageId => batch.Select(devices => JoinAsync(devices.Otaa)),
                         > messagesBeforeJoin + initialMessageId => batch.Select(devices => SendUpstreamMessage(devices.Otaa, payload, messageId)),
-                        _ => Array.Empty<Task>()
+                        _ => []
                     };
 
                     await Task.WhenAll(abpTasks.Concat(otaaTasks));

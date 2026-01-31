@@ -32,7 +32,7 @@ namespace LoRaWan.Tests.Integration
 
         public DeduplicationTestWithRedis(RedisFixture redis)
         {
-            if (redis is null) throw new ArgumentNullException(nameof(redis));
+            ArgumentNullException.ThrowIfNull(redis);
 
             this.cache = new LoRaDeviceCacheRedisStore(redis.Database);
             this.serviceClientMock = new Mock<IServiceClient>();
@@ -65,7 +65,7 @@ namespace LoRaWan.Tests.Integration
             var devEUI = TestEui.GenerateDevEui();
 
             var req1 = new FunctionBundlerRequest() { GatewayId = gateway1, ClientFCntUp = fcnt1, ClientFCntDown = fcnt1 };
-            var pipeline1 = new FunctionBundlerPipelineExecuter(new IFunctionBundlerExecutionItem[] { this.deduplicationExecutionItem }, devEUI, req1);
+            var pipeline1 = new FunctionBundlerPipelineExecuter([this.deduplicationExecutionItem], devEUI, req1);
             var res1 = await this.deduplicationExecutionItem.ExecuteAsync(pipeline1);
 
             Assert.Equal(FunctionBundlerExecutionState.Continue, res1);
@@ -73,7 +73,7 @@ namespace LoRaWan.Tests.Integration
             Assert.False(pipeline1.Result.DeduplicationResult.IsDuplicate);
 
             var req2 = new FunctionBundlerRequest() { GatewayId = gateway2, ClientFCntUp = fcnt2, ClientFCntDown = fcnt2 };
-            var pipeline2 = new FunctionBundlerPipelineExecuter(new IFunctionBundlerExecutionItem[] { this.deduplicationExecutionItem }, devEUI, req2);
+            var pipeline2 = new FunctionBundlerPipelineExecuter([this.deduplicationExecutionItem], devEUI, req2);
             var res2 = await this.deduplicationExecutionItem.ExecuteAsync(pipeline2);
 
             Assert.NotNull(pipeline2.Result.DeduplicationResult);
@@ -119,7 +119,7 @@ namespace LoRaWan.Tests.Integration
             const uint fcnt = 1;
 
             var req1 = new FunctionBundlerRequest() { GatewayId = "gateway1", ClientFCntUp = fcnt, ClientFCntDown = fcnt };
-            var pipeline1 = new FunctionBundlerPipelineExecuter(new IFunctionBundlerExecutionItem[] { this.deduplicationExecutionItem }, devEUI1, req1);
+            var pipeline1 = new FunctionBundlerPipelineExecuter([this.deduplicationExecutionItem], devEUI1, req1);
             var res1 = await this.deduplicationExecutionItem.ExecuteAsync(pipeline1);
 
             Assert.Equal(FunctionBundlerExecutionState.Continue, res1);
@@ -127,7 +127,7 @@ namespace LoRaWan.Tests.Integration
             Assert.False(pipeline1.Result.DeduplicationResult.IsDuplicate);
 
             var req2 = new FunctionBundlerRequest() { GatewayId = "gateway2", ClientFCntUp = fcnt, ClientFCntDown = fcnt };
-            var pipeline2 = new FunctionBundlerPipelineExecuter(new IFunctionBundlerExecutionItem[] { this.deduplicationExecutionItem }, devEUI2, req2);
+            var pipeline2 = new FunctionBundlerPipelineExecuter([this.deduplicationExecutionItem], devEUI2, req2);
             var res2 = await this.deduplicationExecutionItem.ExecuteAsync(pipeline2);
 
             Assert.Equal(FunctionBundlerExecutionState.Continue, res2);

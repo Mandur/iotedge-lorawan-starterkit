@@ -52,7 +52,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
                 null,
                 NullLogger<DeviceLoaderSynchronizer>.Instance);
 
-            var ex = await Assert.ThrowsAsync<LoRaProcessingException>(async () => await target.LoadAsync());
+            var ex = await Assert.ThrowsAsync<LoRaProcessingException>(target.LoadAsync);
             Assert.IsType<InvalidOperationException>(ex.InnerException);
 
             Assert.Equal(0, deviceCache.CalculateStatistics().Count);
@@ -454,7 +454,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
                                                                 null,
                                                                 deviceFactory.Object,
                                                                 deviceCache,
-                                                                new HashSet<ILoRaDeviceInitializer> { failingInitializer.Object });
+                                                                [failingInitializer.Object]);
             // acting and asserting that the method throws
             var iotHubDevicesInfo = new[] { new IoTHubDeviceInfo { DevAddr = devAddr, DevEUI = devEui } };
             var actualException = await Assert.ThrowsAsync<AggregateException>(() => deviceLoader.ExecuteCreateDevicesAsync(iotHubDevicesInfo));

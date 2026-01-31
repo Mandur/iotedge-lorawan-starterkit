@@ -312,7 +312,7 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade.FunctionBundler
 
         private async Task PrepareADRFrames(DevEui deviceEUI, int numberOfFrames, LoRaADRRequest req)
         {
-            await PrepareADRFrames(deviceEUI, numberOfFrames, new List<LoRaADRRequest>() { req });
+            await PrepareADRFrames(deviceEUI, numberOfFrames, [req]);
         }
 
         private async Task PrepareADRFrames(DevEui deviceEUI, int numberOfFrames, List<LoRaADRRequest> requests)

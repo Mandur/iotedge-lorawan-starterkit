@@ -15,7 +15,7 @@ namespace LoRaWan.Tests.Common
         /// </summary>
         public static async Task WaitForEvictionAsync(this IMemoryCache memoryCache, object key, CancellationToken cancellationToken)
         {
-            if (memoryCache is null) throw new ArgumentNullException(nameof(memoryCache));
+            ArgumentNullException.ThrowIfNull(memoryCache);
 
             var waitInterval = TimeSpan.FromSeconds(2);
             var timeout = TimeSpan.FromSeconds(30);

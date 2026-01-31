@@ -3,7 +3,6 @@
 
 namespace LoRaWan.NetworkServer
 {
-    using System;
     using System.Collections;
     using System.Collections.Generic;
 
@@ -15,7 +14,7 @@ namespace LoRaWan.NetworkServer
         /// <summary>
         /// Gets list of devices that match the criteria.
         /// </summary>
-        public IReadOnlyList<IoTHubDeviceInfo> Devices { get; } = Array.Empty<IoTHubDeviceInfo>();
+        public IReadOnlyList<IoTHubDeviceInfo> Devices { get; } = [];
 
         /// <summary>
         /// Gets or sets a value indicating whether the dev nonce was already used.
@@ -32,7 +31,7 @@ namespace LoRaWan.NetworkServer
 
         public SearchDevicesResult(IReadOnlyList<IoTHubDeviceInfo> devices)
         {
-            Devices = devices ?? Array.Empty<IoTHubDeviceInfo>();
+            Devices = devices ?? [];
         }
 
         public IEnumerator<IoTHubDeviceInfo> GetEnumerator() =>

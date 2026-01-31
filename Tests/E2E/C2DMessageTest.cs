@@ -17,7 +17,7 @@ namespace LoRaWan.Tests.E2E
     /// <summary>
     /// Tests Cloud to Device messages
     /// </summary>
-    public sealed class C2DMessageTest : IntegrationTestBaseCi
+    public sealed class C2DMessageTest(IntegrationTestFixtureCi testFixture) : IntegrationTestBaseCi(testFixture)
     {
         /// <summary>
         /// Identifies how many times a cloud to device message can be processor without failing a test.
@@ -25,11 +25,6 @@ namespace LoRaWan.Tests.E2E
         private const int CloudToDeviceMessageReceiveCountThreshold = 2;
 
         private static readonly Random Random = new Random();
-
-        public C2DMessageTest(IntegrationTestFixtureCi testFixture)
-            : base(testFixture)
-        {
-        }
 
         /// <summary>
         /// Ensures that a cloud to device message has not been seen more than expected.

@@ -75,7 +75,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools
         {
             // arrange
             var message = JsonUtil.Strictify("{'foo':'bar'}");
-            SetupWebSocketResponse(numberOfChunks, Enumerable.Range(0, numberOfMessages).Select(_ => message).ToArray());
+            SetupWebSocketResponse(numberOfChunks, [.. Enumerable.Range(0, numberOfMessages).Select(_ => message)]);
 
             // act + assert
             await using var result = this.webSocketMock.Object.ReadTextMessages(CancellationToken.None);

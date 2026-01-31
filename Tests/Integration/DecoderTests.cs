@@ -20,11 +20,9 @@ namespace LoRaWan.Tests.Integration
 
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
     // Decoder tests tests
-    public class DecoderTests : MessageProcessorTestBase
+    public class DecoderTests(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        private readonly ITestOutputHelper testOutputHelper;
-
-        public DecoderTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) => this.testOutputHelper = testOutputHelper;
+        private readonly ITestOutputHelper testOutputHelper = testOutputHelper;
 
         /// <summary>
         /// SensorDecoder: none

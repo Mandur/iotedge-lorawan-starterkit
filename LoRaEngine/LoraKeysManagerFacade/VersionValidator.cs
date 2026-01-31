@@ -11,7 +11,7 @@ namespace LoraKeysManagerFacade
     {
         public static void Validate(HttpRequest req)
         {
-            if (req is null) throw new ArgumentNullException(nameof(req));
+            ArgumentNullException.ThrowIfNull(req);
 
             var currentApiVersion = ApiVersion.LatestVersion;
             req.HttpContext.Response.Headers.Add(ApiVersion.HttpHeaderName, currentApiVersion.Version);

@@ -17,13 +17,8 @@ namespace LoRaWan.Tests.E2E
     // Tests cups scenarios
     [Collection(Constants.TestCollectionName)] // run in serial
     [Trait("Category", "SkipWhenLiveUnitTesting")]
-    public sealed class CupsTests : IntegrationTestBaseCi
+    public sealed class CupsTests(IntegrationTestFixtureCi testFixture) : IntegrationTestBaseCi(testFixture)
     {
-        public CupsTests(IntegrationTestFixtureCi testFixture)
-            : base(testFixture)
-        {
-        }
-
         [Fact]
         public async Task Test_Concentrator_Can_Receive_Updates_Then_Connect_To_Lns_And_Receive_Messages()
         {

@@ -10,21 +10,13 @@ namespace LoraKeysManagerFacade
     using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.Extensions.DependencyInjection;
 
-    internal class FileStreamWithContentLengthResult : FileStreamResult, IActionResult
+    internal class FileStreamWithContentLengthResult(Stream fileStream, string contentType, long contentLength) : FileStreamResult(fileStream, contentType), IActionResult
     {
-        private readonly long contentLength;
-
-        public FileStreamWithContentLengthResult(Stream fileStream, string contentType, long contentLength) : base(fileStream, contentType)
-        {
-            this.contentLength = contentLength;
-        }
+        private readonly long contentLength = contentLength;
 
         public override Task ExecuteResultAsync(ActionContext context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
             var executor = context.HttpContext.RequestServices.GetRequiredService<IActionResultExecutor<FileStreamResult>>();
             context.HttpContext.Response.ContentLength = this.contentLength;

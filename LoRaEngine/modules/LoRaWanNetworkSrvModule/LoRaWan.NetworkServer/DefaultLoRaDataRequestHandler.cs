@@ -55,7 +55,7 @@ namespace LoRaWan.NetworkServer
 
             public void Track(Task task)
             {
-                this.secondaryTasks ??= new List<Task>();
+                this.secondaryTasks ??= [];
                 this.secondaryTasks.Add(task);
             }
 
@@ -743,7 +743,7 @@ namespace LoRaWan.NetworkServer
             Dictionary<string, string> eventProperties = null;
             if (loRaPayloadData.IsUpwardAck)
             {
-                eventProperties = new Dictionary<string, string>();
+                eventProperties = [];
                 this.logger.LogInformation($"message ack received for cloud to device message id {loRaDevice.LastConfirmedC2DMessageID}");
                 eventProperties.Add(Constants.C2D_MSG_PROPERTY_VALUE_NAME, loRaDevice.LastConfirmedC2DMessageID ?? Constants.C2D_MSG_ID_PLACEHOLDER);
                 loRaDevice.LastConfirmedC2DMessageID = null;

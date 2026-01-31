@@ -3,7 +3,6 @@
 
 namespace LoRaWan.Tests.Unit.NetworkServer
 {
-    using System;
     using System.Globalization;
     using System.Net.Http;
     using System.Text;
@@ -82,7 +81,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         {
             using var target = SetupLoRaPayloadDecoder();
 
-            var result = await target.Value.DecodeMessageAsync(new DevEui(0x12), Array.Empty<byte>(), FramePorts.App1, "DecoderValueSensor");
+            var result = await target.Value.DecodeMessageAsync(new DevEui(0x12), [], FramePorts.App1, "DecoderValueSensor");
             var json = JsonConvert.SerializeObject(result.GetDecodedPayload());
             Assert.Equal("{\"value\":\"\"}", json);
         }
@@ -102,7 +101,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         {
             using var target = SetupLoRaPayloadDecoder();
 
-            var result = await target.Value.DecodeMessageAsync(new DevEui(0x12), Array.Empty<byte>(), FramePorts.App1, "DecoderHexSensor");
+            var result = await target.Value.DecodeMessageAsync(new DevEui(0x12), [], FramePorts.App1, "DecoderHexSensor");
             var json = JsonConvert.SerializeObject(result.GetDecodedPayload());
             Assert.Equal("{\"value\":\"\"}", json);
         }
@@ -156,7 +155,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
 
             using var httpClientFactory = new MockHttpClientFactory(httpMessageHandler);
             var target = SetupLoRaPayloadDecoder(httpClientFactory);
-            var result = await target.DecodeMessageAsync(devEui, Array.Empty<byte>(), fport, "http://test/decoder");
+            var result = await target.DecodeMessageAsync(devEui, [], fport, "http://test/decoder");
             var json = JsonConvert.SerializeObject(result.GetDecodedPayload());
             Assert.Equal(decodedValue, json);
         }

@@ -7,10 +7,14 @@ namespace LoRaWan.NetworkServer
 
     public class FrameCounterLoRaDeviceInitializer(string gatewayID, ILoRaDeviceFrameCounterUpdateStrategyProvider frameCounterUpdateStrategyProvider) : ILoRaDeviceInitializer
     {
+        // gatewayID is intentionally unused - kept for API compatibility
+#pragma warning disable CA1823 // Unused field
+        private readonly string _ = gatewayID;
+#pragma warning restore CA1823
 
         public void Initialize(LoRaDevice loRaDevice)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
 
             if (loRaDevice.IsOurDevice)
             {

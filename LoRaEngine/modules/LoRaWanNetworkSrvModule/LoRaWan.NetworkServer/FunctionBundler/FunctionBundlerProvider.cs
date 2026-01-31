@@ -15,13 +15,13 @@ namespace LoRaWan.NetworkServer
         private readonly LoRaDeviceAPIServiceBase deviceApi = deviceApi;
         private readonly ILoggerFactory loggerFactory = loggerFactory;
         private readonly ILogger<FunctionBundlerProvider> logger = logger;
-        private static readonly List<IFunctionBundlerExecutionItem> FunctionItems = new List<IFunctionBundlerExecutionItem>
-        {
+        private static readonly List<IFunctionBundlerExecutionItem> FunctionItems =
+        [
             new FunctionBundlerDeduplicationExecutionItem(),
             new FunctionBundlerADRExecutionItem(),
             new FunctionBundlerFCntDownExecutionItem(),
             new FunctionBundlerPreferredGatewayExecutionItem(),
-        };
+        ];
 
         public FunctionBundler CreateIfRequired(
                     string gatewayId,
@@ -30,8 +30,8 @@ namespace LoRaWan.NetworkServer
                     IDeduplicationStrategyFactory deduplicationFactory,
                     LoRaRequest request)
         {
-            if (loRaPayload is null) throw new System.ArgumentNullException(nameof(loRaPayload));
-            if (loRaDevice is null) throw new System.ArgumentNullException(nameof(loRaDevice));
+            System.ArgumentNullException.ThrowIfNull(loRaPayload);
+            System.ArgumentNullException.ThrowIfNull(loRaDevice);
             if (!string.IsNullOrEmpty(loRaDevice.GatewayID))
             {
                 // single gateway mode

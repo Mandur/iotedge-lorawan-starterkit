@@ -18,12 +18,8 @@ namespace LoRaWan.Tests.E2E
     // - AppKey: a AES-128 key
     [Collection(Constants.TestCollectionName)] // run in serial
     [Trait("Category", "SkipWhenLiveUnitTesting")]
-    public sealed class OTAAJoinTest : IntegrationTestBaseCi
+    public sealed class OTAAJoinTest(IntegrationTestFixtureCi testFixture) : IntegrationTestBaseCi(testFixture)
     {
-        public OTAAJoinTest(IntegrationTestFixtureCi testFixture)
-            : base(testFixture)
-        {
-        }
 
         // Ensures that an OTAA join will update the device twin
         // Uses Device1_OTAA

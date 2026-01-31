@@ -21,7 +21,7 @@ namespace LoRaWan.NetworkServer.Logger
 
         public LoRaConsoleLoggerProvider(IOptionsMonitor<LoRaLoggerConfiguration> config)
         {
-            if (config is null) throw new ArgumentNullException(nameof(config));
+            ArgumentNullException.ThrowIfNull(config);
 
             LoggerConfigurationMonitor = new LoggerConfigurationMonitor(config);
         }
@@ -63,7 +63,7 @@ namespace LoRaWan.NetworkServer.Logger
             this.provider = consoleLoggerProvider;
         }
 
-        public IDisposable BeginScope<TState>(TState state) =>
+        public IDisposable BeginScope<TState>(TState state) where TState : notnull =>
             this.provider.LoggerConfigurationMonitor.ScopeProvider is { } scopeProvider ? scopeProvider.Push(state) : NoopDisposable.Instance;
 
         public bool IsEnabled(LogLevel logLevel) => logLevel >= this.provider.LogLevel;

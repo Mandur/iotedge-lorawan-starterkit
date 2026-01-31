@@ -12,30 +12,22 @@ namespace LoRaWan.NetworkServer
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
 
-    public abstract class RegistryMetricExporter : IMetricExporter
+    public abstract class RegistryMetricExporter(string registryNamespace,
+                                     IDictionary<string, CustomMetric> registryLookup,
+                                     ILogger<RegistryMetricExporter> logger) : IMetricExporter
     {
         private static readonly TimeSpan ObserveInterval = TimeSpan.FromSeconds(30);
 
-        private readonly CancellationTokenSource cancellationTokenSource;
-        private readonly string registryNamespace;
-        protected IDictionary<string, CustomMetric> RegistryLookup { get; private set; }
-        private readonly ILogger<RegistryMetricExporter> logger;
+        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private readonly string registryNamespace = registryNamespace;
+        protected IDictionary<string, CustomMetric> RegistryLookup { get; private set; } = registryLookup;
+        private readonly ILogger<RegistryMetricExporter> logger = logger;
         private MeterListener? listener;
         private bool disposedValue;
 
         protected RegistryMetricExporter(IDictionary<string, CustomMetric> registryLookup, ILogger<RegistryMetricExporter> logger)
             : this(MetricRegistry.Namespace, registryLookup, logger)
         { }
-
-        protected RegistryMetricExporter(string registryNamespace,
-                                         IDictionary<string, CustomMetric> registryLookup,
-                                         ILogger<RegistryMetricExporter> logger)
-        {
-            this.registryNamespace = registryNamespace;
-            RegistryLookup = registryLookup;
-            this.logger = logger;
-            this.cancellationTokenSource = new CancellationTokenSource();
-        }
 
         public void Start()
         {

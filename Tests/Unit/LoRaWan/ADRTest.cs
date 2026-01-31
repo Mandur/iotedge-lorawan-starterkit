@@ -16,14 +16,9 @@ namespace LoRaWan.Tests.Unit
     using Xunit.Abstractions;
     using static LoRaWan.DataRateIndex;
 
-    public class ADRTest
+    public class ADRTest(ITestOutputHelper output)
     {
-        private readonly ITestOutputHelper output;
-
-        public ADRTest(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
+        private readonly ITestOutputHelper output = output;
 
         [Theory]
         [ClassData(typeof(ADRTestData))]

@@ -9,18 +9,13 @@ namespace LoraKeysManagerFacade.FunctionBundler
     using LoRaTools.CommonAPI;
     using LoRaWan;
 
-    public class ADRExecutionItem : IFunctionBundlerExecutionItem
+    public class ADRExecutionItem(ILoRaADRManager adrManager) : IFunctionBundlerExecutionItem
     {
-        private readonly ILoRaADRManager adrManager;
-
-        public ADRExecutionItem(ILoRaADRManager adrManager)
-        {
-            this.adrManager = adrManager;
-        }
+        private readonly ILoRaADRManager adrManager = adrManager;
 
         public async Task<FunctionBundlerExecutionState> ExecuteAsync(IPipelineExecutionContext context)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(context);
 
             context.Result.AdrResult = await HandleADRRequest(context.DevEUI, context.Request.AdrRequest);
 
@@ -37,7 +32,7 @@ namespace LoraKeysManagerFacade.FunctionBundler
 
         public async Task OnAbortExecutionAsync(IPipelineExecutionContext context)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(context);
 
             // aborts of the full pipeline indicate we do not calculate but we still want to capture the frame
             // if we have one

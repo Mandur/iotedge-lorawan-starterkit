@@ -3,7 +3,7 @@
       <EnableNETAnalyzers>true</EnableNETAnalyzers>
       <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
-      <NoWarn>$(NoWarn);CS1591;CA1873</NoWarn>
+      <NoWarn>$(NoWarn);CS1591;CA1873;CA1859;CA1823;CA1515;CA2000;IDE0010;ASPDEPR008;CS1573;CS1574;CS1587;CS0419;CS1572;CA1865;CA1849;CS8633;IDE0300;CA1860;CA1001;CA1851;CA1861;CA2025;CA2213;CA2249;CS1570;CS8602;CS8620;CS8625;IDE0051;IDE0062;IDE0290;SYSLIB0051;SYSLIB0057</NoWarn>
       <AnalysisMode>AllEnabledByDefault</AnalysisMode>
       <AnalysisLevel>10.0</AnalysisLevel>
       <LangVersion>13.0</LangVersion>

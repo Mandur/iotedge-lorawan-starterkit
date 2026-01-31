@@ -37,7 +37,7 @@ namespace LoraKeysManagerFacade
 
         public PreferredGatewayResult(uint fcntUp, LoRaDevicePreferredGateway preferredGateway)
         {
-            if (preferredGateway is null) throw new ArgumentNullException(nameof(preferredGateway));
+            ArgumentNullException.ThrowIfNull(preferredGateway);
 
             RequestFcntUp = fcntUp;
             CurrentFcntUp = preferredGateway.FcntUp;

@@ -22,7 +22,7 @@ namespace LoRaWan.NetworkServer
 
         public async Task<bool> SendAsync(IReceivedLoRaCloudToDeviceMessage message, CancellationToken cts = default)
         {
-            if (message is null) throw new ArgumentNullException(nameof(message));
+            ArgumentNullException.ThrowIfNull(message);
 
             var devEui = message.DevEUI.GetValueOrDefault();
             if (!devEui.IsValid)

@@ -10,14 +10,9 @@ namespace LoRaWan.Tests.Common
     /// <summary>
     /// Helper <see cref="ILoRaDeviceClientConnectionManager"/> implementation for unit tests.
     /// </summary>
-    public sealed class SingleDeviceConnectionManager : ILoRaDeviceClientConnectionManager
+    public sealed class SingleDeviceConnectionManager(ILoRaDeviceClient deviceClient) : ILoRaDeviceClientConnectionManager
     {
-        private readonly ILoRaDeviceClient singleDeviceClient;
-
-        public SingleDeviceConnectionManager(ILoRaDeviceClient deviceClient)
-        {
-            this.singleDeviceClient = deviceClient;
-        }
+        private readonly ILoRaDeviceClient singleDeviceClient = deviceClient;
 
         public ILoRaDeviceClient GetClient(LoRaDevice loRaDevice) => this.singleDeviceClient;
 

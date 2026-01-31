@@ -62,7 +62,7 @@ namespace LoRaWan.Tests.Unit
         }
 
         public static TheoryData<string> Parse_Invalid_Data() =>
-           TheoryDataFactory.From(new[] { "1234abcde", "1g", string.Empty });
+           TheoryDataFactory.From(["1234abcde", "1g", string.Empty]);
 
         [Theory]
         [MemberData(nameof(Parse_Invalid_Data))]
@@ -99,7 +99,7 @@ namespace LoRaWan.Tests.Unit
             var bytes = new byte[3];
             var remainingBytes = this.subject.Write(bytes);
             Assert.Equal(0, remainingBytes.Length);
-            Assert.Equal(new byte[] { 0x3c, 0x2b, 0x1a }, bytes);
+            Assert.Equal([0x3c, 0x2b, 0x1a], bytes);
         }
 
         [Fact]

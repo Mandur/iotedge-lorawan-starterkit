@@ -5,10 +5,8 @@ namespace LoRaWan.Tests.Common
 {
     using System;
 
-    public sealed class EventArgs<T> : EventArgs
+    public sealed class EventArgs<T>(T value) : EventArgs
     {
-        public T Value { get; }
-
-        public EventArgs(T value) => Value = value;
+        public T Value { get; } = value;
     }
 }

@@ -192,12 +192,11 @@ namespace LoRaWan.NetworkServer
             config.LogToTcpAddress = envVars.GetEnvVar("LOG_TO_TCP_ADDRESS", string.Empty);
             config.LogToTcpPort = envVars.GetEnvVar("LOG_TO_TCP_PORT", config.LogToTcpPort);
             config.NetId = new NetId(envVars.GetEnvVar("NETID", config.NetId.NetworkId));
-            config.AllowedDevAddresses = envVars.GetEnvVar("AllowedDevAddresses", string.Empty)
+            config.AllowedDevAddresses = [.. envVars.GetEnvVar("AllowedDevAddresses", string.Empty)
                                                 .Split(";")
                                                 .Select(s => DevAddr.TryParse(s, out var devAddr) ? (true, Value: devAddr) : default)
                                                 .Where(a => a is (true, _))
-                                                .Select(a => a.Value)
-                                                .ToHashSet();
+                                                .Select(a => a.Value)];
             config.LnsServerPfxPath = envVars.GetEnvVar("LNS_SERVER_PFX_PATH", string.Empty);
             config.LnsServerPfxPassword = envVars.GetEnvVar("LNS_SERVER_PFX_PASSWORD", string.Empty);
             var clientCertificateModeString = envVars.GetEnvVar("CLIENT_CERTIFICATE_MODE", "NoCertificate"); // Defaulting to NoCertificate if missing mode

@@ -6,7 +6,6 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq.Expressions;
     using System.Net;
     using System.Text;
     using System.Threading;
@@ -14,13 +13,11 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade
     using global::LoraKeysManagerFacade;
     using global::LoRaTools;
     using global::LoRaTools.CommonAPI;
-    using global::LoRaTools.IoTHubImpl;
     using LoRaWan.Tests.Common;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Client.Exceptions;
-    using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging.Abstractions;
     using Moq;
     using Newtonsoft.Json;
@@ -291,7 +288,7 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade
             var query = new Mock<IRegistryPageResult<ILoRaDeviceTwin>>(MockBehavior.Strict);
             query.Setup(x => x.HasMoreResults).Returns(true);
             query.Setup(x => x.GetNextPageAsync())
-                .ReturnsAsync(Array.Empty<ILoRaDeviceTwin>());
+                .ReturnsAsync([]);
 
             this.registryManager.Setup(x => x.FindDeviceByDevEUI(It.IsNotNull<DevEui>()))
                 .Returns(query.Object);
