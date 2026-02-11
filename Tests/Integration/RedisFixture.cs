@@ -93,7 +93,7 @@ namespace LoRaWan.Tests.Integration
                 var started = await client.Containers.StartContainerAsync(this.containerId, new ContainerStartParameters());
                 if (!started)
                 {
-                    Assert.False(true, "Cannot start the docker container");
+                    Assert.Fail("Cannot start the docker container");
                 }
 
                 Console.WriteLine("Finish booting sequence container...");

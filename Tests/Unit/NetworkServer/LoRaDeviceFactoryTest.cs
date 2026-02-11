@@ -19,17 +19,17 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         private readonly CancellationToken cancellationToken = CancellationToken.None;
 
         [Fact]
-        public void Throws_When_Missing_DeviceInfo()
+        public async Task Throws_When_Missing_DeviceInfo()
         {
             var factory = new TestDeviceFactory();
             var deviceInfo = defaultDeviceInfo;
             deviceInfo.PrimaryKey = null;
 
-            Assert.ThrowsAsync<ArgumentException>(() => factory.CreateAndRegisterAsync(deviceInfo, CancellationToken.None));
+            await Assert.ThrowsAsync<ArgumentException>(() => factory.CreateAndRegisterAsync(deviceInfo, CancellationToken.None));
 
             deviceInfo = defaultDeviceInfo;
             deviceInfo.DevEUI = new DevEui(0);
-            Assert.ThrowsAsync<ArgumentException>(() => factory.CreateAndRegisterAsync(deviceInfo, this.cancellationToken));
+            await Assert.ThrowsAsync<ArgumentException>(() => factory.CreateAndRegisterAsync(deviceInfo, this.cancellationToken));
         }
 
         [Fact]

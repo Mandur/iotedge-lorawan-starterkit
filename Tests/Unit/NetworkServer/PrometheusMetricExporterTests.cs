@@ -9,6 +9,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using System.Collections.Generic;
     using System.Diagnostics.Metrics;
     using System.Linq;
+    using System.Threading.Tasks;
     using LoRaWan.NetworkServer;
     using LoRaWan.Tests.Common;
     using Microsoft.Extensions.Logging.Abstractions;
@@ -125,7 +126,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         }
 
         [Fact]
-        public async void When_ObservableGauge_Is_Recorded_Should_Export_To_Prometheus()
+        public async Task When_ObservableGauge_Is_Recorded_Should_Export_To_Prometheus()
         {
             // arrange
             var observeValue = new Mock<Func<Measurement<int>>>();

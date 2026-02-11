@@ -12,7 +12,7 @@ namespace LoRaWan.NetworkServer
     using System.Threading;
     using System.Threading.Tasks;
 
-    public sealed class ExclusiveProcessor<T>(ExclusiveProcessor<T>.IScheduler scheduler, IEqualityComparer<T>? comparer) : IDisposable
+    public sealed class ExclusiveProcessor<T>(ExclusiveProcessor<T>.IScheduler scheduler, IEqualityComparer<T>? comparer)
     {
         private readonly IScheduler scheduler = scheduler;
         private readonly IEqualityComparer<T> comparer = comparer ?? EqualityComparer<T>.Default;
@@ -134,9 +134,5 @@ namespace LoRaWan.NetworkServer
             }
         }
 
-        public void Dispose()
-        {
-            this.processingLock.Dispose();
-        }
     }
 }

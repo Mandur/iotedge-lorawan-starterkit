@@ -145,9 +145,7 @@ namespace LoRaWan.NetworkServer
             private readonly LoRaDevice device;
             private readonly ILogger? logger;
             private int operationSequenceNumber;
-#pragma warning disable CA2213 // Disposable field is disposed in DisconnectAsync method
             private readonly ExclusiveProcessor<Process> exclusiveProcessor = new();
-#pragma warning restore CA2213
             private bool disconnectedDuringActivity;
             private int activities;
 
@@ -283,7 +281,6 @@ namespace LoRaWan.NetworkServer
                     {
                         this.disconnectedDuringActivity = false;
                         await client.DisconnectAsync(cancellationToken);
-                        this.exclusiveProcessor.Dispose();
                         result = DisconnectionResult.Disconnected;
                     }
 

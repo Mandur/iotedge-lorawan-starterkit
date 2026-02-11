@@ -56,8 +56,8 @@ namespace LoRaWan.Tests.Unit
             Assert.Equal("optionsLength", ex.ParamName);
         }
 
-        public static readonly TheoryData<int> Encode_Throws_When_Flags_Is_Invalid_Data =
-            TheoryDataFactory.From(MoreEnumerable.Sequence(1, 15));
+        public static readonly TheoryData<byte> Encode_Throws_When_Flags_Is_Invalid_Data =
+            TheoryDataFactory.From(MoreEnumerable.Sequence(1, 15).Select(i => checked((byte)i)));
 
         [Theory]
         [MemberData(nameof(Encode_Throws_When_Flags_Is_Invalid_Data))]

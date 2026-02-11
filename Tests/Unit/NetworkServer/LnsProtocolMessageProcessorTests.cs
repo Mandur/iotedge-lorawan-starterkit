@@ -123,7 +123,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             // mocking localIpAddress
             var connectionInfoMock = new Mock<ConnectionInfo>();
             var nic = isValidNic ? DiscoveryServiceTests.GetMostUsedNic() : null;
-            var ip = isValidNic ? nic?.GetIPProperties().UnicastAddresses.First().Address : new IPAddress([192, 168, 1, 10]);
+            var ip = isValidNic ? nic?.GetIPProperties().UnicastAddresses.FirstOrDefault()?.Address ?? new IPAddress([192, 168, 1, 10]) : new IPAddress([192, 168, 1, 10]);
             _ = connectionInfoMock.SetupGet(ci => ci.LocalIpAddress).Returns(ip);
             this.httpContextMock.Setup(h => h.Connection).Returns(connectionInfoMock.Object);
 

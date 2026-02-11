@@ -266,7 +266,7 @@ namespace LoRaWan.Tests.Common
             }
             else
             {
-                Assert.True(false, "Could not procees with timestamp message search.");
+                Assert.Fail("Could not procees with timestamp message search.");
             }
         }
 

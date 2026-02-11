@@ -313,7 +313,7 @@ namespace LoRaWan.NetworkServer
                 {
                     if (this.ctsDispose is { } cts)
                     {
-                        _ = cts.CancelAsync();
+                        cts.Cancel();
                         cts.Dispose();
                         this.ctsDispose = null;
                     }

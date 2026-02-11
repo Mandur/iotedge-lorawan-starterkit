@@ -7,6 +7,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using System.Collections.Generic;
     using System.Diagnostics.Metrics;
     using System.Linq;
+    using System.Threading.Tasks;
     using LoRaWan.NetworkServer;
     using LoRaWan.Tests.Common;
     using Microsoft.ApplicationInsights;
@@ -127,7 +128,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         }
 
         [Fact]
-        public async void When_ObservableGauge_Is_Recorded_Should_Export_To_ApplicationInsights()
+        public async Task When_ObservableGauge_Is_Recorded_Should_Export_To_ApplicationInsights()
         {
             // arrange
             var observeValue = new Mock<Func<Measurement<int>>>();

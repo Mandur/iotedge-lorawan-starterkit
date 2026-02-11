@@ -71,12 +71,11 @@ namespace LoraKeysManagerFacade
                 {
                     if (!twin.Properties.Desired.TryReadJsonBlock(CupsPropertyName, out var cupsProperty))
                         throw new InvalidOperationException($"Failed to read CUPS config property '{CupsPropertyName}'");
-
                     var fwUrl = JObject.Parse(cupsProperty)[CupsFwUrlPropertyName].ToString();
                     var (fwLength, stream) = await GetBlobStreamAsync(fwUrl, cancellationToken);
                     return new FileStreamWithContentLengthResult(stream, "application/octet-stream", fwLength);
                 }
-                catch (Exception ex) when (ex is ArgumentOutOfRangeException or JsonReaderException or NullReferenceException)
+                catch (Exception ex) when (ex is InvalidOperationException or JsonReaderException or NullReferenceException)
                 {
                     var message = $"Failed to parse firmware upgrade url from the '{CupsPropertyName}' desired property.";
                     this.logger.LogError(ex, message);

@@ -60,11 +60,11 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
         public static TheoryData<Region, DataRateIndex, DataRateIndex> TestRegionDataRateDataDR6() =>
             TheoryDataFactory.From([(Region, DR6, DR13)]);
 
-        public static TheoryData<Region, DataRateIndex, DataRateIndex> TestRegionDataRateData_InvalidOffset =>
+        public static TheoryData<Region, DataRateIndex, int> TestRegionDataRateData_InvalidOffset =>
            TheoryDataFactory.From(
            [
-               (Region, DR0, DR6),
-               (Region, DR0, DR7),
+               (Region, DR0, 6),
+               (Region, DR0, 7),
            ]);
 
         public static TheoryData<Region, Hertz, DataRateIndex> TestRegionLimitData =>

@@ -131,7 +131,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             var envVariables = new[]
             {
                 ("PROCESSING_DELAY_IN_MS", processing_delay),
-                ("HOSTNAME", "test")
+                ("HOSTNAME", "test"),
+                ("IOTHUBHOSTNAME", "test")
             };
 
             try

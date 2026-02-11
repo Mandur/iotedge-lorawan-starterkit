@@ -6,6 +6,7 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade
     using System;
     using System.Text;
     using System.Threading;
+    using System.Threading.Tasks;
     using global::LoraKeysManagerFacade;
     using global::LoRaTools;
     using global::LoRaTools.IoTHubImpl;
@@ -20,7 +21,7 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade
         private const string PrimaryKey = "ABCDEFGH1234567890";
 
         [Fact]
-        public async void DeviceGetter_OTAA_Join()
+        public async Task DeviceGetter_OTAA_Join()
         {
             var devEui = TestEui.GenerateDevEui();
             var gatewayId = NewUniqueEUI64();

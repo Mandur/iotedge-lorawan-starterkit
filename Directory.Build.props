@@ -3,7 +3,7 @@
       <EnableNETAnalyzers>true</EnableNETAnalyzers>
       <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
-      <NoWarn>$(NoWarn);CS1591;CA1873;CA1859;CA1823;CA1515;CA2000;IDE0010;ASPDEPR008;CS1573;CS1574;CS1587;CS0419;CS1572;CA1865;CA1849;CS8633;IDE0300;CA1860;CA1001;CA1851;CA1861;CA2025;CA2213;CA2249;CS1570;CS8602;CS8620;CS8625;IDE0051;IDE0062;IDE0290;SYSLIB0051;SYSLIB0057</NoWarn>
+      <NoWarn>$(NoWarn);CS1591;CA1873;CA1859;CA1823;CA1515;CA2000;IDE0010;ASPDEPR008;CS1573;CS1574;CS1587;CS0419;CS1572;CA1865;CA1849;CS8633;IDE0300;CA1860;CA1001;CA1851;CA1861;CA2025;CA2213;CA2249;CS1570;CS8602;CS8620;CS8625;IDE0051;IDE0062;IDE0290;SYSLIB0051;SYSLIB0057;xUnit1044;xUnit1045</NoWarn>
       <AnalysisMode>AllEnabledByDefault</AnalysisMode>
       <AnalysisLevel>10.0</AnalysisLevel>
       <LangVersion>13.0</LangVersion>
@@ -37,16 +37,16 @@
     </PropertyGroup>
     <PropertyGroup> <!-- this group is meant for packages required from test projects -->
       <DockerDotnetVersion>3.125.12</DockerDotnetVersion>
-      <MicrosoftNETTestSdkVersion>17.4.1</MicrosoftNETTestSdkVersion>
+      <MicrosoftNETTestSdkVersion>17.11.1</MicrosoftNETTestSdkVersion>
       <MoqVersion>4.18.4</MoqVersion>
-      <XUnitVersion>2.4.2</XUnitVersion>
+      <XUnitVersion>2.9.3</XUnitVersion>
       <XunitCombinatorialVersion>1.5.25</XunitCombinatorialVersion>
       <MicrosoftExtensionsConfigurationVersion>6.0.1</MicrosoftExtensionsConfigurationVersion>
       <MicrosoftExtensionsConfigurationBinderVersion>6.0.0</MicrosoftExtensionsConfigurationBinderVersion>
       <MicrosoftExtensionsConfigurationEnvironmentVariablesVersion>6.0.1</MicrosoftExtensionsConfigurationEnvironmentVariablesVersion>
       <MicrosoftExtensionsConfigurationJsonVersion>6.0.0</MicrosoftExtensionsConfigurationJsonVersion>
       <SystemIOPortsVersion>6.0.0</SystemIOPortsVersion>
-      <XUnitRunnerVisualStudio>2.4.5</XUnitRunnerVisualStudio>
+      <XUnitRunnerVisualStudio>2.8.2</XUnitRunnerVisualStudio>
       <CoverletMSBuild>3.2.0</CoverletMSBuild>
       <MicrosoftExtensionsLogging>6.0.0</MicrosoftExtensionsLogging>
       <MicrosoftExtensionsLoggingConfiguration>6.0.0</MicrosoftExtensionsLoggingConfiguration>

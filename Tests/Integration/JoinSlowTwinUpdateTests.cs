@@ -51,7 +51,7 @@ namespace LoRaWan.Tests.Integration
                                 try
                                 {
                                     await Task.Delay(TimeSpan.FromSeconds(20), token);
-                                    Assert.True(false, "Token timeout expected");
+                                    Assert.Fail("Token timeout expected");
                                 }
                                 catch (OperationCanceledException) { }
                                 return false;

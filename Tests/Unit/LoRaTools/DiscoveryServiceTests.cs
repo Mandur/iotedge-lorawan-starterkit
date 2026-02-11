@@ -81,7 +81,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools
             var connectionInfoMock = new Mock<ConnectionInfo>();
             _ = httpContextMock.Setup(h => h.Connection).Returns(connectionInfoMock.Object);
             var nic = isValidNic ? GetMostUsedNic() : null;
-            var ip = isValidNic ? nic?.GetIPProperties().UnicastAddresses.First().Address : new IPAddress([192, 168, 1, 10]);
+            var ip = isValidNic ? nic?.GetIPProperties().UnicastAddresses.FirstOrDefault()?.Address ?? new IPAddress([192, 168, 1, 10]) : new IPAddress([192, 168, 1, 10]);
             _ = connectionInfoMock.SetupGet(ci => ci.LocalIpAddress).Returns(ip);
             var muxs = Id6.Format(nic?.GetPhysicalAddress().Convert48To64() ?? 0, Id6.FormatOptions.FixedWidth);
 
@@ -136,11 +136,12 @@ namespace LoRaWan.Tests.Unit.LoRaTools
         }
 
         /// <summary>
-        /// Selects the network interface with most bytes received/sent.
+        /// Selects the network interface with most bytes received/sent that has at least one unicast address.
         /// Should correspond to the real ethernet/wifi interface on the machine.
         /// </summary>
         internal static NetworkInterface? GetMostUsedNic() =>
             NetworkInterface.GetAllNetworkInterfaces()
+                            .Where(x => x.GetIPProperties().UnicastAddresses.Count > 0)
                             .OrderByDescending(x => x.GetIPv4Statistics().BytesReceived + x.GetIPv4Statistics().BytesSent)
                             .FirstOrDefault();
 

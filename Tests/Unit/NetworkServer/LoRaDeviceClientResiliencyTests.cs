@@ -64,9 +64,10 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         [Fact]
         public void Client_Provides_Identity()
         {
-            var identityProvider = Assert.IsAssignableFrom<IIdentityProvider<ILoRaDeviceClient>>(this.subject);
+            var identityProvider = this.subject as IIdentityProvider<ILoRaDeviceClient>;
+            Assert.NotNull(identityProvider);
 
-            Assert.Same(this.originalMock.Object, identityProvider.Identity);
+            Assert.Same(this.originalMock.Object, identityProvider!.Identity);
         }
 
         [Fact]
