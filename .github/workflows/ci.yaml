@@ -64,7 +64,7 @@ jobs:
     - name: Run unit tests
       run: |
         dotnet test --configuration ${{ env.buildConfiguration }} --no-build \
-          --logger trx -r ${{ env.TESTS_RESULTS_FOLDER }}/Unit \
+          --logger trx --results-directory  ${{ env.TESTS_RESULTS_FOLDER }}/Unit \
           /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:ExcludeByFile="**/${{ env.TESTS_FOLDER }}/" \
           ${{ env.TESTS_FOLDER }}/Unit/LoRaWan.Tests.Unit.csproj
 
