@@ -12,7 +12,7 @@
       <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
     <PropertyGroup>
-      <AzureStorageBlobVersion>12.14.1</AzureStorageBlobVersion>
+      <AzureStorageBlobVersion>12.27.0</AzureStorageBlobVersion>
       <DockerDotNetX509Version>3.125.12</DockerDotNetX509Version>
       <MicrosoftAzureDevicesVersion>1.38.1</MicrosoftAzureDevicesVersion>
       <MicrosoftAzureDevicesClientVersion>1.41.2</MicrosoftAzureDevicesClientVersion>
