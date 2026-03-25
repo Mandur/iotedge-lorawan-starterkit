@@ -20,17 +20,12 @@ namespace LoRaWan.Tests.Integration
 
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
     // Parallel message processing
-    public class ParallelProcessingTests : MessageProcessorTestBase
+    public class ParallelProcessingTests(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        private readonly TestDownstreamMessageSender downstreamMessageSender;
+        private readonly TestDownstreamMessageSender downstreamMessageSender = new TestDownstreamMessageSender();
 
-        public ParallelProcessingTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-        {
-            this.downstreamMessageSender = new TestDownstreamMessageSender();
-        }
-
-        public static TheoryData<ParallelTestConfiguration> Multiple_ABP_Messages() => TheoryDataFactory.From(new[]
-        {
+        public static TheoryData<ParallelTestConfiguration> Multiple_ABP_Messages() => TheoryDataFactory.From(
+        [
             new ParallelTestConfiguration
             {
                 DeviceID = 1,
@@ -80,7 +75,7 @@ namespace LoRaWan.Tests.Integration
                 UpdateTwinDuration = new int[] { 5000, 100 },
                 LoadTwinDuration = new int[] { 5000, 100 },
             }
-        });
+        ]);
 
         [Theory]
         [MemberData(nameof(Multiple_ABP_Messages))]

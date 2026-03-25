@@ -14,12 +14,8 @@ namespace LoRaWan.Tests.E2E
     // Tests Cloud to Device messages
     [Collection(Constants.TestCollectionName)] // run in serial
     [Trait("Category", "SkipWhenLiveUnitTesting")]
-    public sealed class ClassCTest : IntegrationTestBaseCi
+    public sealed class ClassCTest(IntegrationTestFixtureCi testFixture) : IntegrationTestBaseCi(testFixture)
     {
-        public ClassCTest(IntegrationTestFixtureCi testFixture)
-            : base(testFixture)
-        {
-        }
 
         // Ensures that class C devices can receive messages from a direct method call;
         // the test uses the SendCloudToDeviceMessage endpoint in LoRaKeysManagerFacade

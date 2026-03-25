@@ -8,12 +8,8 @@ namespace LoRaTools.IoTHubImpl
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices;
 
-    public class IoTHubDeviceTwinPageResult : IoTHubRegistryPageResult<IDeviceTwin>
+    public class IoTHubDeviceTwinPageResult(IQuery originalQuery) : IoTHubRegistryPageResult<IDeviceTwin>(originalQuery)
     {
-        public IoTHubDeviceTwinPageResult(IQuery originalQuery)
-            : base(originalQuery)
-        {
-        }
 
         public override async Task<IEnumerable<IDeviceTwin>> GetNextPageAsync()
         {

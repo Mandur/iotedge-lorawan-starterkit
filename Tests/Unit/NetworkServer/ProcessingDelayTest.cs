@@ -7,12 +7,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using Xunit;
     using Xunit.Abstractions;
 
-    public class ProcessingDelayTest : MessageProcessorTestBase
+    public class ProcessingDelayTest(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        public ProcessingDelayTest(ITestOutputHelper testOutputHelper) :
-            base(testOutputHelper)
-        { }
-
         [Theory]
         [InlineData(null, true)]
         [InlineData(400, true)]

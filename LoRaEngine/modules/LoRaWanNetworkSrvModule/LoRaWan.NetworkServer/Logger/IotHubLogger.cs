@@ -26,7 +26,7 @@ namespace LoRaWan.NetworkServer.Logger
         internal LoggerConfigurationMonitor LoggerConfigurationMonitor { get; }
 
         public IotHubLoggerProvider(IOptionsMonitor<LoRaLoggerConfiguration> configuration, ITracing tracing)
-            : this(configuration, new Lazy<Task<ModuleClient>>(ModuleClient.CreateFromEnvironmentAsync(new[] { new AmqpTransportSettings(TransportType.Amqp_Tcp_Only) })), tracing)
+            : this(configuration, new Lazy<Task<ModuleClient>>(ModuleClient.CreateFromEnvironmentAsync([new AmqpTransportSettings(TransportType.Amqp_Tcp_Only)])), tracing)
         { }
 
         internal IotHubLoggerProvider(IOptionsMonitor<LoRaLoggerConfiguration> configuration, Lazy<Task<ModuleClient>> moduleClientFactory, ITracing tracing)
@@ -46,26 +46,19 @@ namespace LoRaWan.NetworkServer.Logger
         }
     }
 
-    internal class IotHubLogger : ILogger
+    internal class IotHubLogger(IotHubLoggerProvider iotHubLoggerProvider,
+                            Lazy<Task<ModuleClient>> moduleClientFactory,
+                            ITracing tracing) : ILogger
     {
         private const string SendOperationName = "SDK SendEvent";
         private const string LogTraceData = "log";
-        private readonly IotHubLoggerProvider iotHubLoggerProvider;
-        private readonly Lazy<Task<ModuleClient>> moduleClientFactory;
-        private readonly ITracing tracing;
+        private readonly IotHubLoggerProvider iotHubLoggerProvider = iotHubLoggerProvider;
+        private readonly Lazy<Task<ModuleClient>> moduleClientFactory = moduleClientFactory;
+        private readonly ITracing tracing = tracing;
 
         internal bool hasError;
 
-        public IotHubLogger(IotHubLoggerProvider iotHubLoggerProvider,
-                            Lazy<Task<ModuleClient>> moduleClientFactory,
-                            ITracing tracing)
-        {
-            this.iotHubLoggerProvider = iotHubLoggerProvider;
-            this.moduleClientFactory = moduleClientFactory;
-            this.tracing = tracing;
-        }
-
-        public IDisposable BeginScope<TState>(TState state) =>
+        public IDisposable BeginScope<TState>(TState state) where TState : notnull =>
             this.iotHubLoggerProvider.LoggerConfigurationMonitor.ScopeProvider?.Push(state) ?? NoopDisposable.Instance;
 
         public bool IsEnabled(LogLevel logLevel) =>
@@ -120,7 +113,7 @@ namespace LoRaWan.NetworkServer.Logger
     {
         public static ILoggingBuilder AddIotHubLogger(this ILoggingBuilder builder, Action<LoRaLoggerConfiguration> configure)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
+            ArgumentNullException.ThrowIfNull(builder);
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, IotHubLoggerProvider>());
             LoggerProviderOptions.RegisterProviderOptions<LoRaLoggerConfiguration, IotHubLoggerProvider>(builder.Services);
             _ = builder.Services.Configure(configure);

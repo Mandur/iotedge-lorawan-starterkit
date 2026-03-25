@@ -15,11 +15,11 @@ namespace LoRaWan.NetworkServer
     /// <summary>
     /// Composition of a <see cref="LoRaRequest"/> that logs at the end of the process.
     /// </summary>
-    public class LoggingLoRaRequest : LoRaRequest
+    public class LoggingLoRaRequest(LoRaRequest wrappedRequest, ILogger<LoggingLoRaRequest> logger, Histogram<double> d2cMessageDeliveryLatencyHistogram) : LoRaRequest
     {
-        private readonly LoRaRequest wrappedRequest;
-        private readonly ILogger<LoggingLoRaRequest> logger;
-        private readonly Histogram<double> d2cMessageDeliveryLatencyHistogram;
+        private readonly LoRaRequest wrappedRequest = wrappedRequest;
+        private readonly ILogger<LoggingLoRaRequest> logger = logger;
+        private readonly Histogram<double> d2cMessageDeliveryLatencyHistogram = d2cMessageDeliveryLatencyHistogram;
 
         public override IDownstreamMessageSender DownstreamMessageSender => this.wrappedRequest.DownstreamMessageSender;
 
@@ -32,13 +32,6 @@ namespace LoRaWan.NetworkServer
         public override DateTime StartTime => this.wrappedRequest.StartTime;
 
         public override StationEui StationEui => this.wrappedRequest.StationEui;
-
-        public LoggingLoRaRequest(LoRaRequest wrappedRequest, ILogger<LoggingLoRaRequest> logger, Histogram<double> d2cMessageDeliveryLatencyHistogram)
-        {
-            this.wrappedRequest = wrappedRequest;
-            this.logger = logger;
-            this.d2cMessageDeliveryLatencyHistogram = d2cMessageDeliveryLatencyHistogram;
-        }
 
         public override void NotifyFailed(string deviceId, LoRaDeviceRequestFailedReason reason, Exception exception = null)
         {

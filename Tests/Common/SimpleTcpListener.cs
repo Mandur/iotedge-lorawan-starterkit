@@ -14,11 +14,9 @@ namespace LoRaWan.Tests.Common
 
     public sealed class SimpleTcpListener : IDisposable
     {
-        public sealed class Context
+        public sealed class Context(TcpClient client)
         {
-            private readonly TcpClient client;
-
-            public Context(TcpClient client) => this.client = client;
+            private readonly TcpClient client = client;
 
             public EndPoint? RemoteEndPoint => this.client.Client.RemoteEndPoint;
             public EndPoint? LocalEndPoint => this.client.Client.LocalEndPoint;

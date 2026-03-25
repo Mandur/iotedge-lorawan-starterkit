@@ -11,8 +11,8 @@ namespace LoRaWan.NetworkServer
     {
         public void Prepare(FunctionBundlerExecutionContext context, FunctionBundlerRequest request)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
-            if (request is null) throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(context);
+            ArgumentNullException.ThrowIfNull(request);
 
             request.AdrRequest = new LoRaADRRequest
             {
@@ -30,8 +30,8 @@ namespace LoRaWan.NetworkServer
 
         public void ProcessResult(FunctionBundlerExecutionContext context, FunctionBundlerResult result)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
-            if (result is null) throw new ArgumentNullException(nameof(result));
+            ArgumentNullException.ThrowIfNull(context);
+            ArgumentNullException.ThrowIfNull(result);
 
             if (result.AdrResult != null)
             {
@@ -44,7 +44,7 @@ namespace LoRaWan.NetworkServer
 
         public bool RequiresExecution(FunctionBundlerExecutionContext context)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(context);
             return context.LoRaPayload.IsDataRateNetworkControlled;
         }
     }

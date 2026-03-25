@@ -8,21 +8,14 @@ namespace LoraKeysManagerFacade
     using LoRaWan;
     using Microsoft.Extensions.Logging;
 
-    public class LoRaADRServerManager : LoRaADRManagerBase
+    public class LoRaADRServerManager(ILoRaADRStore store,
+                                ILoRaADRStrategyProvider strategyProvider,
+                                ILoRaDeviceCacheStore deviceCacheStore,
+                                ILoggerFactory loggerFactory,
+                                ILogger<LoRaADRServerManager> logger) : LoRaADRManagerBase(store, strategyProvider, logger)
     {
-        private readonly ILoRaDeviceCacheStore deviceCacheStore;
-        private readonly ILoggerFactory loggerFactory;
-
-        public LoRaADRServerManager(ILoRaADRStore store,
-                                    ILoRaADRStrategyProvider strategyProvider,
-                                    ILoRaDeviceCacheStore deviceCacheStore,
-                                    ILoggerFactory loggerFactory,
-                                    ILogger<LoRaADRServerManager> logger)
-            : base(store, strategyProvider, logger)
-        {
-            this.deviceCacheStore = deviceCacheStore;
-            this.loggerFactory = loggerFactory;
-        }
+        private readonly ILoRaDeviceCacheStore deviceCacheStore = deviceCacheStore;
+        private readonly ILoggerFactory loggerFactory = loggerFactory;
 
         public override async Task<uint> NextFCntDown(DevEui devEUI, string gatewayId, uint clientFCntUp, uint clientFCntDown)
         {

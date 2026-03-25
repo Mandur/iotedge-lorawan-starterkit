@@ -36,7 +36,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         {
             var pair = new DisposableCancellationTokenPair(null, CancellationToken.None);
 
-            var ex = Record.Exception(() => pair.Dispose());
+            var ex = Record.Exception(pair.Dispose);
 
             Assert.Null(ex);
         }

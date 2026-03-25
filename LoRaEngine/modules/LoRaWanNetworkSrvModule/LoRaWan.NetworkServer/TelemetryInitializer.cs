@@ -8,18 +8,15 @@ namespace LoRaWan.NetworkServer
     using Microsoft.ApplicationInsights.Channel;
     using Microsoft.ApplicationInsights.Extensibility;
 
-    internal sealed class TelemetryInitializer : ITelemetryInitializer
+    internal sealed class TelemetryInitializer(NetworkServerConfiguration networkServerConfiguration) : ITelemetryInitializer
     {
         private const string RoleName = "NetworkServer";
-        private readonly string gatewayId;
-
-        public TelemetryInitializer(NetworkServerConfiguration networkServerConfiguration) =>
-            this.gatewayId = networkServerConfiguration.GatewayID;
+        private readonly string gatewayId = networkServerConfiguration.GatewayID;
 
         public void Initialize(ITelemetry telemetry)
         {
             telemetry.Context.Cloud.RoleName = RoleName;
-            telemetry.Context.Cloud.RoleInstance = this.gatewayId;
+            telemetry.Context.Cloud.RoleInstance = gatewayId;
         }
     }
 }

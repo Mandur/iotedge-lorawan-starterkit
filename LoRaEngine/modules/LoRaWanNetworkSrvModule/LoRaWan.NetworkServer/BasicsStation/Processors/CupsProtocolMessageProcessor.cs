@@ -20,24 +20,16 @@ namespace LoRaWan.NetworkServer.BasicsStation.Processors
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
 
-    internal class CupsProtocolMessageProcessor : ICupsProtocolMessageProcessor
-    {
-        private readonly IBasicsStationConfigurationService basicsStationConfigurationService;
-        private readonly LoRaDeviceAPIServiceBase deviceAPIServiceBase;
-        private readonly ILogger<CupsProtocolMessageProcessor> logger;
-        private readonly Counter<int>? unhandledExceptionCount;
-        internal const int MaximumAllowedContentLength = 2048;
-
-        public CupsProtocolMessageProcessor(IBasicsStationConfigurationService basicsStationConfigurationService,
+    internal class CupsProtocolMessageProcessor(IBasicsStationConfigurationService basicsStationConfigurationService,
                                             LoRaDeviceAPIServiceBase deviceAPIServiceBase,
                                             ILogger<CupsProtocolMessageProcessor> logger,
-                                            Meter? meter)
-        {
-            this.basicsStationConfigurationService = basicsStationConfigurationService;
-            this.deviceAPIServiceBase = deviceAPIServiceBase;
-            this.logger = logger;
-            this.unhandledExceptionCount = meter?.CreateCounter<int>(MetricRegistry.UnhandledExceptions);
-        }
+                                            Meter? meter) : ICupsProtocolMessageProcessor
+    {
+        private readonly IBasicsStationConfigurationService basicsStationConfigurationService = basicsStationConfigurationService;
+        private readonly LoRaDeviceAPIServiceBase deviceAPIServiceBase = deviceAPIServiceBase;
+        private readonly ILogger<CupsProtocolMessageProcessor> logger = logger;
+        private readonly Counter<int>? unhandledExceptionCount = meter?.CreateCounter<int>(MetricRegistry.UnhandledExceptions);
+        internal const int MaximumAllowedContentLength = 2048;
 
         public async Task HandleUpdateInfoAsync(HttpContext httpContext, CancellationToken token)
         {

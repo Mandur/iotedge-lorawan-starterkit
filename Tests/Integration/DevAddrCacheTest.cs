@@ -38,7 +38,7 @@ namespace LoRaWan.Tests.Integration
 
         public DevAddrCacheTest(RedisFixture redis, ITestOutputHelper testOutputHelper)
         {
-            if (redis is null) throw new ArgumentNullException(nameof(redis));
+            ArgumentNullException.ThrowIfNull(redis);
             this.cache = new LoRaDeviceCacheRedisStore(redis.Database);
             this.testOutputHelper = testOutputHelper;
         }
@@ -107,7 +107,7 @@ namespace LoRaWan.Tests.Integration
                 .Returns((DevAddr someDevAddr) =>
                 {
                     hasMoreShouldReturn = true;
-                    currentDevAddrContext = currentDevices.Where(v => v.DevAddr == someDevAddr).ToList();
+                    currentDevAddrContext = [.. currentDevices.Where(v => v.DevAddr == someDevAddr)];
                     return mockPageResult.Object;
                 });
 
@@ -124,7 +124,7 @@ namespace LoRaWan.Tests.Integration
                 .Setup(x => x.GetLastUpdatedLoRaDevices(It.IsAny<DateTime>()))
                 .Returns((DateTime lastDeltaUpdate) =>
                 {
-                    currentDevAddrContext = currentDevices.Where(d => d.LastUpdatedTwins >= lastDeltaUpdate).ToList();
+                    currentDevAddrContext = [.. currentDevices.Where(d => d.LastUpdatedTwins >= lastDeltaUpdate)];
                     // reset device count in case HasMoreResult is called more than once
                     hasMoreShouldReturn = true;
                     return mockPageResult.Object;
@@ -150,7 +150,7 @@ namespace LoRaWan.Tests.Integration
         public async Task When_PerformNeededSyncs_Fails_Should_Release_Lock(string lockToTake)
         {
             var devAddrcache = new LoRaDevAddrCache(this.cache, null, null);
-            await LockDevAddrHelper.PrepareLocksForTests(this.cache, lockToTake == null ? null : new[] { lockToTake });
+            await LockDevAddrHelper.PrepareLocksForTests(this.cache, lockToTake == null ? null : [lockToTake]);
             var managerInput = new List<DevAddrCacheInfo> { new DevAddrCacheInfo() { DevEUI = TestEui.GenerateDevEui(), DevAddr = CreateDevAddr() } };
             var registryManagerMock = InitRegistryManager(managerInput);
             registryManagerMock.Setup(x => x.GetLastUpdatedLoRaDevices(It.IsAny<DateTime>())).Throws(new RedisException(string.Empty));

@@ -24,9 +24,9 @@ namespace LoRaWan.Tests.Common
         /// </remarks>
         public static async Task ProcessLinesAsync(this Stream stream, Encoding encoding, Func<string, Task> processor)
         {
-            if (stream == null) throw new ArgumentNullException(nameof(stream));
-            if (encoding == null) throw new ArgumentNullException(nameof(encoding));
-            if (processor == null) throw new ArgumentNullException(nameof(processor));
+            ArgumentNullException.ThrowIfNull(stream);
+            ArgumentNullException.ThrowIfNull(encoding);
+            ArgumentNullException.ThrowIfNull(processor);
 
             var reader = PipeReader.Create(stream);
             var arrays = ArrayPool<byte>.Shared;

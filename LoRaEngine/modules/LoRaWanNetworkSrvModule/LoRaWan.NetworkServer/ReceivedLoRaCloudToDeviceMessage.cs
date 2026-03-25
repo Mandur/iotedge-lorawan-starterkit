@@ -41,7 +41,7 @@ namespace LoRaWan.NetworkServer
                 }
             }
 
-            return Array.Empty<byte>();
+            return [];
         }
     }
 }

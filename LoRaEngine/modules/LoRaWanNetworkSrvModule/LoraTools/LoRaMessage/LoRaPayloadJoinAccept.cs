@@ -61,7 +61,7 @@ namespace LoRaTools.LoRaMessage
 
         private LoRaPayloadJoinAccept(byte[] inputMessage, AppKey appKey)
         {
-            if (inputMessage is null) throw new ArgumentNullException(nameof(inputMessage));
+            ArgumentNullException.ThrowIfNull(inputMessage);
 
             // Only MHDR is not encrypted with the key
             // ( PHYPayload = MHDR[1] | MACPayload[..] | MIC[4] )
@@ -75,7 +75,7 @@ namespace LoRaTools.LoRaMessage
             var rawKey = new byte[AppKey.Size];
             _ = appKey.Write(rawKey);
             aesEngine.Init(true, new KeyParameter(rawKey));
-            using var aes = Aes.Create("AesManaged");
+            using var aes = Aes.Create();
             aes.Key = rawKey;
             aes.IV = new byte[16];
 #pragma warning disable CA5358 // Review cipher mode usage with cryptography experts
@@ -119,7 +119,7 @@ namespace LoRaTools.LoRaMessage
             Mic mic;
             Mic = mic = LoRaWan.Mic.ComputeForJoinAccept(appKey, MHdr, AppNonce, NetId, DevAddr, DlSettings, RxDelay, CfList);
 
-            var channelFrequencies = !CfList.Span.IsEmpty ? CfList.ToArray() : Array.Empty<byte>();
+            var channelFrequencies = !CfList.Span.IsEmpty ? CfList.ToArray() : [];
 
             var buffer = new byte[AppNonce.Size + NetId.Size + DevAddr.Size + DlSettings.Length +
                                   sizeof(RxDelay) + channelFrequencies.Length + LoRaWan.Mic.Size];
@@ -133,7 +133,7 @@ namespace LoRaTools.LoRaMessage
             pt = pt.Write(channelFrequencies);
             _ = mic.Write(pt);
 
-            using var aes = Aes.Create("AesManaged");
+            using var aes = Aes.Create();
             var rawKey = new byte[AppKey.Size];
             _ = appKey.Write(rawKey);
             aes.Key = rawKey;
@@ -144,10 +144,9 @@ namespace LoRaTools.LoRaMessage
 #pragma warning restore CA5358 // Review cipher mode usage with cryptography experts
             aes.Padding = PaddingMode.None;
 
-            return aes.CreateDecryptor()
+            return [.. aes.CreateDecryptor()
                       .TransformFinalBlock(buffer, 0, buffer.Length)
-                      .Prepend((byte)MHdr)
-                      .ToArray();
+                      .Prepend((byte)MHdr)];
         }
     }
 }

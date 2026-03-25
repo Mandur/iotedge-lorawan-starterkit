@@ -5,8 +5,8 @@ namespace LoRaTools
 {
     public interface ITwinPropertiesContainer
     {
-        public ITwinProperties Desired { get; }
+        ITwinProperties Desired { get; }
 
-        public ITwinProperties Reported { get; }
+        ITwinProperties Reported { get; }
     }
 }

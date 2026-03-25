@@ -101,7 +101,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
 
         private sealed class StubTelemetryChannel : ITelemetryChannel
         {
-            private readonly List<ITelemetry> sentTelemetry = new List<ITelemetry>();
+            private readonly List<ITelemetry> sentTelemetry = [];
 
             public IReadOnlyList<ITelemetry> SentTelemetry => this.sentTelemetry;
 

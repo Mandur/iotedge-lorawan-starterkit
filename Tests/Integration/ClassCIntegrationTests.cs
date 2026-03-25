@@ -21,14 +21,9 @@ namespace LoRaWan.Tests.Integration
 
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
     // Class C device tests
-    public class ClassCIntegrationTests : MessageProcessorTestBase
+    public class ClassCIntegrationTests(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        private readonly ITestOutputHelper testOutputHelper;
-
-        public ClassCIntegrationTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-        {
-            this.testOutputHelper = testOutputHelper;
-        }
+        private readonly ITestOutputHelper testOutputHelper = testOutputHelper;
 
         public static TheoryData<string, uint, uint, Region> Upstream_And_Downstream_Succeeds_For_All_Regions_TheoryData() => TheoryDataFactory.From(Upstream_And_Downstream_Succeeds_For_All_Regions_InternalTheoryData());
 

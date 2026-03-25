@@ -14,9 +14,9 @@ namespace LoRaWan.NetworkServer.BasicsStation.ModuleConnection
         /// <summary>
         /// Operation timeout for the module connection.
         /// </summary>
-        public TimeSpan OperationTimeout { get; set; }
+        TimeSpan OperationTimeout { get; set; }
 
-        public ModuleClient GetModuleClient();
+        ModuleClient GetModuleClient();
         Task<Twin> GetTwinAsync(CancellationToken cancellationToken);
         Task SetDesiredPropertyUpdateCallbackAsync(DesiredPropertyUpdateCallback onDesiredPropertiesUpdate, object usercontext);
         Task SetMethodDefaultHandlerAsync(MethodCallback onDirectMethodCalled, object usercontext);

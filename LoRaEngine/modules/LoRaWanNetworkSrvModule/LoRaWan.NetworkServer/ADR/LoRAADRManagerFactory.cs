@@ -6,25 +6,20 @@ namespace LoRaWan.NetworkServer.ADR
     using LoRaTools.ADR;
     using Microsoft.Extensions.Logging;
     using System;
+    using System.Threading;
 
-    public class LoRAADRManagerFactory : ILoRAADRManagerFactory
+    public class LoRAADRManagerFactory(LoRaDeviceAPIServiceBase loRaDeviceAPIService, ILoggerFactory loggerFactory) : ILoRAADRManagerFactory
     {
-        private readonly LoRaDeviceAPIServiceBase loRaDeviceAPIService;
-        private readonly ILoggerFactory loggerFactory;
-        private static readonly object InMemoryStoreLock = new object();
+        private readonly LoRaDeviceAPIServiceBase loRaDeviceAPIService = loRaDeviceAPIService;
+        private readonly ILoggerFactory loggerFactory = loggerFactory;
+        private static readonly Lock InMemoryStoreLock = new Lock();
         private static volatile LoRaADRInMemoryStore inMemoryStore;
-
-        public LoRAADRManagerFactory(LoRaDeviceAPIServiceBase loRaDeviceAPIService, ILoggerFactory loggerFactory)
-        {
-            this.loRaDeviceAPIService = loRaDeviceAPIService;
-            this.loggerFactory = loggerFactory;
-        }
 
         public ILoRaADRManager Create(ILoRaADRStrategyProvider strategyProvider,
                                       ILoRaDeviceFrameCounterUpdateStrategy frameCounterStrategy,
                                       LoRaDevice loRaDevice)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
 
             return !string.IsNullOrEmpty(loRaDevice.GatewayID)
                     ? new LoRaADRDefaultManager(CurrentInMemoryStore, strategyProvider, frameCounterStrategy, loRaDevice, this.loggerFactory.CreateLogger<LoRaADRDefaultManager>())

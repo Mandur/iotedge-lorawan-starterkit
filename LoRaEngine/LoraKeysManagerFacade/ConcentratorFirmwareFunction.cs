@@ -23,29 +23,22 @@ namespace LoraKeysManagerFacade
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    public class ConcentratorFirmwareFunction
+    public class ConcentratorFirmwareFunction(IDeviceRegistryManager registryManager,
+                                         IAzureClientFactory<BlobServiceClient> azureClientFactory,
+                                         ILogger<ConcentratorFirmwareFunction> logger)
     {
         internal const string CupsPropertyName = "cups";
         internal const string CupsFwUrlPropertyName = "fwUrl";
 
-        private readonly IDeviceRegistryManager registryManager;
-        private readonly IAzureClientFactory<BlobServiceClient> azureClientFactory;
-        private readonly ILogger<ConcentratorFirmwareFunction> logger;
-
-        public ConcentratorFirmwareFunction(IDeviceRegistryManager registryManager,
-                                             IAzureClientFactory<BlobServiceClient> azureClientFactory,
-                                             ILogger<ConcentratorFirmwareFunction> logger)
-        {
-            this.registryManager = registryManager;
-            this.azureClientFactory = azureClientFactory;
-            this.logger = logger;
-        }
+        private readonly IDeviceRegistryManager registryManager = registryManager;
+        private readonly IAzureClientFactory<BlobServiceClient> azureClientFactory = azureClientFactory;
+        private readonly ILogger<ConcentratorFirmwareFunction> logger = logger;
 
         [FunctionName(nameof(FetchConcentratorFirmware))]
         public async Task<IActionResult> FetchConcentratorFirmware([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
                                                                    CancellationToken cancellationToken)
         {
-            if (req is null) throw new ArgumentNullException(nameof(req));
+            ArgumentNullException.ThrowIfNull(req);
 
             try
             {
@@ -77,13 +70,12 @@ namespace LoraKeysManagerFacade
                 try
                 {
                     if (!twin.Properties.Desired.TryReadJsonBlock(CupsPropertyName, out var cupsProperty))
-                        throw new ArgumentOutOfRangeException(CupsPropertyName, "Failed to read CUPS config");
-
+                        throw new InvalidOperationException($"Failed to read CUPS config property '{CupsPropertyName}'");
                     var fwUrl = JObject.Parse(cupsProperty)[CupsFwUrlPropertyName].ToString();
                     var (fwLength, stream) = await GetBlobStreamAsync(fwUrl, cancellationToken);
                     return new FileStreamWithContentLengthResult(stream, "application/octet-stream", fwLength);
                 }
-                catch (Exception ex) when (ex is ArgumentOutOfRangeException or JsonReaderException or NullReferenceException)
+                catch (Exception ex) when (ex is InvalidOperationException or JsonReaderException or NullReferenceException)
                 {
                     var message = $"Failed to parse firmware upgrade url from the '{CupsPropertyName}' desired property.";
                     this.logger.LogError(ex, message);

@@ -69,7 +69,7 @@ namespace LoRaWan.NetworkServer
         public bool? DupMsg { get; set; }
 
         [JsonExtensionData]
-        public Dictionary<string, object> ExtraData { get; } = new Dictionary<string, object>();
+        public Dictionary<string, object> ExtraData { get; } = [];
 
         public LoRaDeviceTelemetry()
         {
@@ -77,10 +77,10 @@ namespace LoRaWan.NetworkServer
 
         public LoRaDeviceTelemetry(LoRaRequest request, LoRaPayloadData upstreamPayload, object payloadData, byte[] decryptedPayloadData)
         {
-            if (request is null) throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
             var radioMetadata = request.RadioMetadata;
             if (radioMetadata is null) throw new ArgumentException(nameof(radioMetadata));
-            if (upstreamPayload is null) throw new ArgumentNullException(nameof(upstreamPayload));
+            ArgumentNullException.ThrowIfNull(upstreamPayload);
             var datr = request.Region.GetDatarateFromIndex(request.RadioMetadata.DataRate);
             Data = payloadData;
             Rawdata = decryptedPayloadData?.Length > 0 ? Convert.ToBase64String(decryptedPayloadData) : string.Empty;

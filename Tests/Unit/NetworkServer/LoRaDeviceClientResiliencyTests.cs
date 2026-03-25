@@ -64,9 +64,10 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         [Fact]
         public void Client_Provides_Identity()
         {
-            var identityProvider = Assert.IsAssignableFrom<IIdentityProvider<ILoRaDeviceClient>>(this.subject);
+            var identityProvider = this.subject as IIdentityProvider<ILoRaDeviceClient>;
+            Assert.NotNull(identityProvider);
 
-            Assert.Same(this.originalMock.Object, identityProvider.Identity);
+            Assert.Same(this.originalMock.Object, identityProvider!.Identity);
         }
 
         [Fact]
@@ -154,13 +155,11 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             IOperationSequentialResultSetup Fail(Exception exception);
         }
 
-        private abstract class OperationTestHelper<T> : IOperationTestHelper, IOperationSequentialResultSetup, IDisposable
+        private abstract class OperationTestHelper<T>(T result) : IOperationTestHelper, IOperationSequentialResultSetup, IDisposable
         {
-            private readonly T result;
+            private readonly T result = result;
             private readonly CancellationTokenSource cancellationTokenSource = new();
             private ISetupSequentialResult<Task<T>>? setupSequentialResult;
-
-            protected OperationTestHelper(T result) => this.result = result;
 
             public virtual string Name => GetType().Name[..^"TestHelper".Length];
 
@@ -208,25 +207,17 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             }
         }
 
-        private sealed class GetTwinAsyncTestHelper : OperationTestHelper<Twin>
+        private sealed class GetTwinAsyncTestHelper(Twin result) : OperationTestHelper<Twin>(result)
         {
-            public GetTwinAsyncTestHelper(Twin result) : base(result) { }
-
             protected override ISetupSequentialResult<Task<Twin>> SetupSequenceCore(Mock<ILoRaDeviceClient> mock) => mock.SetupSequence(x => x.GetTwinAsync(CancellationToken));
             public override Task InvokeAsync(ILoRaDeviceClient subject) => subject.GetTwinAsync(CancellationToken);
             public override void Verify(Mock<ILoRaDeviceClient> mock, Times times) => mock.Verify(x => x.GetTwinAsync(CancellationToken), times);
         }
 
-        private sealed class SendEventAsyncTestHelper : OperationTestHelper<bool>
+        private sealed class SendEventAsyncTestHelper(LoRaDeviceTelemetry telemetry, Dictionary<string, string> properties, bool result) : OperationTestHelper<bool>(result)
         {
-            private readonly LoRaDeviceTelemetry telemetry;
-            private readonly Dictionary<string, string> properties;
-
-            public SendEventAsyncTestHelper(LoRaDeviceTelemetry telemetry, Dictionary<string, string> properties, bool result) : base(result)
-            {
-                this.telemetry = telemetry;
-                this.properties = properties;
-            }
+            private readonly LoRaDeviceTelemetry telemetry = telemetry;
+            private readonly Dictionary<string, string> properties = properties;
 
             protected override ISetupSequentialResult<Task<bool>> SetupSequenceCore(Mock<ILoRaDeviceClient> mock) => mock.SetupSequence(x => x.SendEventAsync(this.telemetry, this.properties));
             public override Task InvokeAsync(ILoRaDeviceClient subject) => subject.SendEventAsync(this.telemetry, this.properties);
@@ -245,45 +236,36 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             public override void Verify(Mock<ILoRaDeviceClient> mock, Times times) => mock.Verify(x => x.UpdateReportedPropertiesAsync(this.twinCollection, CancellationToken), times);
         }
 
-        private sealed class ReceiveAsyncTestHelper : OperationTestHelper<Message>
+        private sealed class ReceiveAsyncTestHelper(TimeSpan timeout, Message result) : OperationTestHelper<Message>(result)
         {
-            private readonly TimeSpan timeout;
-
-            public ReceiveAsyncTestHelper(TimeSpan timeout, Message result) : base(result) =>
-                this.timeout = timeout;
+            private readonly TimeSpan timeout = timeout;
 
             protected override ISetupSequentialResult<Task<Message>> SetupSequenceCore(Mock<ILoRaDeviceClient> mock) => mock.SetupSequence(x => x.ReceiveAsync(this.timeout));
             public override Task InvokeAsync(ILoRaDeviceClient subject) => subject.ReceiveAsync(this.timeout);
             public override void Verify(Mock<ILoRaDeviceClient> mock, Times times) => mock.Verify(x => x.ReceiveAsync(this.timeout), times);
         }
 
-        private sealed class CompleteAsyncTestHelper : OperationTestHelper<bool>
+        private sealed class CompleteAsyncTestHelper(Message message, bool result) : OperationTestHelper<bool>(result)
         {
-            private readonly Message message;
-
-            public CompleteAsyncTestHelper(Message message, bool result) : base(result) => this.message = message;
+            private readonly Message message = message;
 
             protected override ISetupSequentialResult<Task<bool>> SetupSequenceCore(Mock<ILoRaDeviceClient> mock) => mock.SetupSequence(x => x.CompleteAsync(this.message));
             public override Task InvokeAsync(ILoRaDeviceClient subject) => subject.CompleteAsync(this.message);
             public override void Verify(Mock<ILoRaDeviceClient> mock, Times times) => mock.Verify(x => x.CompleteAsync(this.message), times);
         }
 
-        private sealed class AbandonAsyncTestHelper : OperationTestHelper<bool>
+        private sealed class AbandonAsyncTestHelper(Message message, bool result) : OperationTestHelper<bool>(result)
         {
-            private readonly Message message;
-
-            public AbandonAsyncTestHelper(Message message, bool result) : base(result) => this.message = message;
+            private readonly Message message = message;
 
             protected override ISetupSequentialResult<Task<bool>> SetupSequenceCore(Mock<ILoRaDeviceClient> mock) => mock.SetupSequence(x => x.AbandonAsync(this.message));
             public override Task InvokeAsync(ILoRaDeviceClient subject) => subject.AbandonAsync(this.message);
             public override void Verify(Mock<ILoRaDeviceClient> mock, Times times) => mock.Verify(x => x.AbandonAsync(this.message), times);
         }
 
-        private sealed class RejectAsyncTestHelper : OperationTestHelper<bool>
+        private sealed class RejectAsyncTestHelper(Message message, bool result) : OperationTestHelper<bool>(result)
         {
-            private readonly Message message;
-
-            public RejectAsyncTestHelper(Message message, bool result) : base(result) => this.message = message;
+            private readonly Message message = message;
 
             protected override ISetupSequentialResult<Task<bool>> SetupSequenceCore(Mock<ILoRaDeviceClient> mock) => mock.SetupSequence(x => x.RejectAsync(this.message));
             public override Task InvokeAsync(ILoRaDeviceClient subject) => subject.RejectAsync(this.message);
@@ -294,7 +276,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         {
             using var message = new Message();
             yield return new GetTwinAsyncTestHelper(new Twin());
-            yield return new SendEventAsyncTestHelper(new LoRaDeviceTelemetry(), new Dictionary<string, string>(), true);
+            yield return new SendEventAsyncTestHelper(new LoRaDeviceTelemetry(), [], true);
             yield return new UpdateReportedPropertiesAsyncTestHelper(new TwinCollection(), true);
             yield return new ReceiveAsyncTestHelper(TimeSpan.FromSeconds(5), message);
             yield return new CompleteAsyncTestHelper(message, true);

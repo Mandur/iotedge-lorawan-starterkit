@@ -49,15 +49,14 @@ namespace LoRaTools.Regions
         public override IReadOnlyDictionary<uint, double> TXPowertoMaxEIRP => MaxEirpByTxPower;
 
         private static readonly ImmutableArray<IReadOnlyList<DataRateIndex>> RX1DROffsetTableInternal =
-            new IReadOnlyList<DataRateIndex>[]
-            {
-                new[] { DR0, DR0, DR0, DR0, DR0, DR0 }.ToImmutableArray(),
-                new[] { DR1, DR0, DR0, DR0, DR0, DR0 }.ToImmutableArray(),
-                new[] { DR2, DR1, DR0, DR0, DR0, DR0 }.ToImmutableArray(),
-                new[] { DR3, DR2, DR1, DR0, DR0, DR0 }.ToImmutableArray(),
-                new[] { DR4, DR3, DR2, DR1, DR0, DR0 }.ToImmutableArray(),
-                new[] { DR5, DR4, DR3, DR2, DR1, DR0 }.ToImmutableArray(),
-            }.ToImmutableArray();
+        [
+            [DR0, DR0, DR0, DR0, DR0, DR0],
+            [DR1, DR0, DR0, DR0, DR0, DR0],
+            [DR2, DR1, DR0, DR0, DR0, DR0],
+            [DR3, DR2, DR1, DR0, DR0, DR0],
+            [DR4, DR3, DR2, DR1, DR0, DR0],
+            [DR5, DR4, DR3, DR2, DR1, DR0],
+        ];
 
         public override IReadOnlyList<IReadOnlyList<DataRateIndex>> RX1DROffsetTable => RX1DROffsetTableInternal;
 
@@ -80,10 +79,11 @@ namespace LoRaTools.Regions
 
         /// <summary>
         /// Logic to get the correct downstream transmission frequency for region CN470.
+        /// </summary>
         /// <param name="upstreamFrequency">The frequency at which the message was transmitted.</param>
         /// <param name="upstreamDataRate">The upstream data rate.</param>
         /// <param name="deviceJoinInfo">Join info for the device, if applicable.</param>
-        /// </summary>
+        /// <param name="downstreamFrequency">The downstream frequency.</param>
         public override bool TryGetDownstreamChannelFrequency(Hertz upstreamFrequency, DataRateIndex upstreamDataRate, DeviceJoinInfo deviceJoinInfo, out Hertz downstreamFrequency)
         {
             if (!IsValidUpstreamFrequency(upstreamFrequency))

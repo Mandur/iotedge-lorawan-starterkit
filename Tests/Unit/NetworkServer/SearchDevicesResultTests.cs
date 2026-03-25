@@ -61,13 +61,12 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         }
 
         private static IoTHubDeviceInfo[] GenerateIoTHubDeviceInfo(int number) =>
-            Enumerable.Range(1, number)
+            [.. Enumerable.Range(1, number)
                       .Select(i => new IoTHubDeviceInfo
                       {
                           PrimaryKey = i.ToString(CultureInfo.InvariantCulture),
                           DevEUI = new DevEui(checked((ulong)i)),
                           DevAddr = new DevAddr(checked((uint)i)),
-                      })
-                      .ToArray();
+                      })];
     }
 }

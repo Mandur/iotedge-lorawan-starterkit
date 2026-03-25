@@ -28,29 +28,19 @@ namespace LoraKeysManagerFacade
     /// - For class C devices it sends the message through the preferred gateway
     /// - For other devices it adds to the device message queue.
     /// </summary>
-    public class SendCloudToDeviceMessage
+    public class SendCloudToDeviceMessage(ILoRaDeviceCacheStore cacheStore,
+                                    IDeviceRegistryManager registryManager,
+                                    IServiceClient serviceClient,
+                                    IEdgeDeviceGetter edgeDeviceGetter,
+                                    IChannelPublisher channelPublisher,
+                                    ILogger<SendCloudToDeviceMessage> log)
     {
-        private readonly ILoRaDeviceCacheStore cacheStore;
-        private readonly IDeviceRegistryManager registryManager;
-        private readonly IServiceClient serviceClient;
-        private readonly IEdgeDeviceGetter edgeDeviceGetter;
-        private readonly IChannelPublisher channelPublisher;
-        private readonly ILogger log;
-
-        public SendCloudToDeviceMessage(ILoRaDeviceCacheStore cacheStore,
-                                        IDeviceRegistryManager registryManager,
-                                        IServiceClient serviceClient,
-                                        IEdgeDeviceGetter edgeDeviceGetter,
-                                        IChannelPublisher channelPublisher,
-                                        ILogger<SendCloudToDeviceMessage> log)
-        {
-            this.cacheStore = cacheStore;
-            this.registryManager = registryManager;
-            this.serviceClient = serviceClient;
-            this.edgeDeviceGetter = edgeDeviceGetter;
-            this.channelPublisher = channelPublisher;
-            this.log = log;
-        }
+        private readonly ILoRaDeviceCacheStore cacheStore = cacheStore;
+        private readonly IDeviceRegistryManager registryManager = registryManager;
+        private readonly IServiceClient serviceClient = serviceClient;
+        private readonly IEdgeDeviceGetter edgeDeviceGetter = edgeDeviceGetter;
+        private readonly IChannelPublisher channelPublisher = channelPublisher;
+        private readonly ILogger log = log;
 
         [FunctionName("SendCloudToDeviceMessage")]
         public async Task<IActionResult> Run(

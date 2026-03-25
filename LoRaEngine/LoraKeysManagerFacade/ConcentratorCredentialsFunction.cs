@@ -25,29 +25,22 @@ namespace LoraKeysManagerFacade
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    public class ConcentratorCredentialsFunction
+    public class ConcentratorCredentialsFunction(IDeviceRegistryManager registryManager,
+                                           IAzureClientFactory<BlobServiceClient> azureClientFactory,
+                                           ILogger<ConcentratorCredentialsFunction> logger)
     {
         internal const string CupsPropertyName = "cups";
         internal const string CupsCredentialsUrlPropertyName = "cupsCredentialUrl";
         internal const string LnsCredentialsUrlPropertyName = "tcCredentialUrl";
-        private readonly IDeviceRegistryManager registryManager;
-        private readonly IAzureClientFactory<BlobServiceClient> azureClientFactory;
-        private readonly ILogger<ConcentratorCredentialsFunction> logger;
-
-        public ConcentratorCredentialsFunction(IDeviceRegistryManager registryManager,
-                                               IAzureClientFactory<BlobServiceClient> azureClientFactory,
-                                               ILogger<ConcentratorCredentialsFunction> logger)
-        {
-            this.registryManager = registryManager;
-            this.azureClientFactory = azureClientFactory;
-            this.logger = logger;
-        }
+        private readonly IDeviceRegistryManager registryManager = registryManager;
+        private readonly IAzureClientFactory<BlobServiceClient> azureClientFactory = azureClientFactory;
+        private readonly ILogger<ConcentratorCredentialsFunction> logger = logger;
 
         [FunctionName(nameof(FetchConcentratorCredentials))]
         public async Task<IActionResult> FetchConcentratorCredentials([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
                                                                       CancellationToken cancellationToken)
         {
-            if (req is null) throw new ArgumentNullException(nameof(req));
+            ArgumentNullException.ThrowIfNull(req);
 
             try
             {
@@ -91,7 +84,7 @@ namespace LoraKeysManagerFacade
                 try
                 {
                     if (!twin.Properties.Desired.TryReadJsonBlock(CupsPropertyName, out var cupsProperty))
-                        throw new ArgumentOutOfRangeException(CupsPropertyName, "failed to read cups config");
+                        throw new InvalidOperationException($"Failed to read CUPS config property '{CupsPropertyName}'");
 
                     var parsedJson = JObject.Parse(cupsProperty);
                     var url = credentialType is ConcentratorCredentialType.Lns ? parsedJson[LnsCredentialsUrlPropertyName].ToString()
@@ -132,7 +125,7 @@ namespace LoraKeysManagerFacade
             using var reader = new StreamReader(memoryStream);
             await base64Stream.CopyToAsync(memoryStream, cancellationToken);
             _ = memoryStream.Seek(0, SeekOrigin.Begin);
-            return await reader.ReadToEndAsync();
+            return await reader.ReadToEndAsync(cancellationToken);
         }
     }
 }

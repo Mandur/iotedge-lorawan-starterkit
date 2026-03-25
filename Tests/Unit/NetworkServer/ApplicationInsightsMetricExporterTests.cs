@@ -7,6 +7,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using System.Collections.Generic;
     using System.Diagnostics.Metrics;
     using System.Linq;
+    using System.Threading.Tasks;
     using LoRaWan.NetworkServer;
     using LoRaWan.Tests.Common;
     using Microsoft.ApplicationInsights;
@@ -29,12 +30,12 @@ namespace LoRaWan.Tests.Unit.NetworkServer
 
         public ApplicationInsightsMetricExporterTests()
         {
-            this.registry = new[]
-            {
-                new CustomMetric(Guid.NewGuid().ToString(), "Counter", MetricType.Counter, new[] { MetricRegistry.ConcentratorIdTagName }),
-                new CustomMetric(Guid.NewGuid().ToString(), "Histogram", MetricType.Histogram, new[] { MetricRegistry.ConcentratorIdTagName }),
-                new CustomMetric(Guid.NewGuid().ToString(), "ObservableGauge", MetricType.ObservableGauge, new[] { MetricRegistry.ConcentratorIdTagName })
-            };
+            this.registry =
+            [
+                new CustomMetric(Guid.NewGuid().ToString(), "Counter", MetricType.Counter, [MetricRegistry.ConcentratorIdTagName]),
+                new CustomMetric(Guid.NewGuid().ToString(), "Histogram", MetricType.Histogram, [MetricRegistry.ConcentratorIdTagName]),
+                new CustomMetric(Guid.NewGuid().ToString(), "ObservableGauge", MetricType.ObservableGauge, [MetricRegistry.ConcentratorIdTagName])
+            ];
             this.telemetryConfiguration = new TelemetryConfiguration { TelemetryChannel = new Mock<ITelemetryChannel>().Object };
             this.trackValueMock = new Mock<Action<Metric, double, string[]>>();
             this.registryMetricTagBag = new RegistryMetricTagBag(new NetworkServerConfiguration { GatewayID = "foogateway" });
@@ -74,11 +75,11 @@ namespace LoRaWan.Tests.Unit.NetworkServer
 
         [Fact]
         public void When_Metric_Raised_Exports_Int_Counter_Series() =>
-            ApplicationInsights_Metrics_Collection_Raises_Counter_Metrics(new[] { 5, 6, 1 }, new[] { 5.0, 6.0, 1.0 });
+            ApplicationInsights_Metrics_Collection_Raises_Counter_Metrics([5, 6, 1], [5.0, 6.0, 1.0]);
 
         private void ApplicationInsights_Metrics_Collection_Raises_Counter_Metrics<T>(T metricValue, double expectedReportedValue)
             where T : struct =>
-            ApplicationInsights_Metrics_Collection_Raises_Counter_Metrics(new[] { metricValue }, new[] { expectedReportedValue });
+            ApplicationInsights_Metrics_Collection_Raises_Counter_Metrics([metricValue], [expectedReportedValue]);
 
         private void ApplicationInsights_Metrics_Collection_Raises_Counter_Metrics<T>(T[] metricValues, double[] expectedReportedValues)
             where T : struct
@@ -127,7 +128,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         }
 
         [Fact]
-        public async void When_ObservableGauge_Is_Recorded_Should_Export_To_ApplicationInsights()
+        public async Task When_ObservableGauge_Is_Recorded_Should_Export_To_ApplicationInsights()
         {
             // arrange
             var observeValue = new Mock<Func<Measurement<int>>>();
@@ -203,18 +204,12 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             this.applicationInsightsMetricExporter.Dispose();
         }
 
-        private sealed class TestableApplicationInsightsExporter : ApplicationInsightsMetricExporter
+        private sealed class TestableApplicationInsightsExporter(TelemetryClient telemetryClient,
+                                                   Action<Metric, double, string[]> trackValue,
+                                                   IDictionary<string, CustomMetric> registryLookup,
+                                                   RegistryMetricTagBag metricTagBag) : ApplicationInsightsMetricExporter(telemetryClient, registryLookup, metricTagBag, NullLogger<ApplicationInsightsMetricExporter>.Instance)
         {
-            private readonly Action<Metric, double, string[]> trackValue;
-
-            public TestableApplicationInsightsExporter(TelemetryClient telemetryClient,
-                                                       Action<Metric, double, string[]> trackValue,
-                                                       IDictionary<string, CustomMetric> registryLookup,
-                                                       RegistryMetricTagBag metricTagBag)
-                : base(telemetryClient, registryLookup, metricTagBag, NullLogger<ApplicationInsightsMetricExporter>.Instance)
-            {
-                this.trackValue = trackValue;
-            }
+            private readonly Action<Metric, double, string[]> trackValue = trackValue;
 
             internal override void TrackValue(Metric metric, double measurement, params string[] dimensions) =>
                 this.trackValue(metric, measurement, dimensions);

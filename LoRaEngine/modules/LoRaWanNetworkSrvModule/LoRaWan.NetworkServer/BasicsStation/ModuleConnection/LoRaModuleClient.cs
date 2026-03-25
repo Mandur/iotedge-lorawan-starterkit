@@ -9,15 +9,8 @@ namespace LoRaWan.NetworkServer.BasicsStation.ModuleConnection
     using System.Threading;
     using System.Threading.Tasks;
 
-    public sealed class LoRaModuleClient : ILoraModuleClient
+    public sealed class LoRaModuleClient(ModuleClient moduleClient) : ILoraModuleClient
     {
-        private readonly ModuleClient moduleClient;
-
-        public LoRaModuleClient(ModuleClient moduleClient)
-        {
-            this.moduleClient = moduleClient;
-        }
-
         public TimeSpan OperationTimeout { get; set; }
 
 
@@ -25,33 +18,33 @@ namespace LoRaWan.NetworkServer.BasicsStation.ModuleConnection
         {
             if (moduleClient != null)
             {
-                await this.moduleClient.CloseAsync();
-                this.moduleClient.Dispose();
+                await moduleClient.CloseAsync();
+                moduleClient.Dispose();
             }
         }
 
-        public ModuleClient GetModuleClient() => this.moduleClient;
+        public ModuleClient GetModuleClient() => moduleClient;
 
         public Task<Twin> GetTwinAsync(CancellationToken cancellationToken)
         {
-            return this.moduleClient.GetTwinAsync(cancellationToken);
+            return moduleClient.GetTwinAsync(cancellationToken);
         }
 
         public async Task UpdateReportedPropertyAsync(string key, string value)
         {
             var twinCollection = new TwinCollection();
             twinCollection[key] = value;
-            await this.moduleClient.UpdateReportedPropertiesAsync(twinCollection);
+            await moduleClient.UpdateReportedPropertiesAsync(twinCollection);
         }
 
         public async Task SetDesiredPropertyUpdateCallbackAsync(DesiredPropertyUpdateCallback onDesiredPropertiesUpdate, object usercontext)
         {
-            await this.moduleClient.SetDesiredPropertyUpdateCallbackAsync(onDesiredPropertiesUpdate, usercontext);
+            await moduleClient.SetDesiredPropertyUpdateCallbackAsync(onDesiredPropertiesUpdate, usercontext);
         }
 
         public async Task SetMethodDefaultHandlerAsync(MethodCallback onDirectMethodCalled, object usercontext)
         {
-            await this.moduleClient.SetMethodDefaultHandlerAsync(onDirectMethodCalled, usercontext);
+            await moduleClient.SetMethodDefaultHandlerAsync(onDirectMethodCalled, usercontext);
         }
     }
 }

@@ -16,19 +16,10 @@ namespace LoRaWan.NetworkServer
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    /// <summary>
-    /// LoRa payload decoder.
-    /// </summary>
-    public sealed class LoRaPayloadDecoder : ILoRaPayloadDecoder
+    public sealed class LoRaPayloadDecoder(IHttpClientFactory httpClientFactory, ILogger<LoRaPayloadDecoder> logger) : ILoRaPayloadDecoder
     {
-        private readonly IHttpClientFactory httpClientFactory;
-        private readonly ILogger<LoRaPayloadDecoder> logger;
-
-        public LoRaPayloadDecoder(IHttpClientFactory httpClientFactory, ILogger<LoRaPayloadDecoder> logger)
-        {
-            this.httpClientFactory = httpClientFactory;
-            this.logger = logger;
-        }
+        private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
+        private readonly ILogger<LoRaPayloadDecoder> logger = logger;
 
         public async ValueTask<DecodePayloadResult> DecodeMessageAsync(DevEui devEui, byte[] payload, FramePort fport, string sensorDecoder)
         {
@@ -61,7 +52,7 @@ namespace LoRaWan.NetworkServer
 
                 if (toInvoke != null)
                 {
-                    return new DecodePayloadResult(toInvoke.Invoke(null, new object[] { devEui, payload, fport }));
+                    return new DecodePayloadResult(toInvoke.Invoke(null, [devEui, payload, fport]));
                 }
                 else
                 {
@@ -137,7 +128,7 @@ namespace LoRaWan.NetworkServer
         }
 
         /// <summary>
-        /// Value sensor decoding, from <see cref="byte[]"/> to <see cref="DecodePayloadResult"/>.
+        /// Value sensor decoding, from byte array to <see cref="DecodePayloadResult"/>.
         /// </summary>
         /// <param name="devEui">Device identifier.</param>
         /// <param name="payload">The payload to decode.</param>
@@ -166,7 +157,7 @@ namespace LoRaWan.NetworkServer
         }
 
         /// <summary>
-        /// Value Hex decoding, from <see cref="byte[]"/> to <see cref="DecodePayloadResult"/>.
+        /// Value Hex decoding, from byte array to <see cref="DecodePayloadResult"/>.
         /// </summary>
         /// <param name="devEui">Device identifier.</param>
         /// <param name="payload">The payload to decode.</param>

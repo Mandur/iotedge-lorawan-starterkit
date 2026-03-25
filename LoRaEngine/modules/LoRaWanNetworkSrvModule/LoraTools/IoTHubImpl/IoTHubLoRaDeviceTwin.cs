@@ -6,11 +6,8 @@ namespace LoRaTools.IoTHubImpl
     using LoRaTools.Utils;
     using Microsoft.Azure.Devices.Shared;
 
-    internal class IoTHubLoRaDeviceTwin : IoTHubDeviceTwin, ILoRaDeviceTwin
+    internal class IoTHubLoRaDeviceTwin(Twin twin) : IoTHubDeviceTwin(twin), ILoRaDeviceTwin
     {
-        public IoTHubLoRaDeviceTwin(Twin twin) : base(twin)
-        {
-        }
 
         public string GetGatewayID()
             => this.Properties.Desired.TryRead<string>(TwinPropertiesConstants.GatewayID, null, out var someGatewayId)

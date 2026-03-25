@@ -11,12 +11,8 @@ namespace LoRaWan.Tests.E2E
     // Tests sensor decoding test (http, reflection)
     [Collection(Constants.TestCollectionName)] // run in serial
     [Trait("Category", "SkipWhenLiveUnitTesting")]
-    public class SensorDecodingTest : IntegrationTestBaseCi
+    public class SensorDecodingTest(IntegrationTestFixtureCi testFixture) : IntegrationTestBaseCi(testFixture)
     {
-        public SensorDecodingTest(IntegrationTestFixtureCi testFixture)
-            : base(testFixture)
-        {
-        }
 
         // Ensures that http sensor decoder decodes payload
         // Uses device Device11_OTAA

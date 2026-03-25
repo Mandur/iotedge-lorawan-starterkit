@@ -15,9 +15,28 @@ namespace LoRaWan.Tests.Integration
     using Moq;
     using Xunit.Abstractions;
 
-    internal class TestDefaultLoRaRequestHandler : DefaultLoRaDataRequestHandler
+    internal class TestDefaultLoRaRequestHandler(
+        NetworkServerConfiguration configuration,
+        ILoRaDeviceFrameCounterUpdateStrategyProvider frameCounterUpdateStrategyProvider,
+        IConcentratorDeduplication concentratorDeduplication,
+        ILoRaPayloadDecoder payloadDecoder,
+        IDeduplicationStrategyFactory deduplicationFactory,
+        ILoRaADRStrategyProvider loRaADRStrategyProvider,
+        ILoRAADRManagerFactory loRaADRManagerFactory,
+        IFunctionBundlerProvider functionBundlerProvider,
+        ILogger<DefaultLoRaDataRequestHandler> logger) : DefaultLoRaDataRequestHandler(
+            configuration,
+            frameCounterUpdateStrategyProvider,
+            concentratorDeduplication,
+            payloadDecoder,
+            deduplicationFactory,
+            loRaADRStrategyProvider,
+            loRaADRManagerFactory,
+            functionBundlerProvider,
+            logger,
+            TestMeter.Instance)
     {
-        private readonly NetworkServerConfiguration configuration;
+        private readonly NetworkServerConfiguration configuration = configuration;
 
         public IReceivedLoRaCloudToDeviceMessage ActualCloudToDeviceMessage { get; private set; }
 
@@ -41,30 +60,6 @@ namespace LoRaWan.Tests.Integration
                 functionBundlerProvider,
                 new TestOutputLogger<DefaultLoRaDataRequestHandler>(testOutputHelper))
         { }
-
-        public TestDefaultLoRaRequestHandler(
-            NetworkServerConfiguration configuration,
-            ILoRaDeviceFrameCounterUpdateStrategyProvider frameCounterUpdateStrategyProvider,
-            IConcentratorDeduplication concentratorDeduplication,
-            ILoRaPayloadDecoder payloadDecoder,
-            IDeduplicationStrategyFactory deduplicationFactory,
-            ILoRaADRStrategyProvider loRaADRStrategyProvider,
-            ILoRAADRManagerFactory loRaADRManagerFactory,
-            IFunctionBundlerProvider functionBundlerProvider,
-            ILogger<DefaultLoRaDataRequestHandler> logger) : base(
-                configuration,
-                frameCounterUpdateStrategyProvider,
-                concentratorDeduplication,
-                payloadDecoder,
-                deduplicationFactory,
-                loRaADRStrategyProvider,
-                loRaADRManagerFactory,
-                functionBundlerProvider,
-                logger,
-                TestMeter.Instance)
-        {
-            this.configuration = configuration;
-        }
 
         protected override FunctionBundler CreateBundler(LoRaPayloadData loraPayload, LoRaDevice loRaDevice, LoRaRequest request)
             => new Mock<FunctionBundler>().Object;

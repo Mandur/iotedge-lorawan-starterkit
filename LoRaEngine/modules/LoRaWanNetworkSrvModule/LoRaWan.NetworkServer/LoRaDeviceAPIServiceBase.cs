@@ -80,7 +80,7 @@ namespace LoRaWan.NetworkServer
 
         protected LoRaDeviceAPIServiceBase(NetworkServerConfiguration configuration)
         {
-            if (configuration is null) throw new ArgumentNullException(nameof(configuration));
+            ArgumentNullException.ThrowIfNull(configuration);
             AuthCode = configuration.FacadeAuthCode;
             URL = configuration.FacadeServerUrl;
         }

@@ -42,7 +42,7 @@ namespace LoraKeysManagerFacade
                 return true;
             }
 
-            var lk = lockKey ?? this.devEUI + CacheKeyLockSuffix;
+            var lk = lockKey ?? (this.devEUI + CacheKeyLockSuffix);
 
             if (IsLockOwner = await this.cacheStore.LockTakeAsync(lk, this.gatewayId, LockExpiry, block))
             {

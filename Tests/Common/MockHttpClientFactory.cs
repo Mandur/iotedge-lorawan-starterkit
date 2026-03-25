@@ -6,13 +6,11 @@ namespace LoRaWan.Tests.Common
     using System;
     using System.Net.Http;
 
-    public sealed class MockHttpClientFactory : IHttpClientFactory, IDisposable
+    public sealed class MockHttpClientFactory(HttpClient httpClient) : IHttpClientFactory, IDisposable
     {
-        public HttpClient HttpClient { get; }
+        public HttpClient HttpClient { get; } = httpClient;
 
         public MockHttpClientFactory() : this(new HttpClient()) { }
-
-        public MockHttpClientFactory(HttpClient httpClient) => HttpClient = httpClient;
 
         /// <summary>
         /// Creates an IHttpClientFactory which always returns an HttpClient containing only the httpMessageHandler parameter.

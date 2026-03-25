@@ -12,10 +12,8 @@ namespace LoRaWan.Tests.Integration
     using Xunit;
     using Xunit.Abstractions;
 
-    public class FunctionBundlerIntegrationTests : MessageProcessorTestBase
+    public class FunctionBundlerIntegrationTests(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        public FunctionBundlerIntegrationTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
-
         [Fact]
         public async Task Validate_Function_Bundler_Execution()
         {

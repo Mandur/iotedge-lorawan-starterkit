@@ -29,7 +29,7 @@ namespace LoRaWan.Tests.Common
             JsonReader.Object(JsonReader.Property("DevEui", from d in JsonReader.String()
                                                             select DevEui.Parse(d)));
 
-        private readonly ConcurrentBag<string> receivedMessages = new ConcurrentBag<string>();
+        private readonly ConcurrentBag<string> receivedMessages = [];
         private readonly ILogger logger;
 
         public IReadOnlyCollection<string> ReceivedMessages => this.receivedMessages;
@@ -80,7 +80,7 @@ namespace LoRaWan.Tests.Common
             FrmCntDown = frmCntDown;
             FrmCntUp = frmCntUp;
             this.logger = logger;
-            SimulatedBasicsStations = simulatedBasicsStation?.ToList() ?? new List<SimulatedBasicsStation>();
+            SimulatedBasicsStations = simulatedBasicsStation?.ToList() ?? [];
 
             void AddToDeviceMessageQueue(string response)
             {

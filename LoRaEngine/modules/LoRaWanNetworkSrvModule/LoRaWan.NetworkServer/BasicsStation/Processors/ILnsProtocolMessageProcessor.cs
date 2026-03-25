@@ -14,13 +14,13 @@ namespace LoRaWan.NetworkServer.BasicsStation.Processors
         /// </summary>
         /// <param name="httpContext">The HttpContext coming from ASP.Net Core.</param>
         /// <param name="token">The cancellation token.</param>
-        public Task HandleDiscoveryAsync(HttpContext httpContext, CancellationToken token);
+        Task HandleDiscoveryAsync(HttpContext httpContext, CancellationToken token);
 
         /// <summary>
         /// This method handles the data requests coming from Basic Station clients.
         /// </summary>
         /// <param name="httpContext">The HttpContext coming from ASP.Net Core.</param>
         /// <param name="token">The cancellation token.</param>
-        public Task HandleDataAsync(HttpContext httpContext, CancellationToken token);
+        Task HandleDataAsync(HttpContext httpContext, CancellationToken token);
     }
 }

@@ -8,30 +8,21 @@ namespace LoRaTools.Regions
     using System.Collections.Generic;
     using LoRaWan;
 
-    public class RegionLimits
+    public class RegionLimits((Hertz Min, Hertz Max) frequencyRange, ISet<DataRate> upstreamValidDR, ISet<DataRate> downstreamValidDR,
+                        DataRateIndex startUpstreamDRIndex, DataRateIndex startDownstreamDRIndex)
     {
         /// <summary>
         /// Gets or sets The maximum and minimum datarate of a given region.
         /// </summary>
-        public (Hertz Min, Hertz Max) FrequencyRange { get; set; }
+        public (Hertz Min, Hertz Max) FrequencyRange { get; set; } = frequencyRange;
 
-        private readonly ISet<DataRate> downstreamValidDR;
+        private readonly ISet<DataRate> downstreamValidDR = downstreamValidDR;
 
-        private readonly ISet<DataRate> upstreamValidDR;
+        private readonly ISet<DataRate> upstreamValidDR = upstreamValidDR;
 
-        private readonly DataRateIndex startUpstreamDRIndex;
+        private readonly DataRateIndex startUpstreamDRIndex = startUpstreamDRIndex;
 
-        private readonly DataRateIndex startDownstreamDRIndex;
-
-        public RegionLimits((Hertz Min, Hertz Max) frequencyRange, ISet<DataRate> upstreamValidDR, ISet<DataRate> downstreamValidDR,
-                            DataRateIndex startUpstreamDRIndex, DataRateIndex startDownstreamDRIndex)
-        {
-            FrequencyRange = frequencyRange;
-            this.downstreamValidDR = downstreamValidDR;
-            this.upstreamValidDR = upstreamValidDR;
-            this.startDownstreamDRIndex = startDownstreamDRIndex;
-            this.startUpstreamDRIndex = startUpstreamDRIndex;
-        }
+        private readonly DataRateIndex startDownstreamDRIndex = startDownstreamDRIndex;
 
         public bool IsCurrentUpstreamDRIndexWithinAcceptableValue(DataRateIndex dr) => (dr >= this.startUpstreamDRIndex) && dr < this.startUpstreamDRIndex + this.upstreamValidDR.Count;
 

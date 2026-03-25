@@ -10,28 +10,18 @@ namespace LoRaWan.NetworkServer
     using System.Threading.Tasks;
     using Microsoft.Extensions.Hosting;
 
-    internal class CloudControlHost : IHostedService
+    internal class CloudControlHost(ILnsRemoteCallListener lnsRemoteCallListener,
+                                     ILnsRemoteCallHandler lnsRemoteCallHandler,
+                                     NetworkServerConfiguration networkServerConfiguration) : IHostedService
     {
-        private readonly ILnsRemoteCallListener lnsRemoteCallListener;
-        private readonly ILnsRemoteCallHandler lnsRemoteCallHandler;
-        private readonly string[] subscriptionChannels;
-
-        public CloudControlHost(ILnsRemoteCallListener lnsRemoteCallListener,
-                                ILnsRemoteCallHandler lnsRemoteCallHandler,
-                                NetworkServerConfiguration networkServerConfiguration)
-        {
-            this.lnsRemoteCallListener = lnsRemoteCallListener;
-            this.lnsRemoteCallHandler = lnsRemoteCallHandler;
-            this.subscriptionChannels = new string[] { networkServerConfiguration.GatewayID, Constants.CloudToDeviceClearCache };
-        }
-
+        private readonly string[] subscriptionChannels = [networkServerConfiguration.GatewayID, Constants.CloudToDeviceClearCache];
 
         public Task StartAsync(CancellationToken cancellationToken) =>
-            Task.WhenAll(this.subscriptionChannels.Select(c => this.lnsRemoteCallListener.SubscribeAsync(c,
-                                                                                                         remoteCall => this.lnsRemoteCallHandler.ExecuteAsync(remoteCall, cancellationToken),
+            Task.WhenAll(subscriptionChannels.Select(c => lnsRemoteCallListener.SubscribeAsync(c,
+                                                                                                         remoteCall => lnsRemoteCallHandler.ExecuteAsync(remoteCall, cancellationToken),
                                                                                                          cancellationToken)));
 
         public Task StopAsync(CancellationToken cancellationToken) =>
-            Task.WhenAll(this.subscriptionChannels.Select(c => this.lnsRemoteCallListener.UnsubscribeAsync(c, cancellationToken)));
+            Task.WhenAll(subscriptionChannels.Select(c => lnsRemoteCallListener.UnsubscribeAsync(c, cancellationToken)));
     }
 }

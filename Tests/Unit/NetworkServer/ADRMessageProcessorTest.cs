@@ -18,10 +18,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using Xunit.Abstractions;
     using static DataRateIndex;
 
-    public class ADRMessageProcessorTest : MessageProcessorTestBase
+    public class ADRMessageProcessorTest(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        public ADRMessageProcessorTest(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
-
         [Theory]
         // deviceId, # messages sent, ExpectedDR, expectedPower, expectedNbRep
         // Enough Messages, Perform ADR

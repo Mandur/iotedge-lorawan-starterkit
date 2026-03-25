@@ -104,14 +104,14 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             internal ConcentratorDeduplication.DataMessageKey Value { get; }
         }
 
-        private static readonly (DevEui DevEui, Mic Mic, ushort FCnt, string? FieldNotUsedInKey)[] RawCreateKeyDataMessagesTheoryData = new (DevEui, Mic, ushort, string?)[]
-        {
+        private static readonly (DevEui DevEui, Mic Mic, ushort FCnt, string? FieldNotUsedInKey)[] RawCreateKeyDataMessagesTheoryData =
+        [
             (new DevEui(0), new Mic(0), 0,  null),
             (new DevEui(0), new Mic(0), 0, "1"), // a non-relevant field should not influence the key
             (new DevEui(0x1010101010101010UL), new Mic(0), 0, null),
             (new DevEui(0), new Mic(1), 0, null),
             (new DevEui(0), new Mic(0), 1, null)
-        };
+        ];
 
         public static TheoryData<DataMessageKeyHolder, DevEui, Mic, ushort, string?> CreateKeyDataMessagesTheoryData =>
             TheoryDataFactory.From(from dataPoint in RawCreateKeyDataMessagesTheoryData
@@ -188,14 +188,14 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             internal ConcentratorDeduplication.JoinMessageKey Value { get; }
         }
 
-        private static readonly (JoinEui JoinEui, DevEui DevEui, DevNonce DevNonce, int? FieldNotUsedInKey)[] RawCreateKeyJoinMessagesTheoryData = new (JoinEui, DevEui, DevNonce, int?)[]
-        {
+        private static readonly (JoinEui JoinEui, DevEui DevEui, DevNonce DevNonce, int? FieldNotUsedInKey)[] RawCreateKeyJoinMessagesTheoryData =
+        [
             (new JoinEui(0), new DevEui(0), new DevNonce(0), null),
             (new JoinEui(0), new DevEui(0), new DevNonce(0), 1),
             (new JoinEui(0x1010101010101010UL), new DevEui(0), new DevNonce(0), null),
             (new JoinEui(0), new DevEui(0x1010101010101010UL), new DevNonce(0), null),
             (new JoinEui(0), new DevEui(0), new DevNonce(1), null),
-        };
+        ];
 
         public static TheoryData<JoinMessageKeyHolder, JoinEui, DevEui, DevNonce, Mic> CreateKeyJoinMessagesTheoryData =>
             TheoryDataFactory.From(from dataPoint in RawCreateKeyJoinMessagesTheoryData

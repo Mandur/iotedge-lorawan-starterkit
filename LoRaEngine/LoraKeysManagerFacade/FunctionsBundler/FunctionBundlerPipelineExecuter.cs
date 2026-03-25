@@ -9,28 +9,20 @@ namespace LoraKeysManagerFacade.FunctionBundler
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
 
-    public class FunctionBundlerPipelineExecuter : IPipelineExecutionContext
+    public class FunctionBundlerPipelineExecuter(IFunctionBundlerExecutionItem[] registeredHandlers,
+                                           DevEui devEUI,
+                                           FunctionBundlerRequest request,
+                                           ILogger logger = null) : IPipelineExecutionContext
     {
-        private readonly IFunctionBundlerExecutionItem[] registeredHandlers;
+        private readonly IFunctionBundlerExecutionItem[] registeredHandlers = registeredHandlers;
 
-        public DevEui DevEUI { get; private set; }
+        public DevEui DevEUI { get; private set; } = devEUI;
 
-        public FunctionBundlerRequest Request { get; private set; }
+        public FunctionBundlerRequest Request { get; private set; } = request;
 
         public FunctionBundlerResult Result { get; private set; } = new FunctionBundlerResult();
 
-        public ILogger Logger { get; private set; }
-
-        public FunctionBundlerPipelineExecuter(IFunctionBundlerExecutionItem[] registeredHandlers,
-                                               DevEui devEUI,
-                                               FunctionBundlerRequest request,
-                                               ILogger logger = null)
-        {
-            this.registeredHandlers = registeredHandlers;
-            DevEUI = devEUI;
-            Request = request;
-            Logger = logger ?? NullLogger.Instance;
-        }
+        public ILogger Logger { get; private set; } = logger ?? NullLogger.Instance;
 
         public async Task<FunctionBundlerResult> Execute()
         {

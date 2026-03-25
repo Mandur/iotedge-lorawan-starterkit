@@ -21,10 +21,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using static LoRaWan.DataRateIndex;
     using static LoRaWan.RxDelay;
 
-    public class MessageProcessorJoinTest : MessageProcessorTestBase
+    public class MessageProcessorJoinTest(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        public MessageProcessorJoinTest(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
-
         [Fact]
         public async Task When_Device_Is_Not_Found_In_Api_Should_Return_Null()
         {

@@ -11,16 +11,10 @@ namespace LoraKeysManagerFacade
     using Microsoft.Azure.WebJobs.Extensions.Http;
     using Microsoft.Extensions.Logging;
 
-    internal class LoRaDeviceJoinNotificationFunction
+    internal class LoRaDeviceJoinNotificationFunction(LoRaDevAddrCache loRaDevAddrCache, ILogger<LoRaDeviceJoinNotificationFunction> logger)
     {
-        private readonly LoRaDevAddrCache loRaDevAddrCache;
-        private readonly ILogger<LoRaDeviceJoinNotificationFunction> logger;
-
-        public LoRaDeviceJoinNotificationFunction(LoRaDevAddrCache loRaDevAddrCache, ILogger<LoRaDeviceJoinNotificationFunction> logger)
-        {
-            this.loRaDevAddrCache = loRaDevAddrCache;
-            this.logger = logger;
-        }
+        private readonly LoRaDevAddrCache loRaDevAddrCache = loRaDevAddrCache;
+        private readonly ILogger<LoRaDeviceJoinNotificationFunction> logger = logger;
 
         [FunctionName("DeviceJoinNotification")]
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = "devicejoinnotification")] DeviceJoinNotification joinNotification,

@@ -15,7 +15,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools
 
     public sealed class LoggerExtensionsTests
     {
-        private readonly List<Dictionary<string, object>> actualScopes = new();
+        private readonly List<Dictionary<string, object>> actualScopes = [];
         private readonly ILogger logger;
 
         public LoggerExtensionsTests()

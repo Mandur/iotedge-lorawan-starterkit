@@ -13,7 +13,7 @@ namespace LoRaWan.NetworkServer
         /// <param name="loRaRequest">The Join request</param>
         /// <returns><see cref="ConcentratorDeduplicationResult.NotDuplicate"/> if this join request was not processed before
         /// on this LNS otherwise <see cref="ConcentratorDeduplicationResult.Duplicate"/></returns>
-        public ConcentratorDeduplicationResult CheckDuplicateJoin(LoRaRequest loRaRequest);
+        ConcentratorDeduplicationResult CheckDuplicateJoin(LoRaRequest loRaRequest);
 
         /// <summary>
         /// Validates if a particular telemetry message has been processed before by this LNS and
@@ -23,7 +23,7 @@ namespace LoRaWan.NetworkServer
         /// <param name="loRaRequest">The telemetry request</param>
         /// <param name="loRaDevice">The device that sent the message</param>
         /// <returns>Any of the <see cref="ConcentratorDeduplicationResult"/> values described.</returns>
-        public ConcentratorDeduplicationResult CheckDuplicateData(LoRaRequest loRaRequest, LoRaDevice loRaDevice);
+        ConcentratorDeduplicationResult CheckDuplicateData(LoRaRequest loRaRequest, LoRaDevice loRaDevice);
     }
 
     public enum ConcentratorDeduplicationResult

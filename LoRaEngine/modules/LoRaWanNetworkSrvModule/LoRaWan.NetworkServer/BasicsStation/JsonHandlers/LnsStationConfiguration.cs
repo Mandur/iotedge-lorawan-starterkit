@@ -23,91 +23,53 @@ namespace LoRaWan.NetworkServer.BasicsStation.JsonHandlers
             _ => throw new ArgumentException(null, nameof(radio))
         };
 
-        private class ChannelConfig
+        private class ChannelConfig(bool enable, Radio radio, int @if)
         {
-            public ChannelConfig(bool enable, Radio radio, int @if)
-            {
-                Enable = enable;
-                Radio = radio;
-                If = @if;
-            }
-
-            public bool Enable { get; }
-            public Radio Radio { get; }
-            public int If { get; }
+            public bool Enable { get; } = enable;
+            public Radio Radio { get; } = radio;
+            public int If { get; } = @if;
         }
 
-        private class StandardConfig
+        private class StandardConfig(bool enable, Radio radio, int @if, Bandwidth bandwidth, SpreadingFactor spreadingFactor)
         {
-            public StandardConfig(bool enable, Radio radio, int @if, Bandwidth bandwidth, SpreadingFactor spreadingFactor)
-            {
-                Enable = enable;
-                Radio = radio;
-                If = @if;
-                Bandwidth = bandwidth;
-                SpreadingFactor = spreadingFactor;
-            }
-
-            public bool Enable { get; }
-            public Radio Radio { get; }
-            public int If { get; }
-            public Bandwidth Bandwidth { get; }
-            public SpreadingFactor SpreadingFactor { get; }
+            public bool Enable { get; } = enable;
+            public Radio Radio { get; } = radio;
+            public int If { get; } = @if;
+            public Bandwidth Bandwidth { get; } = bandwidth;
+            public SpreadingFactor SpreadingFactor { get; } = spreadingFactor;
         }
 
-        private class RadioConfig
+        private class RadioConfig(bool enable, Hertz freq)
         {
-            public RadioConfig(bool enable, Hertz freq)
-            {
-                Enable = enable;
-                Freq = freq;
-            }
-
-            public bool Enable { get; }
-            public Hertz Freq { get; }
+            public bool Enable { get; } = enable;
+            public Hertz Freq { get; } = freq;
         }
 
-        private class Sx1301Config
+        private class Sx1301Config(RadioConfig radio0,
+                                   RadioConfig radio1,
+                                   StandardConfig channelLoraStd,
+                                   ChannelConfig channelFsk,
+                                   ChannelConfig channelMultiSf0,
+                                   ChannelConfig channelMultiSf1,
+                                   ChannelConfig channelMultiSf2,
+                                   ChannelConfig channelMultiSf3,
+                                   ChannelConfig channelMultiSf4,
+                                   ChannelConfig channelMultiSf5,
+                                   ChannelConfig channelMultiSf6,
+                                   ChannelConfig channelMultiSf7)
         {
-            public Sx1301Config(RadioConfig radio0,
-                                RadioConfig radio1,
-                                StandardConfig channelLoraStd,
-                                ChannelConfig channelFsk,
-                                ChannelConfig channelMultiSf0,
-                                ChannelConfig channelMultiSf1,
-                                ChannelConfig channelMultiSf2,
-                                ChannelConfig channelMultiSf3,
-                                ChannelConfig channelMultiSf4,
-                                ChannelConfig channelMultiSf5,
-                                ChannelConfig channelMultiSf6,
-                                ChannelConfig channelMultiSf7)
-            {
-                Radio0 = radio0;
-                Radio1 = radio1;
-                ChannelLoraStd = channelLoraStd;
-                ChannelFsk = channelFsk;
-                ChannelMultiSf0 = channelMultiSf0;
-                ChannelMultiSf1 = channelMultiSf1;
-                ChannelMultiSf2 = channelMultiSf2;
-                ChannelMultiSf3 = channelMultiSf3;
-                ChannelMultiSf4 = channelMultiSf4;
-                ChannelMultiSf5 = channelMultiSf5;
-                ChannelMultiSf6 = channelMultiSf6;
-                ChannelMultiSf7 = channelMultiSf7;
-            }
-
-            public RadioConfig Radio0 { get; }
-            public RadioConfig Radio1 { get; }
-            public StandardConfig ChannelLoraStd { get; }
-            public ChannelConfig ChannelFsk { get; }
-            public ChannelConfig ChannelMultiSf0 { get; }
-            public ChannelConfig ChannelMultiSf1 { get; }
-            public ChannelConfig ChannelMultiSf2 { get; }
-            public ChannelConfig ChannelMultiSf3 { get; }
-            public ChannelConfig ChannelMultiSf4 { get; }
-            public ChannelConfig ChannelMultiSf5 { get; }
-            public ChannelConfig ChannelMultiSf6 { get; }
-            public ChannelConfig ChannelMultiSf7 { get; }
+            public RadioConfig Radio0 { get; } = radio0;
+            public RadioConfig Radio1 { get; } = radio1;
+            public StandardConfig ChannelLoraStd { get; } = channelLoraStd;
+            public ChannelConfig ChannelFsk { get; } = channelFsk;
+            public ChannelConfig ChannelMultiSf0 { get; } = channelMultiSf0;
+            public ChannelConfig ChannelMultiSf1 { get; } = channelMultiSf1;
+            public ChannelConfig ChannelMultiSf2 { get; } = channelMultiSf2;
+            public ChannelConfig ChannelMultiSf3 { get; } = channelMultiSf3;
+            public ChannelConfig ChannelMultiSf4 { get; } = channelMultiSf4;
+            public ChannelConfig ChannelMultiSf5 { get; } = channelMultiSf5;
+            public ChannelConfig ChannelMultiSf6 { get; } = channelMultiSf6;
+            public ChannelConfig ChannelMultiSf7 { get; } = channelMultiSf7;
         }
 
         private static readonly IJsonProperty<Radio> RadioProperty =
@@ -173,7 +135,7 @@ namespace LoRaWan.NetworkServer.BasicsStation.JsonHandlers
                                                                             select new NetId((int)id))),
                               JsonReader.Property("JoinEui", JsonReader.Array(JsonReader.Tuple(JoinEuiReader, JoinEuiReader))
                                                                        .OrNull(),
-                                                  (true, Array.Empty<(JoinEui, JoinEui)>())),
+                                                  (true, [])),
                               JsonReader.Property("region", JsonReader.String()),
                               JsonReader.Property("hwspec", JsonReader.String()),
                               JsonReader.Property("freq_range", JsonReader.Tuple(HertzReader, HertzReader)),
@@ -205,9 +167,7 @@ namespace LoRaWan.NetworkServer.BasicsStation.JsonHandlers
                                       JsonReader.Property("freqs", JsonReader.Array(JsonReader.UInt32())),
                                       (dRs, layout, freqs) => new Beaconing(dRs, layout, freqs)),
                                   (true, null)),
-                              (netId, joinEui, region, hwspec, freqRange, drs, sx1301conf, nocca, nodc, nodwell, bcning) =>
-                                    WriteRouterConfig(netId, joinEui, region, hwspec, freqRange, drs,
-                                                      sx1301conf, nocca, nodc, nodwell, bcning));
+                              WriteRouterConfig);
 
 
         private static readonly IJsonReader<Region> RegionConfigurationConverter =
@@ -266,7 +226,7 @@ namespace LoRaWan.NetworkServer.BasicsStation.JsonHandlers
             if (string.IsNullOrEmpty(region)) throw new JsonException("Region must not be null.");
             if (string.IsNullOrEmpty(hwspec)) throw new JsonException("hwspec must not be null.");
             if (freqRange is var (minFreq, maxFreq) && minFreq == maxFreq) throw new JsonException("Minimum and maximum frequencies must differ.");
-            if (dataRates.Count() is 0) throw new JsonException("Datarates list must not be empty.");
+            if (!dataRates.Any()) throw new JsonException("Datarates list must not be empty.");
             if (sx1301Config.Length == 0) throw new JsonException("sx1301_conf must not be empty.");
 
             using var ms = new MemoryStream();

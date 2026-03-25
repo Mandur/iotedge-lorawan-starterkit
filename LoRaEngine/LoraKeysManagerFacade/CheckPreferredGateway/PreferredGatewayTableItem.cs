@@ -3,17 +3,11 @@
 
 namespace LoraKeysManagerFacade
 {
-    public class PreferredGatewayTableItem
+    public class PreferredGatewayTableItem(string gatewayID, double rssi)
     {
-        public string GatewayID { get; private set; }
+        public string GatewayID { get; private set; } = gatewayID;
 
-        public double Rssi { get; private set; }
-
-        public PreferredGatewayTableItem(string gatewayID, double rssi)
-        {
-            GatewayID = gatewayID;
-            Rssi = rssi;
-        }
+        public double Rssi { get; private set; } = rssi;
 
         /// <summary>
         /// Creates a string representation of the object for caching.

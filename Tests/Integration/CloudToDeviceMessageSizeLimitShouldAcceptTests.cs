@@ -17,10 +17,8 @@ namespace LoRaWan.Tests.Integration
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
     // Cloud to device message processing max payload size tests (Join tests are handled in other class)
     [Collection(TestConstants.C2D_Size_Limit_TestCollectionName)]
-    public class CloudToDeviceMessageSizeLimitShouldAcceptTests : CloudToDeviceMessageSizeLimitBaseTests
+    public class CloudToDeviceMessageSizeLimitShouldAcceptTests(ITestOutputHelper testOutputHelper) : CloudToDeviceMessageSizeLimitBaseTests(testOutputHelper)
     {
-        public CloudToDeviceMessageSizeLimitShouldAcceptTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
-
         [Theory]
         [CombinatorialData]
         public async Task Should_Accept(

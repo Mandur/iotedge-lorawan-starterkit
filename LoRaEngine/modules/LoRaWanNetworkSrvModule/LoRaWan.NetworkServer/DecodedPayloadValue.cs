@@ -9,14 +9,9 @@ namespace LoRaWan.NetworkServer
     /// Defines a simple decoded payload value
     /// Represents the value as: { "value":1 }.
     /// </summary>
-    public class DecodedPayloadValue
+    public class DecodedPayloadValue(object value)
     {
         [JsonProperty("value")]
-        public object Value { get; set; }
-
-        public DecodedPayloadValue(object value)
-        {
-            Value = value;
-        }
+        public object Value { get; set; } = value;
     }
 }

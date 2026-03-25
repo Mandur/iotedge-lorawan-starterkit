@@ -190,7 +190,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools.CommonAPI
 
         [Fact]
         public void Can_Serialize_DevEui_NewtonsoftJson() =>
-            Can_Serialize_DevEui(m => Newtonsoft.Json.JsonConvert.SerializeObject(m));
+            Can_Serialize_DevEui(Newtonsoft.Json.JsonConvert.SerializeObject);
 
         private static void Can_Serialize_DevEui(Func<LoRaCloudToDeviceMessage, string> serialize)
         {

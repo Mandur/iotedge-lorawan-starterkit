@@ -8,18 +8,11 @@ namespace LoRaTools.ADR
     using LoRaWan;
     using Microsoft.Extensions.Logging;
 
-    public class LoRaADRManagerBase : ILoRaADRManager
+    public class LoRaADRManagerBase(ILoRaADRStore store, ILoRaADRStrategyProvider strategyProvider, ILogger<LoRaADRManagerBase> logger) : ILoRaADRManager
     {
-        private readonly ILoRaADRStore store;
-        private readonly ILoRaADRStrategyProvider strategyProvider;
-        private readonly ILogger<LoRaADRManagerBase> logger;
-
-        public LoRaADRManagerBase(ILoRaADRStore store, ILoRaADRStrategyProvider strategyProvider, ILogger<LoRaADRManagerBase> logger)
-        {
-            this.store = store;
-            this.strategyProvider = strategyProvider;
-            this.logger = logger;
-        }
+        private readonly ILoRaADRStore store = store;
+        private readonly ILoRaADRStrategyProvider strategyProvider = strategyProvider;
+        private readonly ILogger<LoRaADRManagerBase> logger = logger;
 
         protected virtual void UpdateState(LoRaADRResult loRaADRResult)
         {

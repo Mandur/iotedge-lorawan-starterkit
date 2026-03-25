@@ -16,14 +16,11 @@ namespace LoRaWan.Tests.Common
     /// It forwards log statements directly to <see cref="ITestOutputHelper"/> without taking into account scope information.
     /// It does not support category names or event IDs.
     /// </summary>
-    public class TestOutputLogger : ILogger
+    public class TestOutputLogger(ITestOutputHelper testOutputHelper) : ILogger
     {
         private const LogLevel TestLogLevel = LogLevel.Debug;
 
-        private readonly ITestOutputHelper testOutputHelper;
-
-        public TestOutputLogger(ITestOutputHelper testOutputHelper) =>
-            this.testOutputHelper = testOutputHelper;
+        private readonly ITestOutputHelper testOutputHelper = testOutputHelper;
 
         public IDisposable BeginScope<TState>(TState state) => NoopDisposable.Instance;
 
@@ -31,7 +28,7 @@ namespace LoRaWan.Tests.Common
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
-            if (formatter is null) throw new ArgumentNullException(nameof(formatter));
+            ArgumentNullException.ThrowIfNull(formatter);
             if (!IsEnabled(logLevel)) return;
 
             var message = formatter(state, exception);
@@ -48,17 +45,13 @@ namespace LoRaWan.Tests.Common
         }
     }
 
-    public sealed class TestOutputLogger<T> : TestOutputLogger, ILogger<T>
+    public sealed class TestOutputLogger<T>(ITestOutputHelper testOutputHelper) : TestOutputLogger(testOutputHelper), ILogger<T>
     {
-        public TestOutputLogger(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
     }
 
-    public sealed class TestOutputLoggerFactory : ILoggerFactory
+    public sealed class TestOutputLoggerFactory(ITestOutputHelper testOutputHelper) : ILoggerFactory
     {
-        private readonly TestOutputLoggerProvider testOutputLoggerProvider;
-
-        public TestOutputLoggerFactory(ITestOutputHelper testOutputHelper) =>
-            this.testOutputLoggerProvider = new TestOutputLoggerProvider(testOutputHelper);
+        private readonly TestOutputLoggerProvider testOutputLoggerProvider = new TestOutputLoggerProvider(testOutputHelper);
 
         public void AddProvider(ILoggerProvider provider)
         {
@@ -70,13 +63,10 @@ namespace LoRaWan.Tests.Common
 
         public void Dispose() => this.testOutputLoggerProvider.Dispose();
 
-        private sealed class TestOutputLoggerProvider : ILoggerProvider
+        private sealed class TestOutputLoggerProvider(ITestOutputHelper testOutputHelper) : ILoggerProvider
         {
-            private readonly ITestOutputHelper testOutputHelper;
+            private readonly ITestOutputHelper testOutputHelper = testOutputHelper;
             private readonly ConcurrentDictionary<string, TestOutputLogger> loggers = new();
-
-            public TestOutputLoggerProvider(ITestOutputHelper testOutputHelper) =>
-                this.testOutputHelper = testOutputHelper;
 
             public ILogger CreateLogger(string categoryName) =>
                 this.loggers.GetOrAdd(categoryName, _ => new TestOutputLogger(this.testOutputHelper));

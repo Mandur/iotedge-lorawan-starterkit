@@ -312,7 +312,7 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade.FunctionBundler
 
         private async Task PrepareADRFrames(DevEui deviceEUI, int numberOfFrames, LoRaADRRequest req)
         {
-            await PrepareADRFrames(deviceEUI, numberOfFrames, new List<LoRaADRRequest>() { req });
+            await PrepareADRFrames(deviceEUI, numberOfFrames, [req]);
         }
 
         private async Task PrepareADRFrames(DevEui deviceEUI, int numberOfFrames, List<LoRaADRRequest> requests)
@@ -360,7 +360,7 @@ namespace LoRaWan.Tests.Unit.LoraKeysManagerFacade.FunctionBundler
             Assert.IsType<PreferredGatewayExecutionItem>(sorted.ElementAt(3));
 
             // Ensure no item has the same priority
-            Assert.Empty(items.GroupBy(x => x.Priority).Where(x => x.Count() > 1));
+            Assert.DoesNotContain(items.GroupBy(x => x.Priority), g => g.Count() > 1);
         }
 
         public void Dispose()

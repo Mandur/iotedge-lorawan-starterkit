@@ -38,7 +38,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         public void CreateCounter_Success_Case()
         {
             // arrange
-            var customMetric = new CustomMetric("foo", "bar", MetricType.Counter, Array.Empty<string>());
+            var customMetric = new CustomMetric("foo", "bar", MetricType.Counter, []);
 
             // act
             var result = this.meter.CreateCounter<int>(customMetric);
@@ -52,7 +52,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         public void CreateCounter_Throws_When_Argument_Is_Histogram()
         {
             // arrange
-            var customMetric = new CustomMetric("foo", "bar", MetricType.Histogram, Array.Empty<string>());
+            var customMetric = new CustomMetric("foo", "bar", MetricType.Histogram, []);
 
             // act + assert
             Assert.Throws<ArgumentException>(() => this.meter.CreateCounter<int>(customMetric));
@@ -62,7 +62,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         public void CreateHistogram_Success_Case()
         {
             // arrange
-            var customMetric = new CustomMetric("foo", "bar", MetricType.Histogram, Array.Empty<string>());
+            var customMetric = new CustomMetric("foo", "bar", MetricType.Histogram, []);
 
             // act
             var result = this.meter.CreateHistogram<int>(customMetric);
@@ -76,7 +76,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         public void CreateHistogram_Throws_When_Argument_Is_Counter()
         {
             // arrange
-            var customMetric = new CustomMetric("foo", "bar", MetricType.Counter, Array.Empty<string>());
+            var customMetric = new CustomMetric("foo", "bar", MetricType.Counter, []);
 
             // act + assert
             Assert.Throws<ArgumentException>(() => this.meter.CreateHistogram<int>(customMetric));
@@ -86,7 +86,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         public void CreateObservableGauge_Success_Case()
         {
             // arrange
-            var customMetric = new CustomMetric("foo", "bar", MetricType.ObservableGauge, Array.Empty<string>());
+            var customMetric = new CustomMetric("foo", "bar", MetricType.ObservableGauge, []);
 
             // act
             var result = this.meter.CreateObservableGauge<int>(customMetric, () => 1);
@@ -100,7 +100,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         public void CreateObservableGauge_Throws_When_Argument_Is_Counter()
         {
             // arrange
-            var customMetric = new CustomMetric("foo", "bar", MetricType.Counter, Array.Empty<string>());
+            var customMetric = new CustomMetric("foo", "bar", MetricType.Counter, []);
 
             // act + assert
             Assert.Throws<ArgumentException>(() => this.meter.CreateObservableGauge(customMetric, () => 1));
@@ -117,7 +117,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             var result = MetricExporterHelper.GetTagsInOrder(tags, tagValues, this.metricTagBag);
 
             // assert
-            Assert.Equal(new[] { "foovalue", "barvalue" }, result);
+            Assert.Equal(["foovalue", "barvalue"], result);
         }
 
         [Fact]
@@ -131,24 +131,24 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             var result = MetricExporterHelper.GetTagsInOrder(tags, tagValues, this.metricTagBag);
 
             // assert
-            Assert.Equal(new[] { "foovalue", "barvalue" }, result);
+            Assert.Equal(["foovalue", "barvalue"], result);
         }
 
         [Fact]
         public void GetTagsInOrder_Throws_When_Tag_Not_Found()
         {
-            var result = Assert.Throws<LoRaProcessingException>(() => MetricExporterHelper.GetTagsInOrder(new[] { "foo" }, Array.Empty<KeyValuePair<string, object?>>(), this.metricTagBag));
+            var result = Assert.Throws<LoRaProcessingException>(() => MetricExporterHelper.GetTagsInOrder(new[] { "foo" }, [], this.metricTagBag));
             Assert.Equal(LoRaProcessingErrorCode.TagNotSet, result.ErrorCode);
         }
 
         public static TheoryData<string[], KeyValuePair<string, object?>[]> Tag_Value_Is_Not_In_Tag_Names() =>
-            TheoryDataFactory.From(new[]
-            {
+            TheoryDataFactory.From(
+            [
                 (Array.Empty<string>(), new[] { KeyValuePair.Create("foo", (object?)"bar") }),
-                (new[] { "foo" }, new[] { KeyValuePair.Create("foo", (object?)"bar"), KeyValuePair.Create("baz", (object?)"bar") }),
-                (new[] { MetricRegistry.GatewayIdTagName }, new[] { KeyValuePair.Create("foo", (object?)"bar") }),
-                (new[] { MetricRegistry.GatewayIdTagName, "foo" }, new[] { KeyValuePair.Create("foo", (object?)"bar"), KeyValuePair.Create("baz", (object?)"bar") })
-            });
+                (["foo"], [KeyValuePair.Create("foo", (object?)"bar"), KeyValuePair.Create("baz", (object?)"bar")]),
+                ([MetricRegistry.GatewayIdTagName], [KeyValuePair.Create("foo", (object?)"bar")]),
+                ([MetricRegistry.GatewayIdTagName, "foo"], [KeyValuePair.Create("foo", (object?)"bar"), KeyValuePair.Create("baz", (object?)"bar")])
+            ]);
 
         [Theory]
         [MemberData(nameof(Tag_Value_Is_Not_In_Tag_Names))]
@@ -161,7 +161,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         public void GetTagsInOrder_Throws_When_Tag_Is_Empty()
         {
             const string tagName = "foo";
-            var result = Assert.Throws<LoRaProcessingException>(() => MetricExporterHelper.GetTagsInOrder(new[] { tagName }, new[] { KeyValuePair.Create(tagName, (object?)string.Empty) }, this.metricTagBag));
+            var result = Assert.Throws<LoRaProcessingException>(() => MetricExporterHelper.GetTagsInOrder(new[] { tagName }, [KeyValuePair.Create(tagName, (object?)string.Empty)], this.metricTagBag));
             Assert.Equal(LoRaProcessingErrorCode.TagNotSet, result.ErrorCode);
         }
 
@@ -173,20 +173,20 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             this.metricTagBag.StationEui.Value = stationEui;
 
             // act
-            var result = MetricExporterHelper.GetTagsInOrder(new[] { MetricRegistry.ConcentratorIdTagName }, Array.Empty<KeyValuePair<string, object?>>(), this.metricTagBag);
+            var result = MetricExporterHelper.GetTagsInOrder(new[] { MetricRegistry.ConcentratorIdTagName }, [], this.metricTagBag);
 
             // assert
-            Assert.Equal(new[] { stationEui.ToString() }, result);
+            Assert.Equal([stationEui.ToString()], result);
         }
 
         [Fact]
         public void GetTagsInOrder_Should_Fall_Back_To_Tag_Bag_For_GatewayId()
         {
             // arrange + act
-            var result = MetricExporterHelper.GetTagsInOrder(new[] { MetricRegistry.GatewayIdTagName }, Array.Empty<KeyValuePair<string, object?>>(), this.metricTagBag);
+            var result = MetricExporterHelper.GetTagsInOrder(new[] { MetricRegistry.GatewayIdTagName }, [], this.metricTagBag);
 
             // assert
-            Assert.Equal(new[] { GatewayId }, result);
+            Assert.Equal([GatewayId], result);
         }
 
         [Fact]
@@ -194,11 +194,11 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         {
             // arrange + act
             var result = MetricExporterHelper.GetTagsInOrder(new[] { MetricRegistry.GatewayIdTagName },
-                                                             Array.Empty<KeyValuePair<string, object?>>(),
+                                                             [],
                                                              new RegistryMetricTagBag(new NetworkServerConfiguration()));
 
             // assert
-            Assert.Equal(new[] { "unknown" }, result);
+            Assert.Equal(["unknown"], result);
         }
 
         [Fact]

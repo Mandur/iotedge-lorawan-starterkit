@@ -102,7 +102,7 @@ namespace LoraKeysManagerFacade
 
         public void StoreInfo(DevAddrCacheInfo info)
         {
-            if (info is null) throw new ArgumentNullException(nameof(info));
+            ArgumentNullException.ThrowIfNull(info);
 
             var serializedObjectValue = JsonConvert.SerializeObject(info);
 
@@ -267,6 +267,7 @@ namespace LoraKeysManagerFacade
         /// <summary>
         /// Method to bulk save a devAddrCacheInfo list in redis in a call per devAddr.
         /// </summary>
+        /// <param name="devAddrCacheInfos">The list of device address cache information to save.</param>
         /// <param name="canDeleteDeviceWithDevAddr"> Should delete all other elements non present in this list?.</param>
         private void BulkSaveDevAddrCache(List<DevAddrCacheInfo> devAddrCacheInfos, bool canDeleteDeviceWithDevAddr)
         {

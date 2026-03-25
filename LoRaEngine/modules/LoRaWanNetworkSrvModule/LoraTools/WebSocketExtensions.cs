@@ -42,8 +42,8 @@ namespace LoRaTools
                                                                       MemoryPool<byte> memoryPool, int minBufferSize,
                                                                       CancellationToken cancellationToken)
         {
-            if (socket == null) throw new ArgumentNullException(nameof(socket));
-            if (memoryPool == null) throw new ArgumentNullException(nameof(memoryPool));
+            ArgumentNullException.ThrowIfNull(socket);
+            ArgumentNullException.ThrowIfNull(memoryPool);
 
             while (true)
             {

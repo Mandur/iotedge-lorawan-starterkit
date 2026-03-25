@@ -17,7 +17,7 @@ namespace LoRaTools.Mac
         public override int Length => 1;
 
         public override IEnumerable<byte> ToBytes() =>
-            new byte[] { (byte)Cid };
+            [(byte)Cid];
 
         public override string ToString() =>
             $"Type: {Cid} Answer";

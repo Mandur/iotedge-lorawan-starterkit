@@ -121,7 +121,7 @@ namespace LoRaWan.Tests.Unit
         {
             if (this.cache.TryGetValue(key, out var cachedValue))
             {
-                return (cachedValue as ConcurrentBag<string>).ToArray();
+                return [.. (cachedValue as ConcurrentBag<string>)];
             }
 
             return null;

@@ -13,8 +13,8 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
     public static class RegionEU868TestData
     {
         private static readonly Region Region = RegionManager.EU868;
-        private static readonly DataRateIndex[] DataRates = { DR0, DR1, DR2, DR3, DR4, DR5, DR6 };
-        private static readonly Hertz[] Frequencies = { Mega(868.1), Mega(868.3), Mega(868.5) };
+        private static readonly DataRateIndex[] DataRates = [DR0, DR1, DR2, DR3, DR4, DR5, DR6];
+        private static readonly Hertz[] Frequencies = [Mega(868.1), Mega(868.3), Mega(868.5)];
 
         public static TheoryData<Region, Hertz, DataRateIndex, Hertz> TestRegionFrequencyData() =>
             TheoryDataFactory.From(from dr in DataRates
@@ -26,11 +26,11 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
                                    select (Region, dr, dr));
 
         public static TheoryData<Region, DataRateIndex, int> TestRegionDataRateData_InvalidOffset =>
-            TheoryDataFactory.From(new[]
-            {
+            TheoryDataFactory.From(
+            [
                 (Region, DR0, 6),
                 (Region, DR1, 10)
-            });
+            ]);
 
         public static TheoryData<Region, Hertz, DataRateIndex> TestRegionLimitData =>
             TheoryDataFactory.From(new (Region, Hertz, DataRateIndex)[]
@@ -71,23 +71,23 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
             });
 
         public static TheoryData<Region, LoRaRegionType> TestTranslateToRegionData =>
-           TheoryDataFactory.From(new[]
-           {
+           TheoryDataFactory.From(
+           [
                (Region, LoRaRegionType.EU868),
                (Region, LoRaRegionType.EU863),
-           });
+           ]);
 
         public static TheoryData<Region, Hertz, int> TestTryGetJoinChannelIndexData =>
             TheoryDataFactory.From(from freq in new Hertz[] { Mega(863), Mega(870) }
                                    select (Region, freq, /* expected index */ -1));
 
         public static TheoryData<Region, int, bool> TestIsValidRX1DROffsetData =>
-           TheoryDataFactory.From(new[]
-           {
+           TheoryDataFactory.From(
+           [
                 (Region, 0, true),
                 (Region, 5, true),
                 (Region, 6, false),
-           });
+           ]);
 
         public static TheoryData<Region, DataRateIndex, bool, bool> TestIsDRIndexWithinAcceptableValuesData =>
             TheoryDataFactory.From<Region, DataRateIndex, bool, bool>(new[]

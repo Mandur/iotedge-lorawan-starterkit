@@ -7,14 +7,9 @@ namespace LoRaWan.Tests.Common
     using LoRaWan;
     using LoRaWan.NetworkServer;
 
-    public class TestLoRaPayloadDecoder : ILoRaPayloadDecoder
+    public class TestLoRaPayloadDecoder(ILoRaPayloadDecoder decoder) : ILoRaPayloadDecoder
     {
-        private ILoRaPayloadDecoder decoder;
-
-        public TestLoRaPayloadDecoder(ILoRaPayloadDecoder decoder)
-        {
-            this.decoder = decoder;
-        }
+        private ILoRaPayloadDecoder decoder = decoder;
 
         public void SetDecoder(ILoRaPayloadDecoder decoder) => this.decoder = decoder;
 

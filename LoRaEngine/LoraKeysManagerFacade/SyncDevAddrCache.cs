@@ -9,21 +9,15 @@ namespace LoraKeysManagerFacade
     using Microsoft.Azure.WebJobs;
     using Microsoft.Extensions.Logging;
 
-    public class SyncDevAddrCache
+    public class SyncDevAddrCache(LoRaDevAddrCache loRaDevAddrCache, IDeviceRegistryManager registryManager)
     {
-        private readonly LoRaDevAddrCache loRaDevAddrCache;
-        private readonly IDeviceRegistryManager registryManager;
-
-        public SyncDevAddrCache(LoRaDevAddrCache loRaDevAddrCache, IDeviceRegistryManager registryManager)
-        {
-            this.loRaDevAddrCache = loRaDevAddrCache;
-            this.registryManager = registryManager;
-        }
+        private readonly LoRaDevAddrCache loRaDevAddrCache = loRaDevAddrCache;
+        private readonly IDeviceRegistryManager registryManager = registryManager;
 
         [FunctionName("SyncDevAddrCache")]
         public async Task Run([TimerTrigger("0 */5 * * * *")] TimerInfo myTimer, ILogger log)
         {
-            if (myTimer is null) throw new ArgumentNullException(nameof(myTimer));
+            ArgumentNullException.ThrowIfNull(myTimer);
 
             log.LogDebug($"{(myTimer.IsPastDue ? "The timer is past due" : "The timer is on schedule")}, Function last ran at {myTimer.ScheduleStatus.Last} Function next scheduled run at {myTimer.ScheduleStatus.Next})");
 

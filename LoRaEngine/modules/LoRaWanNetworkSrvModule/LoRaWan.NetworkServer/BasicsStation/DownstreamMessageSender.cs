@@ -13,39 +13,34 @@ namespace LoRaWan.NetworkServer.BasicsStation
     using LoRaTools.LoRaPhysical;
     using Microsoft.Extensions.Logging;
 
-    internal class DownstreamMessageSender : IDownstreamMessageSender
+    internal class DownstreamMessageSender(WebSocketWriterRegistry<StationEui, string> socketWriterRegistry,
+                                           IBasicsStationConfigurationService basicsStationConfigurationService,
+                                           ILogger<DownstreamMessageSender> logger) : IDownstreamMessageSender
     {
+        // basicsStationConfigurationService is intentionally unused - kept for potential future use
+#pragma warning disable CA1823 // Unused field
+        private readonly IBasicsStationConfigurationService _ = basicsStationConfigurationService;
+#pragma warning restore CA1823
+
         private static readonly Action<ILogger, StationEui, int, string, Exception> LogSendingMessage =
             LoggerMessage.Define<StationEui, int, string>(LogLevel.Debug, default,
                                                      "sending message to station with EUI '{StationEui}' with diid {Diid}. Payload '{Payload}'.");
 
-        private readonly WebSocketWriterRegistry<StationEui, string> socketWriterRegistry;
-        private readonly IBasicsStationConfigurationService basicsStationConfigurationService;
-        private readonly ILogger<DownstreamMessageSender> logger;
         private readonly Random random = new Random();
-
-        public DownstreamMessageSender(WebSocketWriterRegistry<StationEui, string> socketWriterRegistry,
-                                       IBasicsStationConfigurationService basicsStationConfigurationService,
-                                       ILogger<DownstreamMessageSender> logger)
-        {
-            this.socketWriterRegistry = socketWriterRegistry;
-            this.basicsStationConfigurationService = basicsStationConfigurationService;
-            this.logger = logger;
-        }
 
         public async Task SendDownstreamAsync(DownlinkMessage message)
         {
-            if (message is null) throw new ArgumentNullException(nameof(message));
+            ArgumentNullException.ThrowIfNull(message);
             if (message.StationEui == default) throw new ArgumentException($"A proper StationEui needs to be set. Received '{message.StationEui}'.");
 
-            if (this.socketWriterRegistry.TryGetHandle(message.StationEui, out var webSocketWriterHandle))
+            if (socketWriterRegistry.TryGetHandle(message.StationEui, out var webSocketWriterHandle))
             {
                 var payload = Message(message);
                 await webSocketWriterHandle.SendAsync(payload, CancellationToken.None);
             }
             else
             {
-                this.logger.LogWarning("Could not retrieve an active connection for Station with EUI '{StationEui}'. The payload '{Payload}' will be dropped.", message.StationEui, message.Data.ToHex());
+                logger.LogWarning("Could not retrieve an active connection for Station with EUI '{StationEui}'. The payload '{Payload}' will be dropped.", message.StationEui, message.Data.ToHex());
             }
         }
 
@@ -77,7 +72,7 @@ namespace LoRaWan.NetworkServer.BasicsStation
             var diid = this.random.Next(int.MinValue, int.MaxValue);
             writer.WriteNumber("diid", diid);
 #pragma warning restore CA5394 // Do not use insecure randomness
-            LogSendingMessage(this.logger, message.StationEui, diid, message.Data.ToHex(), null);
+            LogSendingMessage(logger, message.StationEui, diid, message.Data.ToHex(), null);
 
             switch (message.DeviceClassType)
             {

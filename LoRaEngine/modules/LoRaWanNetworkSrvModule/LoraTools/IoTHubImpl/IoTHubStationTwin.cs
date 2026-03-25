@@ -6,14 +6,8 @@ namespace LoRaTools.IoTHubImpl
     using LoRaTools.Utils;
     using Microsoft.Azure.Devices.Shared;
 
-    public class IoTHubStationTwin : IoTHubDeviceTwin, IStationTwin
+    public class IoTHubStationTwin(Twin twinInstance) : IoTHubDeviceTwin(twinInstance), IStationTwin
     {
         public string NetworkId => base.TwinInstance.Tags.ReadRequired<string>(Constants.NetworkTagName);
-
-        public IoTHubStationTwin(Twin twinInstance)
-            : base(twinInstance)
-        {
-
-        }
     }
 }

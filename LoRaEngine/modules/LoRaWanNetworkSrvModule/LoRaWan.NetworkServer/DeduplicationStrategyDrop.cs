@@ -18,7 +18,7 @@ namespace LoRaWan.NetworkServer
 
         public DeduplicationResult Process(DeduplicationResult result, uint fCntUp)
         {
-            if (result is null) throw new ArgumentNullException(nameof(result));
+            ArgumentNullException.ThrowIfNull(result);
 
             result.CanProcess = !result.IsDuplicate;
 

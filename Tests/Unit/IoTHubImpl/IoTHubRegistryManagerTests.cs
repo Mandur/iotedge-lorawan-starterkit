@@ -6,11 +6,7 @@ namespace LoRaWan.Tests.Unit.IoTHubImpl
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.Net;
     using System.Net.Http;
-    using System.Net.Mime;
-    using System.Runtime.CompilerServices;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using global::LoRaTools;
@@ -20,7 +16,6 @@ namespace LoRaWan.Tests.Unit.IoTHubImpl
     using Microsoft.Azure.Devices.Shared;
     using Moq;
     using Moq.Protected;
-    using Newtonsoft.Json;
     using RichardSzalay.MockHttp;
     using Xunit;
     using Xunit.Abstractions;

@@ -23,26 +23,26 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             Assert.Contains("All tasks must have completed.", ex.Message, StringComparison.OrdinalIgnoreCase);
         }
 
-        public static TheoryData<Task[], Exception[]> GetExceptions_Success_TheoryData() => TheoryDataFactory.From(new[]
-        {
+        public static TheoryData<Task[], Exception[]> GetExceptions_Success_TheoryData() => TheoryDataFactory.From(
+        [
             (new[] { Task.FromException(new InvalidOperationException("A")), Task.FromException(new LoRaProcessingException("B")) },
              new Exception[] { new InvalidOperationException("A"), new LoRaProcessingException("B") }),
-            (new[] { Task.CompletedTask, Task.Run(async () => { await Task.Yield(); throw new InvalidOperationException("A"); }) },
-             new Exception[] { new InvalidOperationException("A") }),
-            (new[] { Task.FromException(new AggregateException(new InvalidOperationException("A"))), Task.FromException(new LoRaProcessingException("B")) },
-             new Exception[] { new AggregateException(new InvalidOperationException("A")), new LoRaProcessingException("B") }),
-            (new[] { Task.FromException(new OperationCanceledException("A")), Task.CompletedTask },
-             new Exception[] { new OperationCanceledException("A") }),
-            (new[] { Task.FromException(new OperationCanceledException("A")), Task.FromException(new InvalidOperationException("B")) },
-             new Exception[] { new OperationCanceledException("A"), new InvalidOperationException("B") }),
-            (new[] { Task.Run(() =>
+            ([Task.CompletedTask, Task.Run(async () => { await Task.Yield(); throw new InvalidOperationException("A"); })],
+             [new InvalidOperationException("A")]),
+            ([Task.FromException(new AggregateException(new InvalidOperationException("A"))), Task.FromException(new LoRaProcessingException("B"))],
+             [new AggregateException(new InvalidOperationException("A")), new LoRaProcessingException("B")]),
+            ([Task.FromException(new OperationCanceledException("A")), Task.CompletedTask],
+             [new OperationCanceledException("A")]),
+            ([Task.FromException(new OperationCanceledException("A")), Task.FromException(new InvalidOperationException("B"))],
+             [new OperationCanceledException("A"), new InvalidOperationException("B")]),
+            ([ Task.Run(() =>
                      {
                          var tcs = new TaskCompletionSource();
                          tcs.SetException(new Exception[] { new OperationCanceledException("A"), new InvalidOperationException("B") });
                          return tcs.Task;
-                     }) },
-             new Exception[] { new AggregateException(new OperationCanceledException("A"), new InvalidOperationException("B")) })
-        });
+                     }) ],
+             [new AggregateException(new OperationCanceledException("A"), new InvalidOperationException("B"))])
+        ]);
 
         [Theory]
         [MemberData(nameof(GetExceptions_Success_TheoryData))]

@@ -106,7 +106,8 @@ namespace LoRaTools.Regions
         /// Returns join channel index matching the frequency of the join request.
         /// This default implementation is used by all regions which do not have the concept of join channels.
         /// </summary>
-        /// <param name="joinChannel">Channel on which the join request was received.</param>
+        /// <param name="frequency">Frequency on which the join request was received.</param>
+        /// <param name="channelIndex">Channel index that matches the frequency.</param>
         public virtual bool TryGetJoinChannelIndex(Hertz frequency, out int channelIndex)
         {
             channelIndex = -1;
@@ -119,6 +120,7 @@ namespace LoRaTools.Regions
         /// <param name="upstreamFrequency">Frequency of the upstream message.</param>
         /// <param name="upstreamDataRate">Ustream data rate.</param>
         /// <param name="deviceJoinInfo">Join info for the device, if applicable.</param>
+        /// <param name="downstreamFrequency">The downstream frequency.</param>
         public abstract bool TryGetDownstreamChannelFrequency(Hertz upstreamFrequency, DataRateIndex upstreamDataRate, DeviceJoinInfo deviceJoinInfo, out Hertz downstreamFrequency);
 
         /// <summary>
@@ -154,9 +156,9 @@ namespace LoRaTools.Regions
         /// <summary>
         /// Get the downstream RX2 frequency.
         /// </summary>
-        /// <param name="devEUI">the device id.</param>
         /// <param name="nwkSrvRx2Freq">the value of the rx2freq env var on the nwk srv.</param>
         /// <param name="deviceJoinInfo">join info for the device, if applicable.</param>
+        /// <param name="logger">the logger.</param>
         /// <returns>rx2 freq.</returns>
         public Hertz GetDownstreamRX2Freq(Hertz? nwkSrvRx2Freq, DeviceJoinInfo deviceJoinInfo, ILogger logger)
         {
@@ -180,6 +182,8 @@ namespace LoRaTools.Regions
         /// </summary>
         /// <param name="nwkSrvRx2Dr">The network server rx2 datarate.</param>
         /// <param name="rx2DrFromTwins">RX2 datarate value from twins.</param>
+        /// <param name="deviceJoinInfo">join info for the device, if applicable.</param>
+        /// <param name="logger">the logger.</param>
         /// <returns>The RX2 data rate.</returns>
         public DataRateIndex GetDownstreamRX2DataRate(DataRateIndex? nwkSrvRx2Dr, DataRateIndex? rx2DrFromTwins, DeviceJoinInfo deviceJoinInfo, ILogger logger)
         {

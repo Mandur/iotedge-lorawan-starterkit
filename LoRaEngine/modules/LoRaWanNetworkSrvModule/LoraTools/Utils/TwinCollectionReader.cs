@@ -10,16 +10,10 @@ namespace LoRaTools.Utils
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
 
-    public sealed class TwinCollectionReader
+    public sealed class TwinCollectionReader(TwinCollection twinCollection, ILogger logger)
     {
-        private readonly TwinCollection twinCollection;
-        private readonly ILogger logger;
-
-        public TwinCollectionReader(TwinCollection twinCollection, ILogger logger)
-        {
-            this.twinCollection = twinCollection;
-            this.logger = logger;
-        }
+        private readonly TwinCollection twinCollection = twinCollection;
+        private readonly ILogger logger = logger;
 
         public T? SafeRead<T>(string property, T? defaultValue = default)
             => this.twinCollection.SafeRead(property, defaultValue, this.logger);

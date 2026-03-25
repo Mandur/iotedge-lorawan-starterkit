@@ -228,7 +228,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         {
             // arrange
 
-            _ = CreateCacheEntryMock(new List<PostEvictionCallbackRegistration>());
+            _ = CreateCacheEntryMock([]);
 
             var (clientMock, client) = RegisterTestDevice(keepAliveTimeout: TimeSpan.FromSeconds(1));
             clientMock.Setup(x => x.GetTwinAsync(CancellationToken.None)).ReturnsAsync(new Twin());
@@ -264,7 +264,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         {
             // arrange
 
-            _ = CreateCacheEntryMock(new List<PostEvictionCallbackRegistration>());
+            _ = CreateCacheEntryMock([]);
 
             var (clientMock, client) = RegisterTestDevice(keepAliveTimeout: TimeSpan.FromSeconds(1));
             clientMock.Setup(x => x.GetTwinAsync(CancellationToken.None)).ReturnsAsync(new Twin());
@@ -291,7 +291,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         {
             // arrange
 
-            _ = CreateCacheEntryMock(new List<PostEvictionCallbackRegistration>());
+            _ = CreateCacheEntryMock([]);
 
             var (clientMock, client) = RegisterTestDevice(keepAliveTimeout: TimeSpan.FromSeconds(1));
             clientMock.Setup(x => x.GetTwinAsync(CancellationToken.None)).ReturnsAsync(new Twin());

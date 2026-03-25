@@ -4,12 +4,10 @@
 namespace LoRaWan.NetworkServer
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Exception raised if there is a problem with a managed device connection.
     /// </summary>
-    [Serializable]
     public class ManagedConnectionException : Exception
     {
         public ManagedConnectionException()
@@ -23,11 +21,6 @@ namespace LoRaWan.NetworkServer
 
         public ManagedConnectionException(string message, Exception innerException)
             : base(message, innerException)
-        {
-        }
-
-        protected ManagedConnectionException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

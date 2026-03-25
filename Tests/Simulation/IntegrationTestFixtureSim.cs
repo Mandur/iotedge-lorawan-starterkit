@@ -27,23 +27,23 @@ namespace LoRaWan.Tests.Simulation
         // Device1004_Simulated_ABP: used for ABP simulator
         public TestDeviceInfo Device1004_Simulated_ABP { get; private set; }
 
-        private readonly List<TestDeviceInfo> deviceRange1000_ABP = new List<TestDeviceInfo>();
+        private readonly List<TestDeviceInfo> deviceRange1000_ABP = [];
 
         public IReadOnlyCollection<TestDeviceInfo> DeviceRange1000_ABP => this.deviceRange1000_ABP;
 
-        private readonly List<TestDeviceInfo> deviceRange2000_ABP_FullLoad = new List<TestDeviceInfo>();
+        private readonly List<TestDeviceInfo> deviceRange2000_ABP_FullLoad = [];
 
         public IReadOnlyCollection<TestDeviceInfo> DeviceRange2000_ABP_FullLoad => this.deviceRange2000_ABP_FullLoad;
 
-        private readonly List<TestDeviceInfo> deviceRange3000_OTAA_FullLoad = new List<TestDeviceInfo>();
+        private readonly List<TestDeviceInfo> deviceRange3000_OTAA_FullLoad = [];
 
         public IReadOnlyCollection<TestDeviceInfo> DeviceRange3000_OTAA_FullLoad => this.deviceRange3000_OTAA_FullLoad;
 
-        private readonly List<TestDeviceInfo> deviceRange4000_OTAA_FullLoad = new List<TestDeviceInfo>();
+        private readonly List<TestDeviceInfo> deviceRange4000_OTAA_FullLoad = [];
 
         public IReadOnlyCollection<TestDeviceInfo> DeviceRange4000_OTAA_FullLoad => this.deviceRange4000_OTAA_FullLoad;
 
-        private readonly List<TestDeviceInfo> deviceRange5000_BasicsStationSimulators = new List<TestDeviceInfo>();
+        private readonly List<TestDeviceInfo> deviceRange5000_BasicsStationSimulators = [];
 
         public IReadOnlyCollection<TestDeviceInfo> DeviceRange5000_BasicsStationSimulators => this.deviceRange5000_BasicsStationSimulators;
 
@@ -136,14 +136,10 @@ namespace LoRaWan.Tests.Simulation
                 this.deviceRange4000_OTAA_FullLoad.Add(CreateOtaaDevice(deviceId));
 
             DeviceRange6000_OTAA_FullLoad =
-                Enumerable.Range(6000, Configuration.NumberOfLoadTestDevices)
-                          .Select(deviceId => CreateOtaaDevice(deviceId))
-                          .ToList();
+                [.. Enumerable.Range(6000, Configuration.NumberOfLoadTestDevices).Select(deviceId => CreateOtaaDevice(deviceId))];
 
             DeviceRange9000_OTAA_FullLoad_DuplicationDrop =
-                Enumerable.Range(9000, Configuration.NumberOfLoadTestDevices)
-                          .Select(deviceId => CreateOtaaDevice(deviceId, deduplicationMode: DeduplicationMode.Drop))
-                          .ToList();
+                [.. Enumerable.Range(9000, Configuration.NumberOfLoadTestDevices).Select(deviceId => CreateOtaaDevice(deviceId, deduplicationMode: DeduplicationMode.Drop))];
 
             TestDeviceInfo CreateAbpDevice(int deviceId) =>
                 new TestDeviceInfo

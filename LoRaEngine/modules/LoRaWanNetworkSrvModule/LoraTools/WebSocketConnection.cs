@@ -12,20 +12,14 @@ namespace LoRaTools
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
 
-    public sealed class WebSocketConnection
+    public sealed class WebSocketConnection(HttpContext httpContext, ILogger? logger)
     {
-        private readonly HttpContext httpContext;
-        private readonly ILogger? logger;
-
-        public WebSocketConnection(HttpContext httpContext, ILogger? logger)
-        {
-            this.httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
-            this.logger = logger;
-        }
+        private readonly HttpContext httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
+        private readonly ILogger? logger = logger;
 
         public async Task<HttpContext> HandleAsync(Func<HttpContext, WebSocket, CancellationToken, Task> handler, CancellationToken cancellationToken)
         {
-            if (handler is null) throw new ArgumentNullException(nameof(handler));
+            ArgumentNullException.ThrowIfNull(handler);
 
             if (!this.httpContext.WebSockets.IsWebSocketRequest)
             {

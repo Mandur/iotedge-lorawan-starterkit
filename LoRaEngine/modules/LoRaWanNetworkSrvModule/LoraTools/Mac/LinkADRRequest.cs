@@ -50,7 +50,7 @@ namespace LoRaTools
         /// </summary>
         internal LinkADRRequest(byte[] input)
         {
-            if (input is null) throw new ArgumentNullException(nameof(input));
+            ArgumentNullException.ThrowIfNull(input);
 
             if (input.Length < Length || input[0] != (byte)Cid.LinkADRCmd)
             {

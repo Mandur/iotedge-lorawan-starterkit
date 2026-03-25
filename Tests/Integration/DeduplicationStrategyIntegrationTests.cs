@@ -16,17 +16,11 @@ namespace LoRaWan.Tests.Integration
     using Xunit;
     using Xunit.Abstractions;
 
-    public class DeduplicationStrategyIntegrationTests : MessageProcessorMultipleGatewayBase
+    public class DeduplicationStrategyIntegrationTests(ITestOutputHelper testOutputHelper) : MessageProcessorMultipleGatewayBase(testOutputHelper)
     {
-        private readonly ITestOutputHelper testOutputHelper;
-        private readonly object functionLock = new object();
-        private readonly SimulatedDevice simulatedDevice;
-
-        public DeduplicationStrategyIntegrationTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-        {
-            this.testOutputHelper = testOutputHelper;
-            this.simulatedDevice = new SimulatedDevice(TestDeviceInfo.CreateABPDevice(1));
-        }
+        private readonly ITestOutputHelper testOutputHelper = testOutputHelper;
+        private readonly Lock functionLock = new Lock();
+        private readonly SimulatedDevice simulatedDevice = new SimulatedDevice(TestDeviceInfo.CreateABPDevice(1));
 
         [Theory]
         [InlineData(DeduplicationMode.Mark, false)]

@@ -52,7 +52,7 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             var cloudDeploymentKey = "CLOUD_DEPLOYMENT";
             var key = "REDIS_CONNECTION_STRING";
             var value = "someValue";
-            var lnsConfigurationCreation = () => NetworkServerConfiguration.CreateFromEnvironmentVariables();
+            var lnsConfigurationCreation = NetworkServerConfiguration.CreateFromEnvironmentVariables;
 
             Environment.SetEnvironmentVariable("HOSTNAME", "test");
             Environment.SetEnvironmentVariable("IOTHUBHOSTNAME", "test");
@@ -131,7 +131,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             var envVariables = new[]
             {
                 ("PROCESSING_DELAY_IN_MS", processing_delay),
-                ("HOSTNAME", "test")
+                ("HOSTNAME", "test"),
+                ("IOTHUBHOSTNAME", "test")
             };
 
             try

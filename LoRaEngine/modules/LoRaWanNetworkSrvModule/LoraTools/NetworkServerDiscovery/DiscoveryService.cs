@@ -18,11 +18,11 @@ namespace LoRaTools.NetworkServerDiscovery
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
 
-    public sealed partial class DiscoveryService
+    public sealed partial class DiscoveryService(ILnsDiscovery lnsDiscovery, ILogger<DiscoveryService> logger)
     {
         private const string DataEndpointPath = "router-data";
-        private readonly ILnsDiscovery lnsDiscovery;
-        private readonly ILogger<DiscoveryService> logger;
+        private readonly ILnsDiscovery lnsDiscovery = lnsDiscovery;
+        private readonly ILogger<DiscoveryService> logger = logger;
 
         [GeneratedRegex(@"/router-data/?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
         private static partial Regex RouterDataRegex();
@@ -37,15 +37,9 @@ namespace LoRaTools.NetworkServerDiscovery
                                            ? Id6.TryParse(s, out var id6) ? new StationEui(id6) : throw new JsonException()
                                            : Hexadecimal.TryParse(s, out ulong hhd, '-') ? new StationEui(hhd) : throw new JsonException())));
 
-        public DiscoveryService(ILnsDiscovery lnsDiscovery, ILogger<DiscoveryService> logger)
-        {
-            this.lnsDiscovery = lnsDiscovery;
-            this.logger = logger;
-        }
-
         public async Task HandleDiscoveryRequestAsync(HttpContext httpContext, CancellationToken cancellationToken)
         {
-            if (httpContext is null) throw new ArgumentNullException(nameof(httpContext));
+            ArgumentNullException.ThrowIfNull(httpContext);
 
             var webSocketConnection = new WebSocketConnection(httpContext, this.logger);
             _ = await webSocketConnection.HandleAsync(async (ctx, s, ct) =>
@@ -107,9 +101,9 @@ namespace LoRaTools.NetworkServerDiscovery
         /// <param name="url">The URI of the LNS Data endpoint.</param>
         internal static void WriteResponse(Utf8JsonWriter writer, StationEui router, string muxs, Uri url)
         {
-            if (writer == null) throw new ArgumentNullException(nameof(writer));
+            ArgumentNullException.ThrowIfNull(writer);
             if (!Id6.TryParse(muxs, out _)) throw new ArgumentException("Argument should be a string in ID6 format.", nameof(muxs));
-            if (url is null) throw new ArgumentNullException(nameof(url));
+            ArgumentNullException.ThrowIfNull(url);
 
             writer.WriteStartObject();
             writer.WriteString("router", Id6.Format(router.AsUInt64, Id6.FormatOptions.Lowercase));
@@ -120,7 +114,7 @@ namespace LoRaTools.NetworkServerDiscovery
 
         internal static void WriteResponse(Utf8JsonWriter writer, StationEui router, string error)
         {
-            if (writer == null) throw new ArgumentNullException(nameof(writer));
+            ArgumentNullException.ThrowIfNull(writer);
 
             writer.WriteStartObject();
             writer.WriteString("router", Id6.Format(router.AsUInt64, Id6.FormatOptions.Lowercase));

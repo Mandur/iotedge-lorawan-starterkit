@@ -14,22 +14,16 @@ namespace LoraKeysManagerFacade
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
 
-    public class FCntCacheCheck
+    public class FCntCacheCheck(ILoRaDeviceCacheStore deviceCache, ILogger<FCntCacheCheck> logger)
     {
-        private readonly ILoRaDeviceCacheStore deviceCache;
-        private readonly ILogger<FCntCacheCheck> logger;
-
-        public FCntCacheCheck(ILoRaDeviceCacheStore deviceCache, ILogger<FCntCacheCheck> logger)
-        {
-            this.deviceCache = deviceCache;
-            this.logger = logger;
-        }
+        private readonly ILoRaDeviceCacheStore deviceCache = deviceCache;
+        private readonly ILogger<FCntCacheCheck> logger = logger;
 
         [FunctionName("NextFCntDown")]
         public async Task<IActionResult> NextFCntDownInvoke(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req)
         {
-            if (req is null) throw new ArgumentNullException(nameof(req));
+            ArgumentNullException.ThrowIfNull(req);
 
             try
             {

@@ -34,20 +34,14 @@ namespace LoRaWan.NetworkServer.BasicsStation
     using Prometheus;
     using StackExchange.Redis;
 
-    internal sealed class BasicsStationNetworkServerStartup
+    internal sealed class BasicsStationNetworkServerStartup(IConfiguration configuration)
     {
-        public IConfiguration Configuration { get; }
-        public NetworkServerConfiguration NetworkServerConfiguration { get; }
-
-        public BasicsStationNetworkServerStartup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-            NetworkServerConfiguration = NetworkServerConfiguration.CreateFromEnvironmentVariables();
-        }
+        public IConfiguration Configuration { get; } = configuration;
+        public NetworkServerConfiguration NetworkServerConfiguration { get; } = NetworkServerConfiguration.CreateFromEnvironmentVariables();
 
         public void ConfigureServices(IServiceCollection services)
         {
-            ITransportSettings[] settings = { new AmqpTransportSettings(TransportType.Amqp_Tcp_Only) };
+            ITransportSettings[] settings = [new AmqpTransportSettings(TransportType.Amqp_Tcp_Only)];
             var loraModuleFactory = new LoRaModuleClientFactory(settings);
 
             var appInsightsConnectionString = Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
@@ -56,7 +50,7 @@ namespace LoRaWan.NetworkServer.BasicsStation
                 {
                     _ = loggingBuilder.ClearProviders();
                     var logLevel = int.TryParse(NetworkServerConfiguration.LogLevel, NumberStyles.Integer, CultureInfo.InvariantCulture, out var logLevelNum)
-                        ? (LogLevel)logLevelNum is var level && Enum.IsDefined(typeof(LogLevel), level) ? level : throw new InvalidCastException()
+                        ? Enum.IsDefined(typeof(LogLevel), (LogLevel)logLevelNum) ? (LogLevel)logLevelNum : throw new InvalidCastException()
                         : Enum.Parse<LogLevel>(NetworkServerConfiguration.LogLevel, true);
 
                     _ = loggingBuilder.SetMinimumLevel(logLevel);
@@ -181,7 +175,7 @@ namespace LoRaWan.NetworkServer.BasicsStation
                                           Predicate<HttpContext> predicate,
                                           Func<TService, Func<HttpContext, CancellationToken, Task>> handlerMapper)
                        {
-                           _ = endpoints.MapMethods(pattern, new[] { method.ToString() }, async context =>
+                           _ = endpoints.MapMethods(pattern, [method.ToString()], async context =>
                            {
                                if (!predicate(context))
                                {

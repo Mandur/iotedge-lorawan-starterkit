@@ -5,23 +5,16 @@ namespace LoRaWan.Tests.Common
 {
     using System.Collections.Generic;
 
-    public class SearchLogResult
+    public class SearchLogResult(bool found, HashSet<SearchLogEvent> logs, string foundElement = null)
     {
         // Indicates if the message was found
-        public bool Found { get; }
+        public bool Found { get; } = found;
 
         // Returns the contents of the log (to diagnose problems)
-        public IReadOnlyCollection<SearchLogEvent> Logs { get; }
+        public IReadOnlyCollection<SearchLogEvent> Logs { get; } = logs;
 
         public SearchLogEvent MatchedEvent { get; set; }
 
-        public string FoundLogResult { get; set; }
-
-        public SearchLogResult(bool found, HashSet<SearchLogEvent> logs, string foundElement = null)
-        {
-            Found = found;
-            Logs = logs;
-            FoundLogResult = foundElement;
-        }
+        public string FoundLogResult { get; set; } = foundElement;
     }
 }

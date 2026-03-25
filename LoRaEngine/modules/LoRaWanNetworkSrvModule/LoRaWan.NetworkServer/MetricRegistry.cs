@@ -19,27 +19,27 @@ namespace LoRaWan.NetworkServer
         public const string GatewayIdTagName = "GatewayId";
         public const string ReceiveWindowTagName = "ReceiveWindow";
 
-        public static readonly CustomMetric JoinRequests = new CustomMetric("JoinRequests", "Number of join requests", MetricType.Counter, new[] { GatewayIdTagName, ConcentratorIdTagName });
-        public static readonly CustomMetric ActiveStationConnections = new CustomMetric("ActiveStationConnections", "Number of active station connections", MetricType.ObservableGauge, new[] { GatewayIdTagName });
-        public static readonly CustomMetric StationConnectivityLost = new CustomMetric("StationConnectivityLost", "Counts the number of station connectivities that were lost", MetricType.Counter, new[] { GatewayIdTagName, ConcentratorIdTagName });
-        public static readonly CustomMetric ReceiveWindowHits = new CustomMetric("ReceiveWindowHits", "Receive window hits", MetricType.Counter, new[] { GatewayIdTagName, ConcentratorIdTagName, ReceiveWindowTagName });
-        public static readonly CustomMetric ReceiveWindowMisses = new CustomMetric("ReceiveWindowMisses", "Receive window misses", MetricType.Counter, new[] { GatewayIdTagName, ConcentratorIdTagName });
-        public static readonly CustomMetric UnhandledExceptions = new CustomMetric("UnhandledExceptions", "Number of unhandled exceptions", MetricType.Counter, new[] { GatewayIdTagName });
-        public static readonly CustomMetric D2CMessageDeliveryLatency = new CustomHistogram("D2CMessageDeliveryLatency", "D2C delivery latency (in milliseconds)", MetricType.Histogram, new[] { GatewayIdTagName, ConcentratorIdTagName },
+        public static readonly CustomMetric JoinRequests = new CustomMetric("JoinRequests", "Number of join requests", MetricType.Counter, [GatewayIdTagName, ConcentratorIdTagName]);
+        public static readonly CustomMetric ActiveStationConnections = new CustomMetric("ActiveStationConnections", "Number of active station connections", MetricType.ObservableGauge, [GatewayIdTagName]);
+        public static readonly CustomMetric StationConnectivityLost = new CustomMetric("StationConnectivityLost", "Counts the number of station connectivities that were lost", MetricType.Counter, [GatewayIdTagName, ConcentratorIdTagName]);
+        public static readonly CustomMetric ReceiveWindowHits = new CustomMetric("ReceiveWindowHits", "Receive window hits", MetricType.Counter, [GatewayIdTagName, ConcentratorIdTagName, ReceiveWindowTagName]);
+        public static readonly CustomMetric ReceiveWindowMisses = new CustomMetric("ReceiveWindowMisses", "Receive window misses", MetricType.Counter, [GatewayIdTagName, ConcentratorIdTagName]);
+        public static readonly CustomMetric UnhandledExceptions = new CustomMetric("UnhandledExceptions", "Number of unhandled exceptions", MetricType.Counter, [GatewayIdTagName]);
+        public static readonly CustomMetric D2CMessageDeliveryLatency = new CustomHistogram("D2CMessageDeliveryLatency", "D2C delivery latency (in milliseconds)", MetricType.Histogram, [GatewayIdTagName, ConcentratorIdTagName],
                                                                                             BucketStart: 100, BucketWidth: 50, BucketCount: 45);
-        public static readonly CustomMetric D2CMessagesReceived = new CustomMetric("D2CMessagesReceived", "Number of D2C messages received", MetricType.Counter, new[] { GatewayIdTagName, ConcentratorIdTagName });
-        public static readonly CustomMetric D2CMessageSize = new CustomHistogram("D2CMessageSize", "Size of D2C messages (in bytes)", MetricType.Histogram, new[] { GatewayIdTagName, ConcentratorIdTagName },
+        public static readonly CustomMetric D2CMessagesReceived = new CustomMetric("D2CMessagesReceived", "Number of D2C messages received", MetricType.Counter, [GatewayIdTagName, ConcentratorIdTagName]);
+        public static readonly CustomMetric D2CMessageSize = new CustomHistogram("D2CMessageSize", "Size of D2C messages (in bytes)", MetricType.Histogram, [GatewayIdTagName, ConcentratorIdTagName],
                                                                                  BucketStart: 5, BucketWidth: 10, BucketCount: 26);
-        public static readonly CustomMetric C2DMessageTooLong = new CustomMetric("C2DMessageTooLong", "Number of C2D messages that were too long to be sent downstream", MetricType.Counter, new[] { GatewayIdTagName, ConcentratorIdTagName });
+        public static readonly CustomMetric C2DMessageTooLong = new CustomMetric("C2DMessageTooLong", "Number of C2D messages that were too long to be sent downstream", MetricType.Counter, [GatewayIdTagName, ConcentratorIdTagName]);
 
-        public static readonly CustomMetric DeviceCacheHits = new CustomMetric("DeviceCacheHits", "Number of device cache hits", MetricType.Counter, new[] { GatewayIdTagName });
-        public static readonly CustomMetric DeviceLoadRequests = new CustomMetric("DeviceLoadRequests", "Number of device load requests issued against an API service", MetricType.Counter, new[] { GatewayIdTagName });
-        public static readonly CustomMetric TwinLoadRequests = new CustomMetric("TwinLoadRequests", "Number of device twin load requests issued against RegistryManager and DeviceClient", MetricType.Counter, new[] { GatewayIdTagName });
-        public static readonly CustomMetric ActiveClientConnections = new CustomMetric("ActiveClientConnections", "Number of active client connections", MetricType.ObservableGauge, new[] { GatewayIdTagName });
-        public static readonly CustomMetric ForceClosedClientConnections = new CustomMetric("ForceClosedClientConnections", "Number of device client connections requested to be closed by the FunctionBundler", MetricType.Counter, new[] { GatewayIdTagName });
+        public static readonly CustomMetric DeviceCacheHits = new CustomMetric("DeviceCacheHits", "Number of device cache hits", MetricType.Counter, [GatewayIdTagName]);
+        public static readonly CustomMetric DeviceLoadRequests = new CustomMetric("DeviceLoadRequests", "Number of device load requests issued against an API service", MetricType.Counter, [GatewayIdTagName]);
+        public static readonly CustomMetric TwinLoadRequests = new CustomMetric("TwinLoadRequests", "Number of device twin load requests issued against RegistryManager and DeviceClient", MetricType.Counter, [GatewayIdTagName]);
+        public static readonly CustomMetric ActiveClientConnections = new CustomMetric("ActiveClientConnections", "Number of active client connections", MetricType.ObservableGauge, [GatewayIdTagName]);
+        public static readonly CustomMetric ForceClosedClientConnections = new CustomMetric("ForceClosedClientConnections", "Number of device client connections requested to be closed by the FunctionBundler", MetricType.Counter, [GatewayIdTagName]);
 
-        private static readonly ICollection<CustomMetric> Registry = new[]
-        {
+        private static readonly ICollection<CustomMetric> Registry =
+        [
             JoinRequests,
             ActiveStationConnections,
             StationConnectivityLost,
@@ -55,7 +55,7 @@ namespace LoRaWan.NetworkServer
             TwinLoadRequests,
             ActiveClientConnections,
             ForceClosedClientConnections
-        };
+        ];
 
         public static readonly IDictionary<string, CustomMetric> RegistryLookup =
             new Dictionary<string, CustomMetric>(Registry.ToDictionary(m => m.Name, m => m), StringComparer.OrdinalIgnoreCase);
@@ -81,16 +81,10 @@ namespace LoRaWan.NetworkServer
         void Start();
     }
 
-    internal sealed class CompositeMetricExporter : IMetricExporter
+    internal sealed class CompositeMetricExporter(IMetricExporter? first, IMetricExporter? second) : IMetricExporter
     {
-        private readonly IMetricExporter? first;
-        private readonly IMetricExporter? second;
-
-        public CompositeMetricExporter(IMetricExporter? first, IMetricExporter? second)
-        {
-            this.first = first;
-            this.second = second;
-        }
+        private readonly IMetricExporter? first = first;
+        private readonly IMetricExporter? second = second;
 
         public void Dispose()
         {
@@ -112,15 +106,10 @@ namespace LoRaWan.NetworkServer
     /// Container for station EUI tags that are used as a tag when raising metrics.
     /// This helps us avoiding passing the station EUI down the stack.
     /// </summary>
-    internal sealed class RegistryMetricTagBag
+    internal sealed class RegistryMetricTagBag(NetworkServerConfiguration networkServerConfiguration)
     {
-        public RegistryMetricTagBag(NetworkServerConfiguration networkServerConfiguration)
-        {
-            GatewayId = string.IsNullOrEmpty(networkServerConfiguration.GatewayID) ? "unknown" : networkServerConfiguration.GatewayID;
-        }
-
         public AsyncLocal<StationEui?> StationEui { get; } = new AsyncLocal<StationEui?>();
-        public string GatewayId { get; init; }
+        public string GatewayId { get; init; } = string.IsNullOrEmpty(networkServerConfiguration.GatewayID) ? "unknown" : networkServerConfiguration.GatewayID;
     }
 
     internal static class MetricExporterHelper

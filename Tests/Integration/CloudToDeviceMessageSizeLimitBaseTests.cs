@@ -8,10 +8,8 @@ namespace LoRaWan.Tests.Integration
     using LoRaWan.Tests.Common;
     using Xunit.Abstractions;
 
-    public class CloudToDeviceMessageSizeLimitBaseTests : MessageProcessorTestBase
+    public class CloudToDeviceMessageSizeLimitBaseTests(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        public CloudToDeviceMessageSizeLimitBaseTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
-
         public static (RadioMetadata RadioMetadata, LoRaPayload LoRaPayload) CreateUpstreamMessage(bool isConfirmed, bool hasMacInUpstream, DataRate datr, SimulatedDevice simulatedDevice)
         {
             LoRaPayload loRaPayload;

@@ -19,17 +19,17 @@ namespace LoRaWan.Tests.Unit.NetworkServer
         private readonly CancellationToken cancellationToken = CancellationToken.None;
 
         [Fact]
-        public void Throws_When_Missing_DeviceInfo()
+        public async Task Throws_When_Missing_DeviceInfo()
         {
             var factory = new TestDeviceFactory();
             var deviceInfo = defaultDeviceInfo;
             deviceInfo.PrimaryKey = null;
 
-            Assert.ThrowsAsync<ArgumentException>(() => factory.CreateAndRegisterAsync(deviceInfo, CancellationToken.None));
+            await Assert.ThrowsAsync<ArgumentException>(() => factory.CreateAndRegisterAsync(deviceInfo, CancellationToken.None));
 
             deviceInfo = defaultDeviceInfo;
             deviceInfo.DevEUI = new DevEui(0);
-            Assert.ThrowsAsync<ArgumentException>(() => factory.CreateAndRegisterAsync(deviceInfo, this.cancellationToken));
+            await Assert.ThrowsAsync<ArgumentException>(() => factory.CreateAndRegisterAsync(deviceInfo, this.cancellationToken));
         }
 
         [Fact]
@@ -100,26 +100,20 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             DevAddr = new DevAddr(0xffffffff),
         };
 
-        private class TestDeviceFactory : LoRaDeviceFactory
+        private class TestDeviceFactory(NetworkServerConfiguration configuration = null,
+                                 ILoRaDeviceClientConnectionManager connectionManager = null,
+                                 LoRaDeviceCache loRaDeviceCache = null,
+                                 Action<Mock<LoRaDevice>> deviceSetup = null,
+                                 Meter meter = null) : LoRaDeviceFactory(configuration ?? new NetworkServerConfiguration(),
+                   new Mock<ILoRaDataRequestHandler>().Object,
+                   connectionManager ?? new Mock<ILoRaDeviceClientConnectionManager>().Object,
+                   loRaDeviceCache,
+                   NullLoggerFactory.Instance,
+                   NullLogger<LoRaDeviceFactory>.Instance,
+                   meter,
+                   new NoopTracing())
         {
-            private readonly Action<Mock<LoRaDevice>> deviceSetup;
-
-            public TestDeviceFactory(NetworkServerConfiguration configuration = null,
-                                     ILoRaDeviceClientConnectionManager connectionManager = null,
-                                     LoRaDeviceCache loRaDeviceCache = null,
-                                     Action<Mock<LoRaDevice>> deviceSetup = null,
-                                     Meter meter = null)
-                : base(configuration ?? new NetworkServerConfiguration(),
-                       new Mock<ILoRaDataRequestHandler>().Object,
-                       connectionManager ?? new Mock<ILoRaDeviceClientConnectionManager>().Object,
-                       loRaDeviceCache,
-                       NullLoggerFactory.Instance,
-                       NullLogger<LoRaDeviceFactory>.Instance,
-                       meter,
-                       new NoopTracing())
-            {
-                this.deviceSetup = deviceSetup;
-            }
+            private readonly Action<Mock<LoRaDevice>> deviceSetup = deviceSetup;
 
             internal Mock<LoRaDevice> LastDeviceMock { get; private set; }
 

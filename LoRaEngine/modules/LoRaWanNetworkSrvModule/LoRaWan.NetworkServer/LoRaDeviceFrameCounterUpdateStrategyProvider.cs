@@ -14,7 +14,7 @@ namespace LoRaWan.NetworkServer
         public LoRaDeviceFrameCounterUpdateStrategyProvider(NetworkServerConfiguration networkServerConfiguration,
                                                             LoRaDeviceAPIServiceBase loRaDeviceAPIService)
         {
-            if (networkServerConfiguration is null) throw new ArgumentNullException(nameof(networkServerConfiguration));
+            ArgumentNullException.ThrowIfNull(networkServerConfiguration);
 
             this.gatewayID = networkServerConfiguration.GatewayID;
             this.multiGateway = new MultiGatewayFrameCounterUpdateStrategy(gatewayID, loRaDeviceAPIService);

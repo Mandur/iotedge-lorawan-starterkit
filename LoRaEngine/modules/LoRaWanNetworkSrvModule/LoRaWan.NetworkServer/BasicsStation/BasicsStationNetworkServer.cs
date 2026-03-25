@@ -28,13 +28,13 @@ namespace LoRaWan.NetworkServer.BasicsStation
 
         public static async Task RunServerAsync(NetworkServerConfiguration configuration, CancellationToken cancellationToken)
         {
-            if (configuration is null) throw new ArgumentNullException(nameof(configuration));
+            ArgumentNullException.ThrowIfNull(configuration);
 
             var shouldUseCertificate = !string.IsNullOrEmpty(configuration.LnsServerPfxPath);
             using var webHost = WebHost.CreateDefaultBuilder()
-                                       .UseUrls(shouldUseCertificate ? new[] { FormattableString.Invariant($"https://0.0.0.0:{LnsSecurePort}"),
-                                                                               FormattableString.Invariant($"https://0.0.0.0:{CupsPort}") }
-                                                                     : new[] { FormattableString.Invariant($"http://0.0.0.0:{LnsPort}") })
+                                       .UseUrls(shouldUseCertificate ? [ FormattableString.Invariant($"https://0.0.0.0:{LnsSecurePort}"),
+                                                                               FormattableString.Invariant($"https://0.0.0.0:{CupsPort}") ]
+                                                                     : [FormattableString.Invariant($"http://0.0.0.0:{LnsPort}")])
                                        .UseStartup<BasicsStationNetworkServerStartup>()
                                        .UseKestrel(config =>
                                        {
@@ -72,15 +72,14 @@ namespace LoRaWan.NetworkServer.BasicsStation
                                                     IClientCertificateValidatorService? clientCertificateValidatorService,
                                                     HttpsConnectionAdapterOptions https)
         {
-            https.ServerCertificate = string.IsNullOrEmpty(configuration.LnsServerPfxPassword) ? new X509Certificate2(configuration.LnsServerPfxPath)
-                                                                                               : new X509Certificate2(configuration.LnsServerPfxPath,
-                                                                                                                      configuration.LnsServerPfxPassword,
-                                                                                                                      X509KeyStorageFlags.DefaultKeySet);
+            https.ServerCertificate = string.IsNullOrEmpty(configuration.LnsServerPfxPassword) ? X509CertificateLoader.LoadPkcs12FromFile(configuration.LnsServerPfxPath, null)
+                                                                                               : X509CertificateLoader.LoadPkcs12FromFile(configuration.LnsServerPfxPath,
+                                                                                                                                          configuration.LnsServerPfxPassword,
+                                                                                                                                          X509KeyStorageFlags.DefaultKeySet);
 
             if (configuration.ClientCertificateMode is not ClientCertificateMode.NoCertificate)
             {
-                if (clientCertificateValidatorService is null)
-                    throw new ArgumentNullException(nameof(clientCertificateValidatorService));
+                ArgumentNullException.ThrowIfNull(clientCertificateValidatorService);
                 https.ClientCertificateMode = configuration.ClientCertificateMode;
                 https.ClientCertificateValidation = (cert, chain, err) => clientCertificateValidatorService.ValidateAsync(cert, chain, err, default).GetAwaiter().GetResult();
             }

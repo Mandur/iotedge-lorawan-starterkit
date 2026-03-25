@@ -13,11 +13,11 @@ namespace LoRaWan.Tests.Unit.LoRaTools
         public static readonly (AppNonce AppNonce, NetId NetId, DevNonce DevNonce, AppKey AppKey,
                                 NetworkSessionKey NetworkSessionKey,
                                 AppSessionKey AppSessionKey)[] TestData =
-        {
+        [
             (new AppNonce(123), new NetId(0x41), new DevNonce(456), AppKey.Parse("0102030405060708090A0B0C0D0E0F10"),
                 NetworkSessionKey.Parse("D60FD79D3EEF32C277854450918E1595"),
                 AppSessionKey.Parse("EFA581038515D4CE712ACE5FEAAECEF6"))
-        };
+        ];
 
         public static readonly TheoryData<AppSessionKey, AppNonce, NetId, DevNonce, AppKey> CalculateAppSessionKeyData =
             TheoryDataFactory.From(from e in TestData

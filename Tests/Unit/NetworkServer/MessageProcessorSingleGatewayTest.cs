@@ -21,10 +21,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     /// <summary>
     /// Single gateway message processor tests.
     /// </summary>
-    public class MessageProcessorSingleGatewayTest : MessageProcessorTestBase
+    public class MessageProcessorSingleGatewayTest(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        public MessageProcessorSingleGatewayTest(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
-
         [Theory]
         [InlineData(0)]
         [InlineData(2100)]

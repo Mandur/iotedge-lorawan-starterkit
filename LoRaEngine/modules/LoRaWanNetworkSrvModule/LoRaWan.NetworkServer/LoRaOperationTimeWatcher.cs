@@ -15,7 +15,7 @@ namespace LoRaWan.NetworkServer
     /// - first and second receive windows
     /// - first and second join receive windows.
     /// </remarks>
-    public class LoRaOperationTimeWatcher
+    public class LoRaOperationTimeWatcher(Region loraRegion, DateTimeOffset startTime)
     {
         /// <summary>
         /// Gets the expected time required to package and send message back to message sender
@@ -43,19 +43,13 @@ namespace LoRaWan.NetworkServer
         public static TimeSpan ExpectedTimeToPackageAndSendMessageAndCheckForCloudMessageOverhead { get; } = ExpectedTimeToPackageAndSendMessage + CheckForCloudMessageCallEstimatedOverhead;
 
         // Gets start time
-        public DateTimeOffset Start { get; }
+        public DateTimeOffset Start { get; } = startTime;
 
-        private readonly Region loraRegion;
+        private readonly Region loraRegion = loraRegion;
 
         public LoRaOperationTimeWatcher(Region loraRegion)
             : this(loraRegion, DateTimeOffset.UtcNow)
         {
-        }
-
-        public LoRaOperationTimeWatcher(Region loraRegion, DateTimeOffset startTime)
-        {
-            Start = startTime;
-            this.loraRegion = loraRegion;
         }
 
         /// <summary>
@@ -81,7 +75,7 @@ namespace LoRaWan.NetworkServer
         /// <returns>Integer containing the delay in seconds.</returns>
         public uint GetReceiveWindow1Delay(LoRaDevice loRaDevice)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
             return CalculateRXWindowsTime((ushort)this.loraRegion.ReceiveDelay1.ToSeconds(), loRaDevice.ReportedRXDelay);
         }
 
@@ -94,7 +88,7 @@ namespace LoRaWan.NetworkServer
         /// <returns>Integer containing the delay in seconds.</returns>
         public uint GetReceiveWindow2Delay(LoRaDevice loRaDevice)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
             return CalculateRXWindowsTime((ushort)this.loraRegion.ReceiveDelay2.ToSeconds(), loRaDevice.ReportedRXDelay);
         }
 
@@ -134,7 +128,7 @@ namespace LoRaWan.NetworkServer
         /// </summary>
         public ReceiveWindowNumber? ResolveReceiveWindowToUse(LoRaDevice loRaDevice)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
 
             var elapsed = GetElapsedTime();
             if (loRaDevice.PreferredWindow is ReceiveWindow1 && InTimeForReceiveFirstWindow(loRaDevice, elapsed))
@@ -184,7 +178,7 @@ namespace LoRaWan.NetworkServer
         /// <returns><see cref="TimeSpan.Zero"/> if there is no enough time or a positive <see cref="TimeSpan"/> value.</returns>
         public TimeSpan GetAvailableTimeToCheckCloudToDeviceMessage(LoRaDevice loRaDevice)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
 
             var elapsed = GetElapsedTime();
             if (loRaDevice.PreferredWindow is ReceiveWindow1)

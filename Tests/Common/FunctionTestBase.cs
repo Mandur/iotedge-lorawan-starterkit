@@ -7,17 +7,18 @@ namespace LoRaWan.Tests.Common
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Threading;
 
     public class FunctionTestBase
     {
         private const int EUI64BitStringLength = 16;
         private const int EUI32BitStringLength = 8;
-        private static readonly char[] ValidChars = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'A', 'B', 'C', 'D', 'E', 'F' };
-        private static readonly List<string> UsedEUI64 = new List<string>();
-        private static readonly List<string> UsedEUI32 = new List<string>();
+        private static readonly char[] ValidChars = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'A', 'B', 'C', 'D', 'E', 'F'];
+        private static readonly List<string> UsedEUI64 = [];
+        private static readonly List<string> UsedEUI32 = [];
 
         private static readonly Random Rnd = new Random(Environment.TickCount);
-        private static readonly object RndLock = new object();
+        private static readonly Lock RndLock = new Lock();
 
         protected static string NewUniqueEUI64()
         {

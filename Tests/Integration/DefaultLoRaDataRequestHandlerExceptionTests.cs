@@ -56,7 +56,7 @@ namespace LoRaWan.Tests.Integration
             {
                 (new OperationCanceledException("Secondary task canceled"), null, new OperationCanceledException("Secondary task canceled")),
                 (null, new LoRaProcessingException(), new LoRaProcessingException()),
-                (new InvalidOperationException("A"), new LoRaProcessingException("B"), new AggregateException(new Exception[] { new InvalidOperationException("A"), new LoRaProcessingException("B") })),
+                (new InvalidOperationException("A"), new LoRaProcessingException("B"), new AggregateException([new InvalidOperationException("A"), new LoRaProcessingException("B")])),
             });
 
         [Theory]

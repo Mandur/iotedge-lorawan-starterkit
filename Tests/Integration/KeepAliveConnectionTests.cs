@@ -21,14 +21,9 @@ namespace LoRaWan.Tests.Integration
 
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
     // Devices that have keep alive set
-    public class KeepAliveConnectionTests : MessageProcessorTestBase
+    public class KeepAliveConnectionTests(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        private readonly ITestOutputHelper testOutputHelper;
-
-        public KeepAliveConnectionTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-        {
-            this.testOutputHelper = testOutputHelper;
-        }
+        private readonly ITestOutputHelper testOutputHelper = testOutputHelper;
 
         public static int MaxWaitForDeviceConnectionInMs
         {

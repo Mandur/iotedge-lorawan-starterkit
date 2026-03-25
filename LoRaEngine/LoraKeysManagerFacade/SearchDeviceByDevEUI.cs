@@ -13,21 +13,15 @@ namespace LoraKeysManagerFacade
     using Microsoft.Azure.WebJobs.Extensions.Http;
     using Microsoft.Extensions.Logging;
 
-    public class SearchDeviceByDevEUI
+    public class SearchDeviceByDevEUI(IDeviceRegistryManager registryManager, ILogger<SearchDeviceByDevEUI> logger)
     {
-        private readonly IDeviceRegistryManager registryManager;
-        private readonly ILogger<SearchDeviceByDevEUI> logger;
-
-        public SearchDeviceByDevEUI(IDeviceRegistryManager registryManager, ILogger<SearchDeviceByDevEUI> logger)
-        {
-            this.registryManager = registryManager;
-            this.logger = logger;
-        }
+        private readonly IDeviceRegistryManager registryManager = registryManager;
+        private readonly ILogger<SearchDeviceByDevEUI> logger = logger;
 
         [FunctionName(nameof(GetDeviceByDevEUI))]
         public async Task<IActionResult> GetDeviceByDevEUI([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req)
         {
-            if (req is null) throw new ArgumentNullException(nameof(req));
+            ArgumentNullException.ThrowIfNull(req);
 
             try
             {

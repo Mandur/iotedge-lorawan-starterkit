@@ -18,24 +18,7 @@ namespace LoRaWan.NetworkServer
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
 
-    public class DefaultLoRaDataRequestHandler : ILoRaDataRequestHandler
-    {
-        private readonly NetworkServerConfiguration configuration;
-        private readonly ILoRaDeviceFrameCounterUpdateStrategyProvider frameCounterUpdateStrategyProvider;
-        private readonly IConcentratorDeduplication concentratorDeduplication;
-        private readonly ILoRaPayloadDecoder payloadDecoder;
-        private readonly IDeduplicationStrategyFactory deduplicationFactory;
-        private readonly ILoRaADRStrategyProvider loRaADRStrategyProvider;
-        private readonly ILoRAADRManagerFactory loRaADRManagerFactory;
-        private readonly IFunctionBundlerProvider functionBundlerProvider;
-        private readonly ILogger<DefaultLoRaDataRequestHandler> logger;
-        private readonly Counter<int> receiveWindowMissed;
-        private readonly Counter<int> receiveWindowHits;
-        private readonly Histogram<int> d2cPayloadSizeHistogram;
-        private readonly Counter<int> c2dMessageTooLong;
-        private IClassCDeviceMessageSender classCDeviceMessageSender;
-
-        public DefaultLoRaDataRequestHandler(
+    public class DefaultLoRaDataRequestHandler(
             NetworkServerConfiguration configuration,
             ILoRaDeviceFrameCounterUpdateStrategyProvider frameCounterUpdateStrategyProvider,
             IConcentratorDeduplication concentratorDeduplication,
@@ -45,36 +28,34 @@ namespace LoRaWan.NetworkServer
             ILoRAADRManagerFactory loRaADRManagerFactory,
             IFunctionBundlerProvider functionBundlerProvider,
             ILogger<DefaultLoRaDataRequestHandler> logger,
-            Meter meter)
-        {
-            this.configuration = configuration;
-            this.frameCounterUpdateStrategyProvider = frameCounterUpdateStrategyProvider;
-            this.concentratorDeduplication = concentratorDeduplication;
-            this.payloadDecoder = payloadDecoder;
-            this.deduplicationFactory = deduplicationFactory;
-            this.loRaADRStrategyProvider = loRaADRStrategyProvider;
-            this.loRaADRManagerFactory = loRaADRManagerFactory;
-            this.functionBundlerProvider = functionBundlerProvider;
-            this.logger = logger;
-            this.receiveWindowMissed = meter?.CreateCounter<int>(MetricRegistry.ReceiveWindowMisses);
-            this.receiveWindowHits = meter?.CreateCounter<int>(MetricRegistry.ReceiveWindowHits);
-            this.d2cPayloadSizeHistogram = meter?.CreateHistogram<int>(MetricRegistry.D2CMessageSize);
-            this.c2dMessageTooLong = meter?.CreateCounter<int>(MetricRegistry.C2DMessageTooLong);
-        }
+            Meter meter) : ILoRaDataRequestHandler
+    {
+        private readonly NetworkServerConfiguration configuration = configuration;
+        private readonly ILoRaDeviceFrameCounterUpdateStrategyProvider frameCounterUpdateStrategyProvider = frameCounterUpdateStrategyProvider;
+        private readonly IConcentratorDeduplication concentratorDeduplication = concentratorDeduplication;
+        private readonly ILoRaPayloadDecoder payloadDecoder = payloadDecoder;
+        private readonly IDeduplicationStrategyFactory deduplicationFactory = deduplicationFactory;
+        private readonly ILoRaADRStrategyProvider loRaADRStrategyProvider = loRaADRStrategyProvider;
+        private readonly ILoRAADRManagerFactory loRaADRManagerFactory = loRaADRManagerFactory;
+        private readonly IFunctionBundlerProvider functionBundlerProvider = functionBundlerProvider;
+        private readonly ILogger<DefaultLoRaDataRequestHandler> logger = logger;
+        private readonly Counter<int> receiveWindowMissed = meter?.CreateCounter<int>(MetricRegistry.ReceiveWindowMisses);
+        private readonly Counter<int> receiveWindowHits = meter?.CreateCounter<int>(MetricRegistry.ReceiveWindowHits);
+        private readonly Histogram<int> d2cPayloadSizeHistogram = meter?.CreateHistogram<int>(MetricRegistry.D2CMessageSize);
+        private readonly Counter<int> c2dMessageTooLong = meter?.CreateCounter<int>(MetricRegistry.C2DMessageTooLong);
+        private IClassCDeviceMessageSender classCDeviceMessageSender;
 
-        private sealed class ProcessingState
+        private sealed class ProcessingState(LoRaDevice device)
         {
-            private readonly LoRaDevice device;
+            private readonly LoRaDevice device = device;
             private List<Task> secondaryTasks;
-
-            public ProcessingState(LoRaDevice device) => this.device = device;
 
             public ICollection<Task> SecondaryTasks =>
                 (ICollection<Task>)this.secondaryTasks ?? Array.Empty<Task>();
 
             public void Track(Task task)
             {
-                this.secondaryTasks ??= new List<Task>();
+                this.secondaryTasks ??= [];
                 this.secondaryTasks.Add(task);
             }
 
@@ -762,7 +743,7 @@ namespace LoRaWan.NetworkServer
             Dictionary<string, string> eventProperties = null;
             if (loRaPayloadData.IsUpwardAck)
             {
-                eventProperties = new Dictionary<string, string>();
+                eventProperties = [];
                 this.logger.LogInformation($"message ack received for cloud to device message id {loRaDevice.LastConfirmedC2DMessageID}");
                 eventProperties.Add(Constants.C2D_MSG_PROPERTY_VALUE_NAME, loRaDevice.LastConfirmedC2DMessageID ?? Constants.C2D_MSG_ID_PLACEHOLDER);
                 loRaDevice.LastConfirmedC2DMessageID = null;

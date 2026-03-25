@@ -16,16 +16,10 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using Xunit;
     using Xunit.Abstractions;
 
-    public sealed class LoRaDeviceRegistryTest : MessageProcessorTestBase
+    public sealed class LoRaDeviceRegistryTest(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
-        private readonly MemoryCache cache;
-        private readonly Mock<ILoRaDeviceFactory> loraDeviceFactoryMock;
-
-        public LoRaDeviceRegistryTest(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-        {
-            this.loraDeviceFactoryMock = new Mock<ILoRaDeviceFactory>(MockBehavior.Strict);
-            this.cache = new MemoryCache(new MemoryCacheOptions());
-        }
+        private readonly MemoryCache cache = new MemoryCache(new MemoryCacheOptions());
+        private readonly Mock<ILoRaDeviceFactory> loraDeviceFactoryMock = new Mock<ILoRaDeviceFactory>(MockBehavior.Strict);
 
         [Fact]
         public async Task GetDeviceForJoinRequestAsync_When_Device_Api_Throws_Error_Should_Not_Catch()

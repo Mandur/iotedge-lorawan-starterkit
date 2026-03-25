@@ -6,7 +6,6 @@
 namespace LoRaWan.NetworkServer.BasicsStation.JsonHandlers
 {
     using System;
-    using System.Collections.Immutable;
     using Jacob;
 
     public static class CupsEndpoint
@@ -23,6 +22,6 @@ namespace LoRaWan.NetworkServer.BasicsStation.JsonHandlers
                               JsonReader.Property("package", from s in JsonReader.String().OrNull()
                                                              select string.IsNullOrEmpty(s) ? null : s),
                               JsonReader.Property("keys", JsonReader.Array(JsonReader.UInt32())),
-                              (r, c, t, cc, tc, p, k) => new CupsUpdateInfoRequest(r, c, t, cc, tc, p, k.ToImmutableArray()));
+                              (r, c, t, cc, tc, p, k) => new CupsUpdateInfoRequest(r, c, t, cc, tc, p, [.. k]));
     }
 }

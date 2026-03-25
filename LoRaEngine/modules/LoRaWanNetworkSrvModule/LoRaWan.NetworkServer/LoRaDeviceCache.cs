@@ -21,7 +21,7 @@ namespace LoRaWan.NetworkServer
         private readonly LoRaDeviceCacheOptions options;
         private readonly ConcurrentDictionary<DevAddr, ConcurrentDictionary<DevEui, LoRaDevice>> devAddrCache = new();
         private readonly ConcurrentDictionary<DevEui, LoRaDevice> euiCache = new();
-        private readonly object syncLock = new object();
+        private readonly Lock syncLock = new Lock();
         private readonly NetworkServerConfiguration configuration;
         private readonly ILogger<LoRaDeviceCache> logger;
 #pragma warning disable CA2213 // Disposable fields should be disposed (false positive)
@@ -32,7 +32,7 @@ namespace LoRaWan.NetworkServer
 
         public LoRaDeviceCache(LoRaDeviceCacheOptions options, NetworkServerConfiguration configuration, ILogger<LoRaDeviceCache> logger, Meter meter)
         {
-            if (meter is null) throw new ArgumentNullException(nameof(meter));
+            ArgumentNullException.ThrowIfNull(meter);
 
             this.options = options;
             this.ctsDispose = new CancellationTokenSource();
@@ -311,9 +311,12 @@ namespace LoRaWan.NetworkServer
             {
                 lock (this.syncLock)
                 {
-                    this.ctsDispose?.Cancel();
-                    this.ctsDispose?.Dispose();
-                    this.ctsDispose = null;
+                    if (this.ctsDispose is { } cts)
+                    {
+                        cts.Cancel();
+                        cts.Dispose();
+                        this.ctsDispose = null;
+                    }
                 }
 
                 await CleanupAllDevicesAsync();

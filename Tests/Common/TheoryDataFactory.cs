@@ -14,7 +14,7 @@ namespace LoRaWan.Tests.Common
 
         public static TheoryData<T> From<T>(IEnumerable<T> data)
         {
-            if (data is null) throw new ArgumentNullException(nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             var result = new TheoryData<T>();
             foreach (var datum in data)
@@ -27,7 +27,7 @@ namespace LoRaWan.Tests.Common
 
         public static TheoryData<T1, T2> From<T1, T2>(IEnumerable<(T1, T2)> data)
         {
-            if (data is null) throw new ArgumentNullException(nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             var result = new TheoryData<T1, T2>();
             foreach (var (a, b) in data)
@@ -40,7 +40,7 @@ namespace LoRaWan.Tests.Common
 
         public static TheoryData<T1, T2, T3> From<T1, T2, T3>(IEnumerable<(T1, T2, T3)> data)
         {
-            if (data is null) throw new ArgumentNullException(nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             var result = new TheoryData<T1, T2, T3>();
             foreach (var (a, b, c) in data)
@@ -50,7 +50,7 @@ namespace LoRaWan.Tests.Common
 
         public static TheoryData<T1, T2, T3, T4> From<T1, T2, T3, T4>(IEnumerable<(T1, T2, T3, T4)> data)
         {
-            if (data is null) throw new ArgumentNullException(nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             var result = new TheoryData<T1, T2, T3, T4>();
             foreach (var (a, b, c, d) in data)
@@ -60,7 +60,7 @@ namespace LoRaWan.Tests.Common
 
         public static TheoryData<T1, T2, T3, T4, T5> From<T1, T2, T3, T4, T5>(IEnumerable<(T1, T2, T3, T4, T5)> data)
         {
-            if (data is null) throw new ArgumentNullException(nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             var result = new TheoryData<T1, T2, T3, T4, T5>();
             foreach (var (a, b, c, d, e) in data)
@@ -70,7 +70,7 @@ namespace LoRaWan.Tests.Common
 
         public static TheoryData<T1, T2, T3, T4, T5, T6> From<T1, T2, T3, T4, T5, T6>(IEnumerable<(T1, T2, T3, T4, T5, T6)> data)
         {
-            if (data is null) throw new ArgumentNullException(nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             var result = new TheoryData<T1, T2, T3, T4, T5, T6>();
             foreach (var (a, b, c, d, e, f) in data)

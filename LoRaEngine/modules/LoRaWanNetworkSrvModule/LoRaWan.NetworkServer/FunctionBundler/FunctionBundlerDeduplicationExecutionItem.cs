@@ -10,20 +10,20 @@ namespace LoRaWan.NetworkServer
     {
         public void Prepare(FunctionBundlerExecutionContext context, FunctionBundlerRequest request)
         {
-            if (request is null) throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
             request.FunctionItems |= FunctionBundlerItemType.Deduplication;
         }
 
         public bool RequiresExecution(FunctionBundlerExecutionContext context)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(context);
             return context.DeduplicationFactory.Create(context.LoRaDevice) != null;
         }
 
         public void ProcessResult(FunctionBundlerExecutionContext context, FunctionBundlerResult result)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
-            if (result is null) throw new ArgumentNullException(nameof(result));
+            ArgumentNullException.ThrowIfNull(context);
+            ArgumentNullException.ThrowIfNull(result);
 
             if (result.DeduplicationResult != null)
             {

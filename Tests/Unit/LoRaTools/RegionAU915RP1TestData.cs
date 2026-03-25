@@ -47,25 +47,25 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
                                    select (Region, freq.Input, /* data rate */ DR6, freq.Output));
 
         public static TheoryData<Region, DataRateIndex, DataRateIndex> TestRegionDataRateDataDR0To5() =>
-             TheoryDataFactory.From(new[]
-             {
+             TheoryDataFactory.From(
+             [
                  (Region, DR0, DR8),
                  (Region, DR1, DR9),
                  (Region, DR2, DR10),
                  (Region, DR3, DR11),
                  (Region, DR4, DR12),
                  (Region, DR5, DR13)
-             });
+             ]);
 
         public static TheoryData<Region, DataRateIndex, DataRateIndex> TestRegionDataRateDataDR6() =>
-            TheoryDataFactory.From(new[] { (Region, DR6, DR13) });
+            TheoryDataFactory.From([(Region, DR6, DR13)]);
 
-        public static TheoryData<Region, DataRateIndex, DataRateIndex> TestRegionDataRateData_InvalidOffset =>
-           TheoryDataFactory.From(new[]
-           {
-               (Region, DR0, DR6),
-               (Region, DR0, DR7),
-           });
+        public static TheoryData<Region, DataRateIndex, int> TestRegionDataRateData_InvalidOffset =>
+           TheoryDataFactory.From(
+           [
+               (Region, DR0, 6),
+               (Region, DR0, 7),
+           ]);
 
         public static TheoryData<Region, Hertz, DataRateIndex> TestRegionLimitData =>
             TheoryDataFactory.From(new (Region, Hertz, DataRateIndex)[]
@@ -110,24 +110,24 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
            });
 
         public static TheoryData<Region, LoRaRegionType> TestTranslateToRegionData =>
-           TheoryDataFactory.From(new[]
-           {
+           TheoryDataFactory.From(
+           [
                 (Region, LoRaRegionType.AU915),
-           });
+           ]);
 
         public static TheoryData<Region, Hertz, int> TestTryGetJoinChannelIndexData =>
             TheoryDataFactory.From(from freq in new Hertz[] { Mega(902.3), Mega(927.5) }
                                    select (Region, freq, /* expected index */ -1));
 
         public static TheoryData<Region, int, bool> TestIsValidRX1DROffsetData =>
-           TheoryDataFactory.From(new[]
-           {
+           TheoryDataFactory.From(
+           [
                 (Region, 0, true),
                 (Region, 3, true),
                 (Region, 4, true),
                 (Region, 5, true),
                 (Region, 6, false),
-           });
+           ]);
 
         public static TheoryData<Region, DataRateIndex, bool, bool> TestIsDRIndexWithinAcceptableValuesData =>
             TheoryDataFactory.From<Region, DataRateIndex, bool, bool>(new[]

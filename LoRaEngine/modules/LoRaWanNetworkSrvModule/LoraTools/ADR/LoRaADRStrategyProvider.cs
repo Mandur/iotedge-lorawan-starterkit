@@ -5,14 +5,9 @@ namespace LoRaTools.ADR
 {
     using Microsoft.Extensions.Logging;
 
-    public class LoRaADRStrategyProvider : ILoRaADRStrategyProvider
+    public class LoRaADRStrategyProvider(ILoggerFactory loggerFactory) : ILoRaADRStrategyProvider
     {
-        private readonly ILoggerFactory loggerFactory;
-
-        public LoRaADRStrategyProvider(ILoggerFactory loggerFactory)
-        {
-            this.loggerFactory = loggerFactory;
-        }
+        private readonly ILoggerFactory loggerFactory = loggerFactory;
 
         /// <summary>
         /// Provider writtent for future strategy addition.

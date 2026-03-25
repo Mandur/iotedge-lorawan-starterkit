@@ -209,15 +209,10 @@ namespace LoRaWan.Tests.Unit.NetworkServer.Logger
         }
     }
 
-    internal class TestLoRaConsoleLoggerOptionsMonitor : IOptionsMonitor<LoRaLoggerConfiguration>
+    internal class TestLoRaConsoleLoggerOptionsMonitor(LoRaLoggerConfiguration config) : IOptionsMonitor<LoRaLoggerConfiguration>
     {
-        public TestLoRaConsoleLoggerOptionsMonitor(LoRaLoggerConfiguration config)
-        {
-            CurrentValue = config;
-        }
-
         private Action<LoRaLoggerConfiguration, string> listener;
-        public LoRaLoggerConfiguration CurrentValue { get; private set; }
+        public LoRaLoggerConfiguration CurrentValue { get; private set; } = config;
         public LoRaLoggerConfiguration Get(string name)
         {
             return CurrentValue;
@@ -244,17 +239,10 @@ namespace LoRaWan.Tests.Unit.NetworkServer.Logger
         }
     }
 
-    internal class TestLoRaConsoleLogger : LoRaConsoleLogger
+    internal class TestLoRaConsoleLogger(Action<string> onWrite, Action<string> onWriteError, LoRaConsoleLoggerProvider provider) : LoRaConsoleLogger(provider)
     {
-        private readonly Action<string> onWrite;
-        private readonly Action<string> onWriteError;
-
-        public TestLoRaConsoleLogger(Action<string> onWrite, Action<string> onWriteError, LoRaConsoleLoggerProvider provider)
-            : base(provider)
-        {
-            this.onWrite = onWrite;
-            this.onWriteError = onWriteError;
-        }
+        private readonly Action<string> onWrite = onWrite;
+        private readonly Action<string> onWriteError = onWriteError;
 
         protected override void ConsoleWrite(string message)
         {

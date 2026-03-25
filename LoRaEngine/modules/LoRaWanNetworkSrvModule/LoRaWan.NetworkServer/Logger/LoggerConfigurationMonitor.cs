@@ -14,14 +14,14 @@ namespace LoRaWan.NetworkServer.Logger
     {
         private readonly IDisposable onChangeToken;
 
-        public LoRaLoggerConfiguration Configuration { get; private set; }
+        public LoRaLoggerConfiguration Configuration { get; private set; } = null!;
         public IExternalScopeProvider? ScopeProvider { get; private set; }
 
         public LoggerConfigurationMonitor(IOptionsMonitor<LoRaLoggerConfiguration> optionsMonitor)
         {
-            if (optionsMonitor is null) throw new ArgumentNullException(nameof(optionsMonitor));
+            ArgumentNullException.ThrowIfNull(optionsMonitor);
 
-            this.onChangeToken = optionsMonitor.OnChange(UpdateConfiguration);
+            this.onChangeToken = optionsMonitor.OnChange(UpdateConfiguration)!;
             UpdateConfiguration(optionsMonitor.CurrentValue);
         }
 

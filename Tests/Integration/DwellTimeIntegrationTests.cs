@@ -5,7 +5,6 @@
 
 namespace LoRaWan.Tests.Integration
 {
-    using System.Collections.Generic;
     using System.Globalization;
     using System.Text.Json;
     using System.Threading;
@@ -57,11 +56,11 @@ namespace LoRaWan.Tests.Integration
         }
 
         public static TheoryData<DwellTimeSetting, DwellTimeSetting?> Sends_TxParamSetupReq_TheoryData() =>
-            TheoryDataFactory.From(new (DwellTimeSetting, DwellTimeSetting?)[]
-        {
+            TheoryDataFactory.From(
+        [
             (new DwellTimeSetting(false, false, 4), new DwellTimeSetting(true, true, 5)),
             (new DwellTimeSetting(false, false, 4), null)
-        });
+        ]);
 
         [Theory]
         [MemberData(nameof(Sends_TxParamSetupReq_TheoryData))]
@@ -108,11 +107,11 @@ namespace LoRaWan.Tests.Integration
         }
 
         public static TheoryData<DwellTimeSetting?, bool> Persists_Reported_Dwell_Time_On_TxParamSetupAns_TheoryData() =>
-            TheoryDataFactory.From(new (DwellTimeSetting?, bool)[]
-            {
+            TheoryDataFactory.From(
+            [
                 (null, false), (new DwellTimeSetting(true, false, 9), false),
                 (null, true), (new DwellTimeSetting(true, false, 9), true)
-            });
+            ]);
 
         [Theory]
         [MemberData(nameof(Persists_Reported_Dwell_Time_On_TxParamSetupAns_TheoryData))]
@@ -207,7 +206,7 @@ namespace LoRaWan.Tests.Integration
                 payload = macCommandInPayload
                     ? this.simulatedDevice.CreateUnconfirmedDataUpMessage(((int)someMacCommand.Cid).ToString("X2", CultureInfo.InvariantCulture), fcnt: 1,
                                                                           fport: 0, isHexPayload: true)
-                    : this.simulatedDevice.CreateUnconfirmedDataUpMessage("foo", macCommands: new List<MacCommand> { someMacCommand }, fcnt: 1);
+                    : this.simulatedDevice.CreateUnconfirmedDataUpMessage("foo", macCommands: [someMacCommand], fcnt: 1);
             }
             else if (createConfirmed)
             {

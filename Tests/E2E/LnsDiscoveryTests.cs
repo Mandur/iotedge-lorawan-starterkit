@@ -37,23 +37,21 @@ namespace LoRaWan.Tests.E2E
         public sealed record Lns(string DeviceId, string HostAddress, string NetworkId);
         public sealed record Station(StationEui StationEui, string NetworkId);
 
-        private static readonly Lns[] LnsInfo = new[]
-        {
+        private static readonly Lns[] LnsInfo =
+        [
             new Lns("discoverylns1", "wss://lns1:5001", FirstNetworkName), new Lns("discoverylns2", "wss://lns2:5001", FirstNetworkName),
             new Lns("discoverylns3", "wss://lns3:5001", SecondNetworkName), new Lns("discoverylns4", "wss://lns4:5001", SecondNetworkName),
-        };
+        ];
 
-        public static readonly ImmutableArray<Station> StationInfo = new[]
-        {
+        public static readonly ImmutableArray<Station> StationInfo =
+        [
             new Station(new StationEui(1213148791), FirstNetworkName),
             new Station(new StationEui(1213148792), FirstNetworkName),
             new Station(new StationEui(1213148793), SecondNetworkName)
-        }.ToImmutableArray();
+        ];
 
         public static readonly ImmutableArray<string> NetworkIds =
-            LnsInfo.Select(l => l.NetworkId)
-                   .Distinct()
-                   .ToImmutableArray();
+            [.. LnsInfo.Select(l => l.NetworkId).Distinct()];
 
         public static readonly ImmutableDictionary<StationEui, ImmutableArray<Lns>> LnsInfoByStation =
             StationInfo.GroupJoin(LnsInfo, station => station.NetworkId, lns => lns.NetworkId, (s, ls) => (s.StationEui, LnsInfo: ls))
@@ -174,7 +172,7 @@ namespace LoRaWan.Tests.E2E
                 responses.Add(await GetLnsAddressAndAssertAsync(station, CancellationToken.None));
 
             // assert
-            AssertLnsResponsesForStation(station, lnsInfo.Concat(lnsInfo).ToList(), responses);
+            AssertLnsResponsesForStation(station, [.. lnsInfo, .. lnsInfo], responses);
         }
 
         [Fact]

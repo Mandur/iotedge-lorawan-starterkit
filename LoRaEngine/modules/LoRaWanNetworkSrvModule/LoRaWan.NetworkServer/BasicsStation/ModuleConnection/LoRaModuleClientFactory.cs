@@ -6,18 +6,11 @@ namespace LoRaWan.NetworkServer.BasicsStation.ModuleConnection
     using Microsoft.Azure.Devices.Client;
     using System.Threading.Tasks;
 
-    public class LoRaModuleClientFactory : ILoRaModuleClientFactory
+    public class LoRaModuleClientFactory(ITransportSettings[] settings) : ILoRaModuleClientFactory
     {
-        private readonly ITransportSettings[] settings;
-
-        public LoRaModuleClientFactory(ITransportSettings[] settings)
-        {
-            this.settings = settings;
-        }
-
         public async Task<ILoraModuleClient> CreateAsync()
         {
-            return new LoRaModuleClient(await ModuleClient.CreateFromEnvironmentAsync(this.settings));
+            return new LoRaModuleClient(await ModuleClient.CreateFromEnvironmentAsync(settings));
         }
     }
 }

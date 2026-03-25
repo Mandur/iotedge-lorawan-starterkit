@@ -22,7 +22,7 @@ namespace LoRaWan.Tests.Common
                                                      TimeSpan? delay = null)
             where T : class
         {
-            if (mock is null) throw new ArgumentNullException(nameof(mock));
+            ArgumentNullException.ThrowIfNull(mock);
 
             var retryDelay = delay ?? TimeSpan.FromMilliseconds(50);
             for (var i = 0; i < numberOfRetries + 1; ++i)

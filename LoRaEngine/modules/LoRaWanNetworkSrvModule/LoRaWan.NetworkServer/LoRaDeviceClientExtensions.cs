@@ -24,18 +24,12 @@ namespace LoRaWan.NetworkServer
             return client is ResilientClient ? client : new ResilientClient(client, loggerFactory?.CreateLogger<ResilientClient>());
         }
 
-        private sealed class ResilientClient : ILoRaDeviceClient, IIdentityProvider<ILoRaDeviceClient>
+        private sealed class ResilientClient(ILoRaDeviceClient client, ILogger<ResilientClient>? logger) : ILoRaDeviceClient, IIdentityProvider<ILoRaDeviceClient>
         {
             private const int MaxAttempts = 3;
 
-            private readonly ILoRaDeviceClient client;
-            private readonly ILogger? logger;
-
-            public ResilientClient(ILoRaDeviceClient client, ILogger<ResilientClient>? logger)
-            {
-                this.client = client;
-                this.logger = logger;
-            }
+            private readonly ILoRaDeviceClient client = client;
+            private readonly ILogger? logger = logger;
 
             public bool EnsureConnected() => this.client.EnsureConnected();
             public Task DisconnectAsync(CancellationToken cancellationToken) => this.client.DisconnectAsync(cancellationToken);

@@ -10,35 +10,23 @@ namespace LoRaWan.NetworkServer
     using Microsoft.Azure.Devices.Client;
     using Microsoft.Extensions.Logging;
 
-    public class LoRaDeviceFactory : ILoRaDeviceFactory
-    {
-        private readonly NetworkServerConfiguration configuration;
-        private readonly ILoRaDataRequestHandler dataRequestHandler;
-        private readonly ILoRaDeviceClientConnectionManager connectionManager;
-        private readonly LoRaDeviceCache loRaDeviceCache;
-        private readonly ILoggerFactory loggerFactory;
-        private readonly ILogger<LoRaDeviceFactory> logger;
-        private readonly Meter meter;
-        private readonly ITracing tracing;
-
-        public LoRaDeviceFactory(NetworkServerConfiguration configuration,
+    public class LoRaDeviceFactory(NetworkServerConfiguration configuration,
                                  ILoRaDataRequestHandler dataRequestHandler,
                                  ILoRaDeviceClientConnectionManager connectionManager,
                                  LoRaDeviceCache loRaDeviceCache,
                                  ILoggerFactory loggerFactory,
                                  ILogger<LoRaDeviceFactory> logger,
                                  Meter meter,
-                                 ITracing tracing)
-        {
-            this.configuration = configuration;
-            this.dataRequestHandler = dataRequestHandler;
-            this.connectionManager = connectionManager;
-            this.loggerFactory = loggerFactory;
-            this.logger = logger;
-            this.meter = meter;
-            this.tracing = tracing;
-            this.loRaDeviceCache = loRaDeviceCache;
-        }
+                                 ITracing tracing) : ILoRaDeviceFactory
+    {
+        private readonly NetworkServerConfiguration configuration = configuration;
+        private readonly ILoRaDataRequestHandler dataRequestHandler = dataRequestHandler;
+        private readonly ILoRaDeviceClientConnectionManager connectionManager = connectionManager;
+        private readonly LoRaDeviceCache loRaDeviceCache = loRaDeviceCache;
+        private readonly ILoggerFactory loggerFactory = loggerFactory;
+        private readonly ILogger<LoRaDeviceFactory> logger = logger;
+        private readonly Meter meter = meter;
+        private readonly ITracing tracing = tracing;
 
         public Task<LoRaDevice> CreateAndRegisterAsync(IoTHubDeviceInfo deviceInfo, CancellationToken cancellationToken)
         {

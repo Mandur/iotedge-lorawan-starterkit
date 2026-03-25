@@ -15,7 +15,7 @@ namespace SensorDecoderModule.Classes
         /// <returns>byte[] containing converted hex string</returns>
         public static byte[] StringToByteArray(string hex)
         {
-            if (hex is null) throw new ArgumentNullException(nameof(hex));
+            ArgumentNullException.ThrowIfNull(hex);
             var numberChars = hex.Length;
             var bytes = new byte[numberChars / 2];
             for (var i = 0; i < numberChars; i += 2)
@@ -30,7 +30,7 @@ namespace SensorDecoderModule.Classes
         /// <returns>string containing converted byte[]</returns>
         public static string ByteArrayToString(byte[] bytes)
         {
-            if (bytes is null) throw new ArgumentNullException(nameof(bytes));
+            ArgumentNullException.ThrowIfNull(bytes);
             var result = new StringBuilder(bytes.Length * 2);
             var hexAlphabet = "0123456789ABCDEF";
 

@@ -12,11 +12,8 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using Xunit;
     using Xunit.Abstractions;
 
-    public class MessageProcessorMultipleGatewayTest : MessageProcessorMultipleGatewayBase
+    public class MessageProcessorMultipleGatewayTest(ITestOutputHelper testOutputHelper) : MessageProcessorMultipleGatewayBase(testOutputHelper)
     {
-        public MessageProcessorMultipleGatewayTest(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-        { }
-
         [Fact]
         public async Task Multi_OTAA_Unconfirmed_Message_Should_Send_Data_To_IotHub_Update_FcntUp_And_Return_Null()
         {

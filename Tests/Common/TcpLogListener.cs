@@ -14,7 +14,7 @@ namespace LoRaWan.Tests.Common
 
     public sealed class TcpLogListener : IDisposable
     {
-        private static readonly char[] NewLineChars = { '\r', '\n' };
+        private static readonly char[] NewLineChars = ['\r', '\n'];
 
         public static TcpLogListener Start(int port, bool dontLogToConsole = false)
         {

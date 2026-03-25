@@ -8,7 +8,7 @@ namespace LoRaTools
     using Newtonsoft.Json;
 
     /// <summary>
-    /// DevStatusAns Upstream & DevStatusReq Downstream.
+    /// DevStatusAns Upstream and DevStatusReq Downstream.
     /// </summary>
     public class DevStatusAnswer : MacCommand
     {

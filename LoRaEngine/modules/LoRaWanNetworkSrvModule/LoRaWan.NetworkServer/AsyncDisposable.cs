@@ -9,13 +9,11 @@ namespace LoRaWan.NetworkServer
     using System.Threading;
     using System.Threading.Tasks;
 
-    internal sealed class AsyncDisposable : IAsyncDisposable
+    internal sealed class AsyncDisposable(Func<CancellationToken, ValueTask> handler) : IAsyncDisposable
     {
         public static readonly IAsyncDisposable Nop = new AsyncDisposable(_ => ValueTask.CompletedTask);
 
-        private Func<CancellationToken, ValueTask>? handler;
-
-        public AsyncDisposable(Func<CancellationToken, ValueTask> handler) => this.handler = handler;
+        private Func<CancellationToken, ValueTask>? handler = handler;
 
         public CancellationToken CancellationToken { get; set; }
 

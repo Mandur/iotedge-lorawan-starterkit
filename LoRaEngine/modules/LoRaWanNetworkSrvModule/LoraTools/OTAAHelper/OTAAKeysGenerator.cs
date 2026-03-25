@@ -21,7 +21,7 @@ namespace LoRaTools
         // don't work with CFLIST atm
         private static byte[] CalculateKey(SessionKeyType type, AppNonce appNonce, NetId netId, DevNonce devNonce, AppKey appKey)
         {
-            using var aes = Aes.Create("AesManaged");
+            using var aes = Aes.Create();
             var rawAppKey = new byte[AppKey.Size];
             _ = appKey.Write(rawAppKey);
             aes.Key = rawAppKey;

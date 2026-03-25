@@ -7,12 +7,8 @@ namespace LoRaTools.IoTHubImpl
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices;
 
-    internal class JsonPageResult : IoTHubRegistryPageResult<string>
+    internal class JsonPageResult(IQuery originalQuery) : IoTHubRegistryPageResult<string>(originalQuery)
     {
-        public JsonPageResult(IQuery originalQuery)
-            : base(originalQuery)
-        {
-        }
 
         public override Task<IEnumerable<string>> GetNextPageAsync()
         {

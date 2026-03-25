@@ -136,8 +136,8 @@ namespace LoRaWan.Tests.Unit
             Assert.Equal(expected, actual);
         }
 
-        public static TheoryData<string, char?> InvalidInput() => TheoryDataFactory.From(new[]
-        {
+        public static TheoryData<string, char?> InvalidInput() => TheoryDataFactory.From(
+        [
             ("1", (char?)null),
             ("l2", null),
             ("123", null),
@@ -153,7 +153,7 @@ namespace LoRaWan.Tests.Unit
             ("-12-", '-'),
             ("12-34-", '-'),
             ("12:E4:S6", ':')
-        });
+        ]);
 
         [Theory]
         [InlineData("0123abcd", null, 0x0123abcd)]

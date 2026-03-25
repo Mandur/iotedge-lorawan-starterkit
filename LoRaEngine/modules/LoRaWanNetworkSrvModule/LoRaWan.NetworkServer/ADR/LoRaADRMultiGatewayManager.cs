@@ -7,15 +7,9 @@ namespace LoRaWan.NetworkServer.ADR
     using LoRaTools.ADR;
     using Microsoft.Extensions.Logging;
 
-    public class LoRaADRMultiGatewayManager : LoRaADRDefaultManager
+    public class LoRaADRMultiGatewayManager(LoRaDevice loRaDevice, LoRaDeviceAPIServiceBase deviceApi, ILogger<LoRaADRMultiGatewayManager> logger) : LoRaADRDefaultManager(null, null, null, loRaDevice, logger)
     {
-        private readonly LoRaDeviceAPIServiceBase deviceApi;
-
-        public LoRaADRMultiGatewayManager(LoRaDevice loRaDevice, LoRaDeviceAPIServiceBase deviceApi, ILogger<LoRaADRMultiGatewayManager> logger)
-            : base(null, null, null, loRaDevice, logger)
-        {
-            this.deviceApi = deviceApi;
-        }
+        private readonly LoRaDeviceAPIServiceBase deviceApi = deviceApi;
 
         public override Task<bool> ResetAsync(DevEui devEUI)
         {

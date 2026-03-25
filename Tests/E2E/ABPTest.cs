@@ -13,13 +13,8 @@ namespace LoRaWan.Tests.E2E
     // Tests ABP requests
     [Collection(Constants.TestCollectionName)] // run in serial
     [Trait("Category", "SkipWhenLiveUnitTesting")]
-    public sealed class ABPTest : IntegrationTestBaseCi
+    public sealed class ABPTest(IntegrationTestFixtureCi testFixture) : IntegrationTestBaseCi(testFixture)
     {
-        public ABPTest(IntegrationTestFixtureCi testFixture)
-            : base(testFixture)
-        {
-        }
-
         [RetryFact]
         public Task Test_ABP_Confirmed_And_Unconfirmed_Message_With_ADR_Single()
         {

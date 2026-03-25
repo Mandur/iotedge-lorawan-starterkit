@@ -6,29 +6,22 @@
 namespace LoRaWan.NetworkServer
 {
     using System;
+    using System.Threading;
     using LoRaTools.LoRaMessage;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Logging;
 
-    public sealed class ConcentratorDeduplication : IConcentratorDeduplication
+    public sealed class ConcentratorDeduplication(
+            IMemoryCache cache,
+            ILogger<IConcentratorDeduplication> logger) : IConcentratorDeduplication
     {
         private static readonly TimeSpan DefaultExpiration = TimeSpan.FromMinutes(1);
 
-        private readonly IMemoryCache cache;
-        private readonly ILogger<IConcentratorDeduplication> logger;
-        private static readonly object CacheLock = new object();
+        private static readonly Lock CacheLock = new Lock();
 
         internal sealed record DataMessageKey(DevEui DevEui, Mic Mic, ushort FCnt);
 
         internal sealed record JoinMessageKey(JoinEui JoinEui, DevEui DevEui, DevNonce DevNonce);
-
-        public ConcentratorDeduplication(
-            IMemoryCache cache,
-            ILogger<IConcentratorDeduplication> logger)
-        {
-            this.cache = cache;
-            this.logger = logger;
-        }
 
         public ConcentratorDeduplicationResult CheckDuplicateJoin(LoRaRequest loRaRequest)
         {
@@ -39,7 +32,7 @@ namespace LoRaWan.NetworkServer
 
             var result = ConcentratorDeduplicationResult.Duplicate;
 
-            this.logger.LogDebug($"Join received from station {loRaRequest.StationEui}. Marked as {result} {Constants.MessageAlreadyEncountered}.");
+            logger.LogDebug($"Join received from station {loRaRequest.StationEui}. Marked as {result} {Constants.MessageAlreadyEncountered}.");
             return result;
         }
 
@@ -63,7 +56,7 @@ namespace LoRaWan.NetworkServer
                 result = ConcentratorDeduplicationResult.Duplicate;
             }
 
-            this.logger.LogDebug($"Data message received from station {loRaRequest.StationEui}. Marked as {result} {Constants.MessageAlreadyEncountered}.");
+            logger.LogDebug($"Data message received from station {loRaRequest.StationEui}. Marked as {result} {Constants.MessageAlreadyEncountered}.");
             return result;
         }
 
@@ -73,9 +66,9 @@ namespace LoRaWan.NetworkServer
 
             lock (CacheLock)
             {
-                if (!this.cache.TryGetValue(key, out previousStation))
+                if (!cache.TryGetValue(key, out previousStation))
                 {
-                    _ = this.cache.Set(key, stationEui, new MemoryCacheEntryOptions()
+                    _ = cache.Set(key, stationEui, new MemoryCacheEntryOptions()
                     {
                         SlidingExpiration = DefaultExpiration
                     });

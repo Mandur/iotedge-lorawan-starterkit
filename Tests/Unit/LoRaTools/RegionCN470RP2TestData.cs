@@ -55,11 +55,11 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
            });
 
         public static TheoryData<Region, DataRateIndex, int> TestRegionDataRateData_InvalidOffset =>
-           TheoryDataFactory.From(new[]
-           {
+           TheoryDataFactory.From(
+           [
                (Region, DR0, 6),
                (Region, DR2, 10),
-           });
+           ]);
 
         public static TheoryData<Region, Hertz, DataRateIndex, int> TestRegionLimitData =>
             TheoryDataFactory.From<Region, Hertz, DataRateIndex, int>(new (Region, Hertz, DataRateIndex, int)[]
@@ -129,7 +129,7 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
             });
 
         public static TheoryData<Region, LoRaRegionType> TestTranslateToRegionData =>
-           TheoryDataFactory.From(new[] { (Region, LoRaRegionType.CN470RP2) });
+           TheoryDataFactory.From([(Region, LoRaRegionType.CN470RP2)]);
 
         public static TheoryData<Region, Hertz, int> TestTryGetJoinChannelIndexData =>
             TheoryDataFactory.From(new (Region, Hertz, int)[]
@@ -147,12 +147,12 @@ namespace LoRaWan.Tests.Unit.LoRaTools.Regions
             });
 
         public static TheoryData<Region, int, bool> TestIsValidRX1DROffsetData =>
-           TheoryDataFactory.From(new[]
-           {
+           TheoryDataFactory.From(
+           [
                 (Region, 0, true),
                 (Region, 5, true),
                 (Region, 6, false),
-           });
+           ]);
 
         public static TheoryData<Region, DataRateIndex, bool, bool> TestIsDRIndexWithinAcceptableValuesData =>
             TheoryDataFactory.From<Region, DataRateIndex, bool, bool>(new[]

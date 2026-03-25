@@ -30,7 +30,7 @@ namespace LoRaWan.Tests.Common
 #pragma warning restore CA2213 // Disposable fields should be disposed
         private readonly byte[] macAddress;
         private readonly long startTime;
-        private readonly List<IDisposable> valuesToDispose = new List<IDisposable>();
+        private readonly List<IDisposable> valuesToDispose = [];
         private bool disposedValue;
 
         public TestDownstreamMessageSender DownstreamMessageSender { get; }

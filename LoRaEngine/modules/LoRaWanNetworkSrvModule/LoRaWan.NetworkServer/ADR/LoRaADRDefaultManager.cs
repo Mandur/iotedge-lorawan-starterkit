@@ -7,18 +7,11 @@ namespace LoRaWan.NetworkServer.ADR
     using LoRaTools.ADR;
     using Microsoft.Extensions.Logging;
 
-    public class LoRaADRDefaultManager : LoRaADRManagerBase
+    public class LoRaADRDefaultManager(ILoRaADRStore store, ILoRaADRStrategyProvider strategyProvider, ILoRaDeviceFrameCounterUpdateStrategy frameCounterStrategy, LoRaDevice loRaDevice, ILogger<LoRaADRDefaultManager> logger) : LoRaADRManagerBase(store, strategyProvider, logger)
     {
-        protected LoRaDevice LoRaDevice { get; private set; }
+        protected LoRaDevice LoRaDevice { get; private set; } = loRaDevice;
 
-        private readonly ILoRaDeviceFrameCounterUpdateStrategy frameCounterStrategy;
-
-        public LoRaADRDefaultManager(ILoRaADRStore store, ILoRaADRStrategyProvider strategyProvider, ILoRaDeviceFrameCounterUpdateStrategy frameCounterStrategy, LoRaDevice loRaDevice, ILogger<LoRaADRDefaultManager> logger)
-            : base(store, strategyProvider, logger)
-        {
-            LoRaDevice = loRaDevice;
-            this.frameCounterStrategy = frameCounterStrategy;
-        }
+        private readonly ILoRaDeviceFrameCounterUpdateStrategy frameCounterStrategy = frameCounterStrategy;
 
         protected override void UpdateState(LoRaADRResult loRaADRResult)
         {

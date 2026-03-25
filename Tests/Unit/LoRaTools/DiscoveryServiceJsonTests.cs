@@ -5,7 +5,6 @@ namespace LoRaWan.Tests.Unit.LoRaTools
 {
     using System;
     using System.Text.Json;
-    using global::LoRaTools;
     using global::LoRaTools.NetworkServerDiscovery;
     using Jacob;
     using LoRaWan;

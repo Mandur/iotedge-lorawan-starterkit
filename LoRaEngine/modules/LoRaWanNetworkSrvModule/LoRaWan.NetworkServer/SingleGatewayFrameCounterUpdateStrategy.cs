@@ -10,7 +10,7 @@ namespace LoRaWan.NetworkServer
     {
         public Task<bool> ResetAsync(LoRaDevice loRaDevice, uint fcntUp, string gatewayId)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
 
             loRaDevice.ResetFcnt();
             return Task.FromResult(true); // always able to reset locally
@@ -18,13 +18,13 @@ namespace LoRaWan.NetworkServer
 
         public ValueTask<uint> NextFcntDown(LoRaDevice loRaDevice, uint messageFcnt)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
             return new ValueTask<uint>(loRaDevice.IncrementFcntDown(1));
         }
 
         public Task<bool> SaveChangesAsync(LoRaDevice loRaDevice)
         {
-            if (loRaDevice is null) throw new ArgumentNullException(nameof(loRaDevice));
+            ArgumentNullException.ThrowIfNull(loRaDevice);
             return InternalSaveChangesAsync(loRaDevice, force: false);
         }
 

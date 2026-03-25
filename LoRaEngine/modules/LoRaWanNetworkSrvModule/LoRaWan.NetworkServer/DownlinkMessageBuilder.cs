@@ -250,10 +250,7 @@ namespace LoRaWan.NetworkServer
 
         private static ushort ValidateAndConvert16bitFCnt(uint fcntDown)
         {
-            if (fcntDown == 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(fcntDown));
-            }
+            ArgumentOutOfRangeException.ThrowIfZero(fcntDown);
 
             return (ushort)fcntDown;
         }

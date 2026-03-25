@@ -9,16 +9,10 @@ namespace LoraKeysManagerFacade
     using LoRaTools;
     using System.Text.Json;
 
-    public class RedisChannelPublisher : IChannelPublisher
+    public class RedisChannelPublisher(ConnectionMultiplexer redis, ILogger<RedisChannelPublisher> logger) : IChannelPublisher
     {
-        private readonly ConnectionMultiplexer redis;
-        private readonly ILogger logger;
-
-        public RedisChannelPublisher(ConnectionMultiplexer redis, ILogger<RedisChannelPublisher> logger)
-        {
-            this.redis = redis;
-            this.logger = logger;
-        }
+        private readonly ConnectionMultiplexer redis = redis;
+        private readonly ILogger logger = logger;
 
         public async Task PublishAsync(string channel, LnsRemoteCall lnsRemoteCall)
         {

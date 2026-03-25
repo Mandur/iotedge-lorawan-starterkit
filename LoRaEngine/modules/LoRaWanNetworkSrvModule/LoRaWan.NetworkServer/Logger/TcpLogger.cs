@@ -11,7 +11,6 @@ namespace LoRaWan.NetworkServer.Logger
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
-    using System.Linq;
     using System.Net;
     using System.Net.Sockets;
     using System.Text;
@@ -45,20 +44,13 @@ namespace LoRaWan.NetworkServer.Logger
             return builder;
         }
 
-        private sealed class TcpLogger : ILogger
+        private sealed class TcpLogger(LogLevel logLevel, IExternalScopeProvider externalScopeProvider, Action<string> logger) : ILogger
         {
-            private readonly LogLevel logLevel;
-            private readonly IExternalScopeProvider externalScopeProvider;
-            private readonly Action<string> logger;
+            private readonly LogLevel logLevel = logLevel;
+            private readonly IExternalScopeProvider externalScopeProvider = externalScopeProvider;
+            private readonly Action<string> logger = logger;
 
-            public TcpLogger(LogLevel logLevel, IExternalScopeProvider externalScopeProvider, Action<string> logger)
-            {
-                this.externalScopeProvider = externalScopeProvider;
-                this.logLevel = logLevel;
-                this.logger = logger;
-            }
-
-            public IDisposable BeginScope<TState>(TState state) =>
+            public IDisposable BeginScope<TState>(TState state) where TState : notnull =>
                 this.externalScopeProvider is { } scopeProvider ? scopeProvider.Push(state) : NoopDisposable.Instance;
 
             public bool IsEnabled(LogLevel logLevel) => logLevel >= this.logLevel;
@@ -91,7 +83,7 @@ namespace LoRaWan.NetworkServer.Logger
 
             public static TcpLoggerProvider Start(TcpLoggerConfiguration configuration, ILogger<TcpLoggerProvider>? logger = null)
             {
-                if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+                ArgumentNullException.ThrowIfNull(configuration);
 
                 IPEndPoint? endPoint = null;
 
@@ -192,7 +184,7 @@ namespace LoRaWan.NetworkServer.Logger
 
             private void Log(string message)
             {
-                if (message == null) throw new ArgumentNullException(nameof(message));
+                ArgumentNullException.ThrowIfNull(message);
 
                 // NOTE! The following will induce an "ObjectDisposedException" in two ways.
                 // When this object is disposed, it cancels the cancellation token source then proceeds
@@ -204,13 +196,12 @@ namespace LoRaWan.NetworkServer.Logger
                 // following gate, then the worst that can happen is that another message can end up on
                 // the channel, which is harmless.
 
-                if (this.cancellationTokenSource.Token.IsCancellationRequested)
-                    throw new ObjectDisposedException(nameof(TcpLoggerProvider));
+                ObjectDisposedException.ThrowIf(this.cancellationTokenSource.Token.IsCancellationRequested, nameof(TcpLoggerProvider));
 
                 _ = this.channel.Writer.TryWrite(this.formatter?.Invoke(message) ?? message);
             }
 
-            private static readonly char[] NewLineChars = { '\n', '\r' };
+            private static readonly char[] NewLineChars = ['\n', '\r'];
 
             private async Task SendAllLogMessagesAsync(CancellationToken cancellationToken)
             {
@@ -223,11 +214,13 @@ namespace LoRaWan.NetworkServer.Logger
                     await foreach (var log in this.channel.Reader.ReadAllAsync(cancellationToken))
                     {
                         var lines = log.IndexOfAny(NewLineChars) >= 0
-                                  ? new StringValues(SplitIntoLines(log).Append(string.Empty).ToArray()) // re-normalize
+                                  ? new StringValues([.. SplitIntoLines(log), string.Empty]) // re-normalize
                                   : new StringValues(log);
 
                         foreach (var line in lines)
                         {
+                            if (line is null) continue;
+
                             for (var attempt = 1; ; attempt++)
                             {
                                 try

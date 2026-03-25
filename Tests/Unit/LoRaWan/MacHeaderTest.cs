@@ -88,7 +88,7 @@ namespace LoRaWan.Tests.Unit
             var remainingBytes = this.unconfirmedDataUp.Write(bytes);
             remainingBytes.Fill(0xff);
             Assert.Equal(3, remainingBytes.Length);
-            Assert.Equal(new byte[] { 0x40, 0xff, 0xff, 0xff }, bytes);
+            Assert.Equal([0x40, 0xff, 0xff, 0xff], bytes);
         }
 
         public static readonly TheoryData<byte, MacHeader> ByteConversionTestData =

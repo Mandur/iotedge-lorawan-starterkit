@@ -6,18 +6,13 @@ namespace LoraKeysManagerFacade.FunctionBundler
     using System.Threading.Tasks;
     using LoRaTools.CommonAPI;
 
-    public class NextFCntDownExecutionItem : IFunctionBundlerExecutionItem
+    public class NextFCntDownExecutionItem(FCntCacheCheck fCntCacheCheck) : IFunctionBundlerExecutionItem
     {
-        private readonly FCntCacheCheck fCntCacheCheck;
-
-        public NextFCntDownExecutionItem(FCntCacheCheck fCntCacheCheck)
-        {
-            this.fCntCacheCheck = fCntCacheCheck;
-        }
+        private readonly FCntCacheCheck fCntCacheCheck = fCntCacheCheck;
 
         public async Task<FunctionBundlerExecutionState> ExecuteAsync(IPipelineExecutionContext context)
         {
-            if (context is null) throw new System.ArgumentNullException(nameof(context));
+            System.ArgumentNullException.ThrowIfNull(context);
 
             if (context.Result.AdrResult?.FCntDown != null)
             {
