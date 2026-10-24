@@ -11,8 +11,8 @@ namespace LoRaWan.Tools.CLI.Helpers
 
     internal static class ValidationHelper
     {
-        private static readonly List<string> EuValidDataranges = new List<string>()
-            {
+        private static readonly List<string> EuValidDataranges =
+            [
                 "SF12BW125", // 0
                 "SF11BW125", // 1
                 "SF10BW125", // 2
@@ -21,10 +21,10 @@ namespace LoRaWan.Tools.CLI.Helpers
                 "SF7BW125", // 5
                 "SF7BW250", // 6
                 "50" // 7 FSK 50
-            };
+            ];
 
-        private static readonly List<string> UsValidDataranges = new List<string>()
-            {
+        private static readonly List<string> UsValidDataranges =
+            [
                 "SF10BW125", // 0
                 "SF9BW125", // 1
                 "SF8BW125", // 2
@@ -36,7 +36,7 @@ namespace LoRaWan.Tools.CLI.Helpers
                 "SF9BW500", // 11
                 "SF8BW500", // 12
                 "SF8BW500" // 13
-            };
+            ];
 
         public static string GetDataRatesforLocale(string locale)
         {

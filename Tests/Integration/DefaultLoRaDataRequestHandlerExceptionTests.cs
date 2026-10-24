@@ -115,7 +115,7 @@ namespace LoRaWan.Tests.Integration
             }
             else
             {
-                Assert.Equal(expected.Message, ex!.Message);
+                Assert.Equal(expected.Message, ex.Message);
             }
         }
 

@@ -14,7 +14,7 @@ namespace LoRaWan.NetworkServer.Logger
     {
         private readonly IDisposable onChangeToken;
 
-        public LoRaLoggerConfiguration Configuration { get; private set; } = null!;
+        public LoRaLoggerConfiguration Configuration { get; private set; }
         public IExternalScopeProvider? ScopeProvider { get; private set; }
 
         public LoggerConfigurationMonitor(IOptionsMonitor<LoRaLoggerConfiguration> optionsMonitor)

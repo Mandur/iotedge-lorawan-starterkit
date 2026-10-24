@@ -27,7 +27,7 @@ namespace LoRaWan.Tools.CLI
 
         public static async Task<int> Main(string[] args)
         {
-            if (args is null) throw new ArgumentNullException(nameof(args));
+            ArgumentNullException.ThrowIfNull(args);
 
             WriteAzureLogo();
             Console.WriteLine("Azure IoT Edge LoRaWAN Starter Kit LoRa Device Provisioning Tool.");

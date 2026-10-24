@@ -6,14 +6,36 @@ on:
       - completed
 jobs:
   report:
+    if: github.event.workflow_run.conclusion != 'cancelled'
     permissions:
+      actions: read
+      contents: read
       checks: write
-      pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - uses: dorny/test-reporter@v1
+    - name: Check for test artifacts
+      id: artifacts
+      uses: actions/github-script@v9
       with:
-        artifact: /(.*)results/
+        script: |
+          const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+            ...context.repo,
+            run_id: context.payload.workflow_run.id
+          });
+          const available = artifacts.some(artifact => !artifact.expired && /^(.*)results$/.test(artifact.name));
+          core.setOutput('available', available);
+          if (!available) {
+            const message = 'No test-results artifacts were produced by the upstream workflow.';
+            if (context.payload.workflow_run.conclusion === 'success') {
+              core.setFailed(message);
+            } else {
+              core.warning(`${message} See the upstream workflow failure; tests may not have run.`);
+            }
+          }
+    - uses: dorny/test-reporter@v3
+      if: steps.artifacts.outputs.available == 'true'
+      with:
+        artifact: /^(.*)results$/
         name: '$1Results'
         path: '**/*.trx'
         reporter: dotnet-trx
