@@ -15,7 +15,7 @@
 - SDK: `.NET 10` (`global.json`), C# `13.0` (see `Directory.Build.props`). Run `dotnet --info` to verify preview installed.
 - Refresh T4-generated code before commit: `dotnet tool restore && git ls-files *.tt | xargs -n1 dotnet t4` (CI diff-checks this).
 - Build solution: `dotnet build --configuration Release` (root `LoRaEngine.sln`).
-- Unit tests: `dotnet test Tests/Unit/LoRaWan.Tests.Unit.csproj --no-build --logger trx -r Tests/TestResults/Unit`.
+- Unit tests: `dotnet test Tests/Unit/LoRaWan.Tests.Unit.csproj --no-build --logger trx --results-directory Tests/TestResults/Unit`.
 - Integration tests (needs Docker): `dotnet test Tests/Integration/LoRaWan.Tests.Integration.csproj --no-build ...`; spins up a Redis 6.0-alpine container on port **6001** via `RedisFixture`.
   - > Ensure Docker daemon is running; tests wait for `LoRaDevAddrCache` locks before teardown.
 - CLI tests: `dotnet test Tools/Cli-LoRa-Device-Provisioning/Tests/LoRaWan.Tools.CLI.Tests.Unit/LoRaWan.Tools.CLI.Tests.Unit.csproj`.

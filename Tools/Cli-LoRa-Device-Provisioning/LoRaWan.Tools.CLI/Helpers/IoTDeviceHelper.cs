@@ -1222,7 +1222,7 @@ namespace LoRaWan.Tools.CLI.Helpers
 
             while (query.HasMoreResults)
             {
-                (var success, currentPage) = await ExecuteWithIotHubErrorHandlingAsync(() => query.GetNextAsJsonAsync());
+                (var success, currentPage) = await ExecuteWithIotHubErrorHandlingAsync(query.GetNextAsJsonAsync);
 
                 if (!success)
                     return false;
@@ -1280,7 +1280,7 @@ namespace LoRaWan.Tools.CLI.Helpers
 
             while (query.HasMoreResults)
             {
-                (var success, fullList) = await ExecuteWithIotHubErrorHandlingAsync(() => query.GetNextAsTwinAsync());
+                (var success, fullList) = await ExecuteWithIotHubErrorHandlingAsync(query.GetNextAsTwinAsync);
 
                 if (!success)
                     return false;

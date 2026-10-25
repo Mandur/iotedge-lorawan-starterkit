@@ -111,6 +111,11 @@ If you would like to contribute to the IoT Edge LoRaWAN Starter Kit source code,
 please base your own branch and pull request (PR) off our dev branch.
 Refer to the [Dev Guide][devguide] for development and debugging instructions.
 
+For machine-specific package sources, use a `nuget.local.config` file, which is
+excluded from Git and Docker build contexts. Restore with
+`dotnet restore --configfile nuget.local.config`, then build with
+`dotnet build --no-restore`. Keep private package sources out of `nuget.config`.
+
 [quickstart]:           https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/
 [upgradeguide]:         https://azure.github.io/iotedge-lorawan-starterkit/dev/user-guide/upgrade/
 [devguide]:             https://azure.github.io/iotedge-lorawan-starterkit/dev/user-guide/devguide/

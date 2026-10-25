@@ -13,7 +13,7 @@ runs:
       shell: bash
       run: |
         dotnet test --logger trx --no-build --configuration ${{ env.BUILD_CONFIGURATION }} \
-        -p:ParallelizeTestCollections=false -r ${{ env.TESTS_RESULTS_FOLDER }}/E2E/ --filter "${{ inputs.test_name }}" \
+        -p:ParallelizeTestCollections=false --results-directory ${{ env.TESTS_RESULTS_FOLDER }}/E2E/ --filter "${{ inputs.test_name }}" \
         ${{ env.TESTS_FOLDER }}/E2E/LoRaWan.Tests.E2E.csproj
 
     - run: |

@@ -166,7 +166,8 @@ namespace LoRaWan.Tests.Integration
                     break;
                 case null:
                     var nextFullUpdate = await this.cache.GetObjectTTL(FullUpdateKey);
-                    Assert.True(nextFullUpdate <= TimeSpan.FromMinutes(1));
+                    Assert.NotNull(nextFullUpdate);
+                    Assert.InRange(nextFullUpdate.Value, TimeSpan.Zero, TimeSpan.FromMinutes(1));
                     Assert.Null(await this.cache.GetObjectTTL(GlobalDevAddrUpdateKey));
                     break;
                 default: throw new InvalidOperationException("invalid test case");

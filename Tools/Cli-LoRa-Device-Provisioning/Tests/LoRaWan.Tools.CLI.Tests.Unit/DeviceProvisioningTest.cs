@@ -53,7 +53,7 @@ namespace LoRaWan.Tools.CLI.Tests.Unit
 
         private static IDictionary<string, object> GetConcentratorRouterConfig(string region)
         {
-            if (region is null) throw new ArgumentNullException(nameof(region));
+            ArgumentNullException.ThrowIfNull(region);
             var fileName = Path.Combine(IoTDeviceHelper.DefaultRouterConfigFolder, $"{region.ToUpperInvariant()}.json");
             var raw = File.ReadAllText(fileName);
 
@@ -74,7 +74,7 @@ namespace LoRaWan.Tools.CLI.Tests.Unit
                 .Callback((Device d, Twin t) =>
                 {
                     Assert.Equal(NetworkName, t.Tags[DeviceTags.NetworkTagName].ToString());
-                    Assert.Equal(new string[] { DeviceTags.DeviceTypes.Leaf }, ((JArray)t.Tags[DeviceTags.DeviceTypeTagName]).Select(x => x.ToString()).ToArray());
+                    Assert.Equal(new string[] { DeviceTags.DeviceTypes.Leaf }, ((JArray)t.Tags[DeviceTags.DeviceTypeTagName]).Select(x => x.ToString()));
                     Assert.Equal(AppSKey, t.Properties.Desired[TwinProperty.AppSKey].ToString());
                     Assert.Equal(NwkSKey, t.Properties.Desired[TwinProperty.NwkSKey].ToString());
                     Assert.Equal(DevAddr, t.Properties.Desired[TwinProperty.DevAddr].ToString());
@@ -138,7 +138,7 @@ namespace LoRaWan.Tools.CLI.Tests.Unit
                 .Callback((Device d, Twin t) =>
                 {
                     Assert.Equal(NetworkName, t.Tags[DeviceTags.NetworkTagName].ToString());
-                    Assert.Equal(new string[] { DeviceTags.DeviceTypes.Leaf }, ((JArray)t.Tags[DeviceTags.DeviceTypeTagName]).Select(x => x.ToString()).ToArray());
+                    Assert.Equal(new string[] { DeviceTags.DeviceTypes.Leaf }, ((JArray)t.Tags[DeviceTags.DeviceTypeTagName]).Select(x => x.ToString()));
                     Assert.Equal(AppKey, t.Properties.Desired[TwinProperty.AppKey].ToString());
                     Assert.Equal(AppEui, t.Properties.Desired[TwinProperty.AppEUI].ToString());
                     Assert.Equal(Decoder, t.Properties.Desired[TwinProperty.SensorDecoder].ToString());
@@ -342,7 +342,7 @@ namespace LoRaWan.Tools.CLI.Tests.Unit
                 .Callback((Device d, Twin t) =>
                 {
                     Assert.Equal(networkId, t.Tags[DeviceTags.NetworkTagName].ToString());
-                    Assert.Equal(new string[] { DeviceTags.DeviceTypes.Concentrator }, ((JArray)t.Tags[DeviceTags.DeviceTypeTagName]).Select(x => x.ToString()).ToArray());
+                    Assert.Equal(new string[] { DeviceTags.DeviceTypes.Concentrator }, ((JArray)t.Tags[DeviceTags.DeviceTypeTagName]).Select(x => x.ToString()));
 #pragma warning disable CA1308 // Normalize strings to uppercase
                     Assert.Equal(region.ToLowerInvariant(), t.Tags[DeviceTags.RegionTagName].ToString());
 #pragma warning restore CA1308 // Normalize strings to uppercase
