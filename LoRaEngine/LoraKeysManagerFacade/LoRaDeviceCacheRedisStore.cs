@@ -141,7 +141,7 @@ namespace LoraKeysManagerFacade
 
         public bool TryChangeLockTTL(string key, TimeSpan timeToExpire)
         {
-            return this.redisCache.KeyExpire(key, DateTime.UtcNow.Add(timeToExpire));
+            return this.redisCache.KeyExpire(key, timeToExpire);
         }
     }
 }
