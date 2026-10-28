@@ -109,6 +109,9 @@ jobs:
   build_docker_images:
     name: Build Docker Images
     runs-on: ubuntu-latest
+    concurrency:
+      group: ci-keyvault-runner-access
+      cancel-in-progress: false
     environment:
       name: CI
     steps:
@@ -121,6 +124,43 @@ jobs:
 
     - uses: actions/checkout@v7
       name: Checkout current branch
+
+    - name: Allow runner IP in Key Vault firewall
+      id: keyvault_firewall
+      shell: bash
+      env:
+        KEYVAULT_NAME: ${{ secrets.KEYVAULT_NAME }}
+      run: |
+        set -euo pipefail
+        runner_ip="$(curl --fail --silent --show-error --retry 3 --connect-timeout 10 --max-time 30 --ipv4 https://api.ipify.org)"
+        python3 -c 'import ipaddress, sys; ipaddress.IPv4Address(sys.argv[1])' "$runner_ip"
+        cidr="$runner_ip/32"
+        rules="$(az keyvault show --name "$KEYVAULT_NAME" --query 'properties.networkAcls.ipRules[].value' -o tsv)"
+        if ! grep -Fxq -e "$runner_ip" -e "$cidr" <<< "$rules"; then
+          # Record cleanup before the update in case the request succeeds but its response is lost.
+          echo "runner_cidr=$cidr" >> "$GITHUB_OUTPUT"
+          az keyvault network-rule add --name "$KEYVAULT_NAME" --ip-address "$cidr" --output none
+        fi
+        az keyvault update --name "$KEYVAULT_NAME" --default-action Deny --bypass None --public-network-access Enabled --output none
+        access="$(az keyvault show --name "$KEYVAULT_NAME" --query properties.publicNetworkAccess -o tsv)"
+        if [[ "$access" != Enabled ]]; then
+          echo "Key Vault public access is still disabled. Check for an inherited Azure policy before retrying." >&2
+          exit 1
+        fi
+        for attempt in {1..18}; do
+          if error="$(az keyvault secret show --vault-name "$KEYVAULT_NAME" --name CI-ACR-NAME --query id --output none 2>&1)"; then
+            exit 0
+          fi
+          if [[ "$error" != *ForbiddenByFirewall* && "$error" != *ForbiddenByRbac* ]]; then
+            printf '%s\n' "$error" >&2
+            exit 1
+          fi
+          if [[ "$attempt" == 18 ]]; then
+            printf 'Key Vault access did not propagate: %s\n' "$error" >&2
+            exit 1
+          fi
+          sleep 10
+        done
 
     - name: Read Secrets from keyvault
       uses: ./.github/actions/read_keyvault
@@ -139,3 +179,18 @@ jobs:
         echo $CI_ACR_CREDENTIALS | docker login "$CI_ACR_NAME.azurecr.io" --username "$CI_ACR_NAME" --password-stdin
         CONTAINER_REGISTRY_ADDRESS=$CI_ACR_NAME.azurecr.io docker buildx bake --set *.args.CONTAINER_REGISTRY_ADDRESS=${{ env.CI_ACR_NAME }}.azurecr.io
       working-directory: LoRaEngine
+
+    - name: Remove runner IP from Key Vault firewall
+      if: ${{ always() && steps.keyvault_firewall.outputs.runner_cidr != '' }}
+      shell: bash
+      env:
+        KEYVAULT_NAME: ${{ secrets.KEYVAULT_NAME }}
+        RUNNER_CIDR: ${{ steps.keyvault_firewall.outputs.runner_cidr }}
+      run: |
+        set -euo pipefail
+        az keyvault network-rule remove --name "$KEYVAULT_NAME" --ip-address "$RUNNER_CIDR" --output none
+        rules="$(az keyvault show --name "$KEYVAULT_NAME" --query 'properties.networkAcls.ipRules[].value' -o tsv)"
+        if grep -Fxq -e "$RUNNER_CIDR" -e "${RUNNER_CIDR%/32}" <<< "$rules"; then
+          echo "Runner IP is still present in the Key Vault firewall." >&2
+          exit 1
+        fi
