@@ -2,7 +2,7 @@
 
 # NOTE: Use either docker.io or your own registry address to build the image
 ARG CONTAINER_REGISTRY_ADDRESS=your-registry-address.azurecr.io
-FROM $CONTAINER_REGISTRY_ADDRESS/amd64/debian:bullseye as build
+FROM --platform=$BUILDPLATFORM $CONTAINER_REGISTRY_ADDRESS/amd64/debian:bullseye as build
 RUN apt-get update \
     && apt-get install -y git apt-utils build-essential gcc-aarch64-linux-gnu
 RUN git clone --branch v2.0.6 --single-branch --depth 1 https://github.com/lorabasics/basicstation.git
