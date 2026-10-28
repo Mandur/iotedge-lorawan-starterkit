@@ -4,7 +4,7 @@
 ARG CONTAINER_REGISTRY_ADDRESS=your-registry-address.azurecr.io
 FROM --platform=$BUILDPLATFORM $CONTAINER_REGISTRY_ADDRESS/amd64/debian:bookworm as build
 RUN apt-get update \
-    && apt-get install -y git apt-utils build-essential gcc-arm-linux-gnueabihf \
+    && apt-get install -y ca-certificates git apt-utils build-essential gcc-arm-linux-gnueabihf \
     && rm -rf /var/lib/apt/lists/*
 RUN git clone --branch v2.0.6 --single-branch --depth 1 https://github.com/lorabasics/basicstation.git
 
