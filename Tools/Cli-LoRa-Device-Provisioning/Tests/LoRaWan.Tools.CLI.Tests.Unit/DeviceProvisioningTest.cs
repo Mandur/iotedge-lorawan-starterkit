@@ -22,7 +22,7 @@ namespace LoRaWan.Tools.CLI.Tests.Unit
         private static readonly string DevEUI = GetRandomHexNumber(16);
         private const string Decoder = "DecoderValueSensor";
         private const string LoRaVersion = "999.999.10"; // using an non-existing version to ensure it is not hardcoded with a valid value
-        private const string IotEdgeVersion = "1.4";
+        private const string IotEdgeVersion = "1.6.4";
 
         // OTAA Properties
         private static readonly string AppKey = GetRandomHexNumber(32);
@@ -248,6 +248,30 @@ namespace LoRaWan.Tools.CLI.Tests.Unit
             var actualConfigurationJson = JsonConvert.SerializeObject(actualConfiguration);
             var expectedConfigurationJson = $"{{\"modulesContent\":{{\"$edgeAgent\":{{\"properties.desired\":{{\"schemaVersion\":\"1.0\",\"runtime\":{{\"type\":\"docker\",\"settings\":{{\"loggingOptions\":\"\",\"minDockerVersion\":\"v1.25\"}}}},\"systemModules\":{{\"edgeAgent\":{{\"type\":\"docker\",\"settings\":{{\"image\":\"mcr.microsoft.com/azureiotedge-agent:{IotEdgeVersion}\",\"createOptions\":\"{{}}\"}}}},\"edgeHub\":{{\"type\":\"docker\",\"settings\":{{\"image\":\"mcr.microsoft.com/azureiotedge-hub:{IotEdgeVersion}\",\"createOptions\":\"{{ \\\"HostConfig\\\": {{   \\\"PortBindings\\\": {{\\\"8883/tcp\\\": [  {{\\\"HostPort\\\": \\\"8883\\\" }}  ], \\\"443/tcp\\\": [ {{ \\\"HostPort\\\": \\\"443\\\" }} ], \\\"5671/tcp\\\": [ {{ \\\"HostPort\\\": \\\"5671\\\"  }}] }} }}}}\"}},\"env\":{{\"OptimizeForPerformance\":{{\"value\":\"false\"}},\"mqttSettings__enabled\":{{\"value\":\"false\"}},\"AuthenticationMode\":{{\"value\":\"CloudAndScope\"}},\"NestedEdgeEnabled\":{{\"value\":\"false\"}}}},\"status\":\"running\",\"restartPolicy\":\"always\"}}}},\"modules\":{{\"LoRaWanNetworkSrvModule\":{{\"type\":\"docker\",\"settings\":{{\"image\":\"loraedge/lorawannetworksrvmodule:{LoRaVersion}\",\"createOptions\":\"{{\\\"ExposedPorts\\\": {{ \\\"5000/tcp\\\": {{}}}}, \\\"HostConfig\\\": {{  \\\"PortBindings\\\": {{\\\"5000/tcp\\\": [  {{ \\\"HostPort\\\": \\\"5000\\\", \\\"HostIp\\\":\\\"172.17.0.1\\\" }} ]}}}}}}\"}},\"version\":\"1.0\",\"env\":{{\"ENABLE_GATEWAY\":{{\"value\":\"true\"}},\"LOG_LEVEL\":{{\"value\":\"2\"}}}},\"status\":\"running\",\"restartPolicy\":\"always\"}},\"LoRaBasicsStationModule\":{{\"type\":\"docker\",\"settings\":{{\"image\":\"loraedge/lorabasicsstationmodule:{LoRaVersion}\",\"createOptions\":\"  {{\\\"HostConfig\\\": {{\\\"NetworkMode\\\": \\\"host\\\", \\\"Privileged\\\": true }},  \\\"NetworkingConfig\\\": {{\\\"EndpointsConfig\\\": {{\\\"host\\\": {{}} }}}}}}\"}},\"env\":{{\"RESET_PIN\":{{\"value\":\"{resetPin}\"}},\"TC_URI\":{{\"value\":\"ws://172.17.0.1:5000\"}},\"SPI_DEV\":{{\"value\":\"{spiDev}\"}},\"SPI_SPEED\":{{\"value\":\"{actualSpiSpeed}\"}}}},\"version\":\"1.0\",\"status\":\"running\",\"restartPolicy\":\"always\"}}}}}}}},\"$edgeHub\":{{\"properties.desired\":{{\"schemaVersion\":\"1.0\",\"routes\":{{\"route\":\"FROM /* INTO $upstream\"}},\"storeAndForwardConfiguration\":{{\"timeToLiveSecs\":7200}}}}}},\"LoRaWanNetworkSrvModule\":{{\"properties.desired\":{{\"FacadeServerUrl\":\"{facadeURL}\",\"FacadeAuthCode\":\"{facadeAuthCode}\",\"hostAddress\":\"{lnsHostAddress}\",\"network\":\"{networkId}\"}}}}}},\"moduleContent\":{{}},\"deviceContent\":{{}}}}";
             Assert.Equal(expectedConfigurationJson, actualConfigurationJson);
+        }
+
+        [Theory]
+        [InlineData(null, IotEdgeVersion)]
+        [InlineData("1.6.3", "1.6.3")]
+        public async Task DeployEdgeDeviceUsesRequestedRuntimeVersion(string? version, string expectedVersion)
+        {
+            const string deviceId = "myGateway";
+            ConfigurationContent? actualConfiguration = null;
+            this.registryManager.Setup(x => x.ApplyConfigurationContentOnDeviceAsync(deviceId, It.IsNotNull<ConfigurationContent>()))
+                .Callback((string deviceId, ConfigurationContent c) => actualConfiguration = c);
+            this.registryManager.Setup(c => c.AddDeviceWithTwinAsync(It.Is<Device>(d => d.Id == deviceId && d.Capabilities.IotEdge), It.IsNotNull<Twin>()))
+                .ReturnsAsync(new BulkRegistryOperationResult { IsSuccessful = true });
+
+            var versionArgument = version is null ? string.Empty : $" --azure-iot-edge-version {version}";
+            var args = CreateArgs($"add-gateway --reset-pin 2 --device-id {deviceId} --api-url https://myfunc.azurewebsites.com/api --api-key secret-code --lora-version {LoRaVersion}{versionArgument}");
+
+            var actual = await Program.Run(args, this.configurationHelper);
+
+            Assert.Equal(0, actual);
+            Assert.NotNull(actualConfiguration);
+            var systemModules = JObject.FromObject(actualConfiguration!)["modulesContent"]!["$edgeAgent"]!["properties.desired"]!["systemModules"]!;
+            Assert.Equal($"mcr.microsoft.com/azureiotedge-agent:{expectedVersion}", systemModules["edgeAgent"]!["settings"]!["image"]!.Value<string>());
+            Assert.Equal($"mcr.microsoft.com/azureiotedge-hub:{expectedVersion}", systemModules["edgeHub"]!["settings"]!["image"]!.Value<string>());
         }
 
         [Fact]

@@ -11,7 +11,7 @@ namespace LoRaWan.Tools.CLI.Options
     {
         internal const int DefaultSpiSpeed = 8;
         internal const int DefaultSpiDev = 0;
-        internal const string DefaultAzureIotEdgeVersion = "1.4";
+        internal const string DefaultAzureIotEdgeVersion = "1.6.4";
         internal const string DefaultLnsHostAddress = "ws://mylns:5000";
         internal const string DefaultNetwork = "quickstartnetwork";
 
