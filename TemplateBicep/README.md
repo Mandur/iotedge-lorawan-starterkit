@@ -88,10 +88,13 @@ resets the vault to its empty allowlist, so do not redeploy during a CI build.
 ACR Basic uses an authenticated public endpoint; registry IP filtering requires
 the more expensive Premium tier. No private networking or paid self-hosted runner
 is provisioned.
-The PR build pulls Basics Station's Debian base images directly from Docker Hub
+The PR build pulls Basics Station's Debian Bookworm base images directly from Docker Hub
 instead of requiring a pre-populated ACR mirror; output image tags still use ACR.
 The network server uses the published .NET 10 Ubuntu Noble SDK and runtime images
 across x64, ARM32, and ARM64, rather than nonexistent .NET 10 Bookworm tags.
+ARM cross-compilation stages run on the builder platform; final runtime stages
+retain their ARM target platform. Basics Station uses matching Bookworm build
+and runtime images because the old Bullseye security package URLs return 404.
 
 An inherited Azure Policy can override `publicNetworkAccess` to `Disabled` even
 when the update reports success. In that case, obtain an approved exception
