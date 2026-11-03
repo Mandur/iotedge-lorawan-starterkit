@@ -1,0 +1,6 @@
+azure-ai-agentserver-responses==2.4.0
+azure-ai-projects==2.9.0
+azure-containerapps-sandbox==0.1.0b4
+azure-identity==1.27.0
+httpx==0.28.1
+openai==3.38.0

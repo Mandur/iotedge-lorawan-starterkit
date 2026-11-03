@@ -1,0 +1,28 @@
+{
+  "name": "LoRaWAN software factory",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "options": ["--platform=linux/amd64"]
+  },
+  "workspaceFolder": "/workspaces/iotedge-lorawan-starterkit",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/iotedge-lorawan-starterkit,type=bind",
+  "containerUser": "app",
+  "remoteUser": "app",
+  "updateRemoteUserUID": true,
+  "overrideCommand": true,
+  "runArgs": ["--cap-drop=ALL", "--security-opt=no-new-privileges"],
+  "postCreateCommand": [
+    "pwsh",
+    "-NoProfile",
+    "-File",
+    "/opt/lorawan-factory/Initialize-Workspace.ps1",
+    "-Workspace",
+    "/workspaces/iotedge-lorawan-starterkit"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-dotnettools.csharp"]
+    }
+  }
+}

@@ -1,4 +1,10 @@
 * text=auto
+*.cs text eol=lf
+*.tt text eol=lf
+*.py text eol=lf
+*.ps1 text eol=lf
+*.psm1 text eol=lf
+*.lock text eol=lf
 *.sh text eol=lf
 *.bat text eol=crlf
 *.cmd txt eol=crlf

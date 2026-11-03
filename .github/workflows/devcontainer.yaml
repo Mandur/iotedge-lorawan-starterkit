@@ -1,0 +1,81 @@
+name: Shared Development Environment
+
+on:
+  pull_request:
+    branches: [dev, master]
+    paths:
+      - '.devcontainer/**'
+      - 'Tools/SoftwareFactory/**'
+      - '.github/workflows/devcontainer.yaml'
+      - '.config/dotnet-tools.json'
+      - 'global.json'
+      - 'Directory.Build.props'
+      - 'nuget.config'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify repository in development image
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Build canonical development image
+        run: docker build --platform linux/amd64 --file .devcontainer/Dockerfile --tag lorawan-factory-dev:ci .
+
+      - name: Check fail-closed command execution
+        run: |
+          docker run --rm --init --cap-drop=ALL --security-opt=no-new-privileges \
+            --user "$(id -u):$(id -g)" --env HOME=/tmp \
+            --mount "type=bind,source=$GITHUB_WORKSPACE,target=/workspaces/iotedge-lorawan-starterkit" \
+            lorawan-factory-dev:ci pwsh -NoProfile -File /opt/lorawan-factory/Test-Commands.ps1
+
+      - name: Check coding runtime and pinned deployment configuration
+        run: |
+          docker run --rm --init --cap-drop=ALL --security-opt=no-new-privileges \
+            --workdir /opt/lorawan-factory/Runtime \
+            lorawan-factory-dev:ci python -m unittest -v test_runtime test_protocol test_hosted_startup test_sandbox
+          for ownership in writable nonwritable; do
+            mount_options=uid=0,gid=0,mode=0755
+            if [ "$ownership" = writable ]; then mount_options=uid=1654,gid=1654,mode=0700; fi
+            docker run --rm --cap-drop=ALL --security-opt=no-new-privileges \
+              --tmpfs "/home/session:$mount_options" --env "FACTORY_TEST_MOUNT=$ownership" \
+              --workdir /opt/lorawan-factory/Runtime lorawan-factory-dev:ci \
+              python -m unittest -v test_hosted_startup.RuntimeStartupTests.test_empty_mounted_home_contract
+          done
+
+      - name: Check explicit publication and startup boundaries
+        run: |
+          docker run --rm --init --cap-drop=ALL --security-opt=no-new-privileges \
+            lorawan-factory-dev:ci pwsh -NoProfile -File /opt/lorawan-factory/Test-RuntimeCommands.ps1
+
+      - name: Check workspace orchestration
+        run: |
+          docker run --rm --init --cap-drop=ALL --security-opt=no-new-privileges \
+            --user "$(id -u):$(id -g)" --env HOME=/tmp \
+            --mount "type=bind,source=$GITHUB_WORKSPACE,target=/workspaces/iotedge-lorawan-starterkit" \
+            lorawan-factory-dev:ci pwsh -NoProfile -File /opt/lorawan-factory/Test-Workspace.ps1
+
+      - name: Build and test application
+        run: |
+          docker run --rm --init --cap-drop=ALL --security-opt=no-new-privileges \
+            --user "$(id -u):$(id -g)" --env HOME=/tmp \
+            --mount "type=bind,source=$GITHUB_WORKSPACE,target=/workspaces/iotedge-lorawan-starterkit" \
+            lorawan-factory-dev:ci pwsh -NoProfile -File /opt/lorawan-factory/Verify-Repository.ps1 \
+            -Workspace /workspaces/iotedge-lorawan-starterkit
+
+      - name: Upload available test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: devcontainer-test-results
+          path: |
+            Tests/TestResults/Unit
+            Tests/TestResults/Cli.Unit
+          if-no-files-found: warn
