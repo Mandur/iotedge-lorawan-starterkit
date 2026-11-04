@@ -14,7 +14,6 @@ namespace LoRaWan.Tests.Integration
     using Microsoft.Extensions.Caching.Memory;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
 
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
     // Multi gateway specifc scenarios

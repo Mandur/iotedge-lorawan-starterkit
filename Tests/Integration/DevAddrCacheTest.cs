@@ -20,7 +20,6 @@ namespace LoRaWan.Tests.Integration
     using Newtonsoft.Json;
     using StackExchange.Redis;
     using Xunit;
-    using Xunit.Abstractions;
 
     [Collection(RedisFixture.CollectionName)]
 #pragma warning disable xUnit1033 // False positive: Test classes decorated with 'Xunit.IClassFixture<TFixture>' or 'Xunit.ICollectionFixture<TFixture>' should add a constructor argument of type TFixture

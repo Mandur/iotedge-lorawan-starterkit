@@ -130,14 +130,15 @@ namespace LoRaWan.Tests.Unit.NetworkServer.BasicsStation
 
 
 
-        public Task DisposeAsync()
+        public ValueTask DisposeAsync()
         {
             if (!string.IsNullOrEmpty(this.clientCertificateWithEuiPath))
                 File.Delete(this.clientCertificateWithEuiPath);
-            return Task.CompletedTask;
+            global::System.GC.SuppressFinalize(this);
+            return ValueTask.CompletedTask;
         }
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             this.clientCertificateWithEuiPath = await BasicsStationNetworkServerTests.CreatePfxCertificateAsync(false);
         }

@@ -50,7 +50,7 @@ namespace LoRaWan.Tests.Simulation
         public IReadOnlyCollection<TestDeviceInfo> DeviceRange6000_OTAA_FullLoad { get; private set; }
         public IReadOnlyCollection<TestDeviceInfo> DeviceRange9000_OTAA_FullLoad_DuplicationDrop { get; private set; }
 
-        public override async Task InitializeAsync()
+        public override async ValueTask InitializeAsync()
         {
             await base.InitializeAsync();
             LoRaAPIHelper.Initialize(Configuration.FunctionAppCode, Configuration.FunctionAppBaseUrl);

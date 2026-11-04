@@ -16,7 +16,6 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using Microsoft.Extensions.Logging.Abstractions;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
 
     /// <summary>
     /// Single gateway message processor tests.

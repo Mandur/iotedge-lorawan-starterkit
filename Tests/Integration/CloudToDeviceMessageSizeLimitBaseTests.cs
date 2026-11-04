@@ -6,7 +6,7 @@ namespace LoRaWan.Tests.Integration
     using LoRaTools.LoRaMessage;
     using LoRaWan.NetworkServer.BasicsStation;
     using LoRaWan.Tests.Common;
-    using Xunit.Abstractions;
+    using Xunit;
 
     public class CloudToDeviceMessageSizeLimitBaseTests(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {

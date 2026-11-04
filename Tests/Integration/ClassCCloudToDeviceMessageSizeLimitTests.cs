@@ -18,7 +18,6 @@ namespace LoRaWan.Tests.Integration
     using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
 
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
     // Class CCloud to device message processing max payload size tests (Join tests are handled in other class)

@@ -8,7 +8,6 @@ namespace LoRaWan.Tests.Integration
     using LoRaWan.Tests.Common;
     using Xunit;
     using LoraKeysManagerFacade;
-    using Xunit.Abstractions;
     using Microsoft.Extensions.Logging.Abstractions;
     using StackExchange.Redis;
     using Moq;

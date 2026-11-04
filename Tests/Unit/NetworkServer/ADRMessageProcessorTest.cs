@@ -15,7 +15,6 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using Microsoft.Azure.Devices.Shared;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
     using static DataRateIndex;
 
     public class ADRMessageProcessorTest(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)

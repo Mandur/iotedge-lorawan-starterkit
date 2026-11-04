@@ -45,10 +45,10 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             where e.LogLevel is LogLevel.Debug
             select new LogEntry(e.Message, e.Exception);
 
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
             this.cancellationTokenSource.Dispose();
-            await this.subject.DisposeAsync();
+            return ValueTask.CompletedTask;
         }
 
         private CancellationToken CancellationToken => this.cancellationTokenSource.Token;

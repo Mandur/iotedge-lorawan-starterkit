@@ -18,7 +18,6 @@ namespace LoRaWan.Tests.Unit.IoTHubImpl
     using Moq.Protected;
     using RichardSzalay.MockHttp;
     using Xunit;
-    using Xunit.Abstractions;
 
     public class IoTHubRegistryManagerTests : IAsyncDisposable
     {

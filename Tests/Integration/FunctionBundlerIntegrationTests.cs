@@ -10,7 +10,6 @@ namespace LoRaWan.Tests.Integration
     using Microsoft.Azure.Devices.Client;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
 
     public class FunctionBundlerIntegrationTests(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {

@@ -9,7 +9,7 @@ namespace LoRaWan.Tests.Common
     using System.Collections.Concurrent;
     using LoRaTools;
     using Microsoft.Extensions.Logging;
-    using Xunit.Abstractions;
+    using Xunit;
 
     /// <summary>
     /// Logger class that offers integration with XUnit's <see cref="ITestOutputHelper"/>.

@@ -17,7 +17,6 @@ namespace LoRaWan.Tests.Integration
     using Microsoft.Extensions.Logging.Abstractions;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
 
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
     // Only join tests
