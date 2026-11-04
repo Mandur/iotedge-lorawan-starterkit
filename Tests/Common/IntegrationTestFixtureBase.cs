@@ -102,19 +102,25 @@ namespace LoRaWan.Tests.Common
 
         public async ValueTask DisposeAsync()
         {
-            if (IoTHubMessages is { } iotHubMessages)
+            try
             {
-                try
+                if (IoTHubMessages is { } iotHubMessages)
                 {
-                    await iotHubMessages.StopAsync();
-                }
-                finally
-                {
-                    await iotHubMessages.DisposeAsync();
+                    try
+                    {
+                        await iotHubMessages.StopAsync();
+                    }
+                    finally
+                    {
+                        await iotHubMessages.DisposeAsync();
+                    }
                 }
             }
-
-            GC.SuppressFinalize(this);
+            finally
+            {
+                Dispose();
+                GC.SuppressFinalize(this);
+            }
         }
 
         private IDeviceRegistryManager GetRegistryManager()
