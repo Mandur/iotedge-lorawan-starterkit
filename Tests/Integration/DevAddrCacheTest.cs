@@ -20,7 +20,6 @@ namespace LoRaWan.Tests.Integration
     using Newtonsoft.Json;
     using StackExchange.Redis;
     using Xunit;
-    using Xunit.Abstractions;
 
     [Collection(RedisFixture.CollectionName)]
 #pragma warning disable xUnit1033 // False positive: Test classes decorated with 'Xunit.IClassFixture<TFixture>' or 'Xunit.ICollectionFixture<TFixture>' should add a constructor argument of type TFixture
@@ -511,7 +510,7 @@ namespace LoRaWan.Tests.Integration
         public async Task Delta_Update_Perform_Correctly_On_Empty_Cache()
         {
             var gatewayId = NewUniqueEUI64();
-            var dateTime = DateTime.UtcNow;
+            var dateTime = DateTime.UtcNow.AddMinutes(-5);
 
             var managerInput = new List<DevAddrCacheInfo>();
             for (var i = 0; i < 5; i++)
@@ -532,6 +531,7 @@ namespace LoRaWan.Tests.Integration
             // initialize locks for test to run correctly
             var locksToTake = new string[1] { FullUpdateKey };
             await LockDevAddrHelper.PrepareLocksForTests(this.cache, locksToTake);
+            this.cache.KeyDelete(LoRaDevAddrCache.LastDeltaUpdateKeyValue);
 
             var devAddrCache = new LoRaDevAddrCache(this.cache, null, gatewayId);
             await devAddrCache.PerformNeededSyncs(registryManagerMock.Object);

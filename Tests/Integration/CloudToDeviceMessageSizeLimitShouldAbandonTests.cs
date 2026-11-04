@@ -14,7 +14,6 @@ namespace LoRaWan.Tests.Integration
     using Microsoft.Azure.Devices.Client;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
 
     [Collection(TestConstants.C2D_Size_Limit_TestCollectionName)]
     public class CloudToDeviceMessageSizeLimitShouldAbandonTests(ITestOutputHelper testOutputHelper) : CloudToDeviceMessageSizeLimitBaseTests(testOutputHelper)

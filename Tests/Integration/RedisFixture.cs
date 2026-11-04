@@ -118,7 +118,7 @@ namespace LoRaWan.Tests.Integration
             }
         }
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             await StartRedisContainer();
 
@@ -149,7 +149,7 @@ namespace LoRaWan.Tests.Integration
         }
 
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             // we need to wait for all the common locks to be released, otherwise an error will be throwed as we try to access a disposed object
             await Task.Delay((int)LoRaDevAddrCache.DefaultSingleLockExpiry.TotalMilliseconds + 3000);
@@ -172,6 +172,7 @@ namespace LoRaWan.Tests.Integration
 
             this.Redis?.Dispose();
             this.Redis = null;
+            GC.SuppressFinalize(this);
         }
     }
 }

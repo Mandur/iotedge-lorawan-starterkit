@@ -14,7 +14,6 @@ namespace LoRaWan.Tests.Simulation
     using Microsoft.Extensions.Logging;
     using NetworkServer;
     using Xunit;
-    using Xunit.Abstractions;
     using static MoreLinq.Extensions.RepeatExtension;
     using static MoreLinq.Extensions.IndexExtension;
     using static MoreLinq.Extensions.TransposeExtension;
@@ -326,13 +325,13 @@ namespace LoRaWan.Tests.Simulation
             SimulationUtils.AssertMessageAcknowledgements(simulatedOtaaDevices, numberOfOtaaDataMessages + 1);
         }
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             await Task.WhenAll(from basicsStation in this.simulatedBasicsStations
                                select basicsStation.StartAsync());
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             foreach (var basicsStation in this.simulatedBasicsStations)
             {

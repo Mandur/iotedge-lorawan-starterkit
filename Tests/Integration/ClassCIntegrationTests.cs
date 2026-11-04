@@ -17,7 +17,6 @@ namespace LoRaWan.Tests.Integration
     using Microsoft.Azure.Devices.Shared;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
 
     // End to end tests without external dependencies (IoT Hub, Service Facade Function)
     // Class C device tests

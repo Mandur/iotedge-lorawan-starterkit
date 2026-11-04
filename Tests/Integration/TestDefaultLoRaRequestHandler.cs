@@ -13,7 +13,7 @@ namespace LoRaWan.Tests.Integration
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
     using Moq;
-    using Xunit.Abstractions;
+    using Xunit;
 
     internal class TestDefaultLoRaRequestHandler(
         NetworkServerConfiguration configuration,

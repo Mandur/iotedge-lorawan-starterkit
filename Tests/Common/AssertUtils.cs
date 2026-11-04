@@ -22,7 +22,7 @@ namespace LoRaWan.Tests.Common
                     Assert.Contains<T>(expected, collection);
                     return;
                 }
-                catch (ContainsException)
+                catch (XunitException)
                 {
                     if ((i + 1) == maxAttempts)
                         throw;
@@ -44,7 +44,7 @@ namespace LoRaWan.Tests.Common
                     Assert.Contains<T>(collection, predicate);
                     return;
                 }
-                catch (ContainsException)
+                catch (XunitException)
                 {
                     if ((i + 1) == maxAttempts)
                         throw;

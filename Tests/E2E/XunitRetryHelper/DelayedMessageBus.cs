@@ -3,11 +3,12 @@
 
 namespace XunitRetryHelper
 {
+    using System;
     using System.Collections.Generic;
-    using Xunit.Abstractions;
     using Xunit.Sdk;
+    using Xunit.v3;
 
-    public sealed class DelayedMessageBus(IMessageBus innerBus) : IMessageBus
+    public sealed class DelayedMessageBus(IMessageBus innerBus) : IMessageBus, IDisposable
     {
         private readonly IMessageBus innerBus = innerBus;
         private readonly IList<IMessageSinkMessage> delayedMessages = [];
@@ -35,31 +36,14 @@ namespace XunitRetryHelper
             }
         }
 
-        public TestFailed LastFailure
-        {
-            get
-            {
-                lock (this.delayedMessages)
-                {
-                    for (var i = this.delayedMessages.Count - 1; i > 0; i--)
-                    {
-                        if (this.delayedMessages[i] is TestFailed failed)
-                        {
-                            return failed;
-                        }
-                    }
-                }
-
-                return null;
-            }
-        }
-
-        public void Dispose()
+        public void Discard()
         {
             lock (this.delayedMessages)
             {
                 this.delayedMessages.Clear();
             }
         }
+
+        public void Dispose() => this.Complete();
     }
 }

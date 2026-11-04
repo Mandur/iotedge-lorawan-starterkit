@@ -22,19 +22,26 @@ namespace LoRaWan.Tests.E2E
         private bool initializationSucceeded;
         private readonly string expectedLog = $"{ConcentratorDeduplicationResult.Duplicate} {NetworkServer.Constants.MessageAlreadyEncountered}";
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            TestUtils.KillBasicsStation(TestFixture.Configuration, this.temporaryDirectoryName, out var logFilePath);
-            if (!string.IsNullOrEmpty(logFilePath) && File.Exists(logFilePath))
+            try
             {
-                Log("[INFO] ** Basic Station Logs Start **");
-                Log(await File.ReadAllTextAsync(logFilePath));
-                Log("[INFO] ** Basic Station Logs End **");
-                File.Delete(logFilePath);
+                TestUtils.KillBasicsStation(TestFixture.Configuration, this.temporaryDirectoryName, out var logFilePath);
+                if (!string.IsNullOrEmpty(logFilePath) && File.Exists(logFilePath))
+                {
+                    Log("[INFO] ** Basic Station Logs Start **");
+                    Log(await File.ReadAllTextAsync(logFilePath));
+                    Log("[INFO] ** Basic Station Logs End **");
+                    File.Delete(logFilePath);
+                }
+            }
+            finally
+            {
+                Dispose();
             }
         }
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             TestUtils.StartBasicsStation(TestFixture.Configuration, new Dictionary<string, string>()
             {

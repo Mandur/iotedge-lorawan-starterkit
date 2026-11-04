@@ -5,7 +5,6 @@ namespace LoRaWan.Tests.Unit.NetworkServer
 {
     using LoRaWan.Tests.Common;
     using Xunit;
-    using Xunit.Abstractions;
 
     public class ProcessingDelayTest(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {

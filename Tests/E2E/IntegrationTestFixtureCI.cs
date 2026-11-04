@@ -141,7 +141,7 @@ namespace LoRaWan.Tests.E2E
         // Arduino device used for testing
         public LoRaArduinoSerial ArduinoDevice { get; private set; }
 
-        public override async Task InitializeAsync()
+        public override async ValueTask InitializeAsync()
         {
             TestLogger.LogDate = true;
 

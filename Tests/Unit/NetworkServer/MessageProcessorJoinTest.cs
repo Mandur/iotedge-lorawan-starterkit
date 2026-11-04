@@ -17,7 +17,6 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using Microsoft.Extensions.Logging.Abstractions;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
     using static LoRaWan.DataRateIndex;
     using static LoRaWan.RxDelay;
 

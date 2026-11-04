@@ -12,7 +12,7 @@ namespace LoRaWan.Tests.Unit
 
 #pragma warning disable CA1812 // Unused class
     // Used as Theory Data
-    internal class ADRTestData : TheoryData<string, DevEui, List<LoRaADRTableEntry>, RadioMetadata, LoRaADRResult>
+    internal class ADRTestData : TheoryData<string, DevEui, List<LoRaADRTableEntry>, RadioMetadata, bool, LoRaADRResult>
 #pragma warning restore CA1812 // Unused class
     {
         public ADRTestData()
@@ -35,7 +35,7 @@ namespace LoRaWan.Tests.Unit
             }
 
             var radioMetadata = new RadioMetadata(DataRateIndex.DR5, TestUtils.TestRegion.GetDefaultRX2ReceiveWindow(default).Frequency, null);
-            AddRow("Not enough entries to calculate ADR", deviceEuiNotEnoughEntries, tableentries, radioMetadata, true, new LoRaADRResult()
+            Add("Not enough entries to calculate ADR", deviceEuiNotEnoughEntries, tableentries, radioMetadata, true, new LoRaADRResult()
             {
                 DataRate = DR5,
                 TxPower = 0,
@@ -68,7 +68,7 @@ namespace LoRaWan.Tests.Unit
                 NbRepetition = 1,
                 TxPower = 0
             };
-            AddRow("ADR setting DR to 0", lowerDRDeviceEui, lowerDRTable, notenoughentries, false, loRaADRResult);
+            Add("ADR setting DR to 0", lowerDRDeviceEui, lowerDRTable, notenoughentries, false, loRaADRResult);
             // **************************************************************
             // Third test enough entries increase nbrep, as one message every three is received
             // **************************************************************
@@ -96,7 +96,7 @@ namespace LoRaWan.Tests.Unit
                 FCntDown = 1
             };
 
-            AddRow("ADR increase NbRep", increaseNbRepDeviceEui, increaseNbReptableentries, increaseNbRep, false, increaseNbReploRaADRResult);
+            Add("ADR increase NbRep", increaseNbRepDeviceEui, increaseNbReptableentries, increaseNbRep, false, increaseNbReploRaADRResult);
 
             // **************************************************************
             // Fourth test enough entries decrease nbrep messages pass through
@@ -138,7 +138,7 @@ namespace LoRaWan.Tests.Unit
                 TxPower = 2,
                 FCntDown = 1
             };
-            AddRow("ADR decrease NbRep", decreaseNbRepDeviceEui, decreaseNbReptableentries, decreaseNbRep, false, decreaseNbReploRaADRResult);
+            Add("ADR decrease NbRep", decreaseNbRepDeviceEui, decreaseNbReptableentries, decreaseNbRep, false, decreaseNbReploRaADRResult);
         }
     }
 }

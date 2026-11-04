@@ -12,7 +12,7 @@ namespace LoRaWan.Tests.Common
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Logging;
     using Moq;
-    using Xunit.Abstractions;
+    using Xunit;
 
     public class MessageProcessorMultipleGatewayBase : MessageProcessorTestBase
     {

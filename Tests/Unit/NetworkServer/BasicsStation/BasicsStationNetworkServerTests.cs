@@ -70,18 +70,19 @@ namespace LoRaWan.Tests.Unit.NetworkServer
             return tempFileName;
         }
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             this.passwordProtectedPfx = await CreatePfxCertificateAsync(true);
             this.notProtectedPfx = await CreatePfxCertificateAsync(false);
         }
 
-        public Task DisposeAsync()
+        public ValueTask DisposeAsync()
         {
             if (this.passwordProtectedPfx is { }) File.Delete(this.passwordProtectedPfx);
             if (this.notProtectedPfx is { }) File.Delete(this.notProtectedPfx);
 
-            return Task.CompletedTask;
+            global::System.GC.SuppressFinalize(this);
+            return ValueTask.CompletedTask;
         }
     }
 }

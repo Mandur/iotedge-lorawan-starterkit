@@ -17,7 +17,6 @@ namespace LoRaWan.Tests.Integration
     using Microsoft.Extensions.Caching.Memory;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
     using static LoRaWan.ReceiveWindowNumber;
     using IoTHubDeviceInfo = NetworkServer.IoTHubDeviceInfo;
 

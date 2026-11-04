@@ -1,23 +1,20 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+#nullable enable
+
 namespace XunitRetryHelper
 {
+    using System.Runtime.CompilerServices;
     using Xunit;
-    using Xunit.Sdk;
+    using Xunit.v3;
 
-    [XunitTestCaseDiscoverer("XunitRetryHelper.RetryFactTestDiscoverer", "LoRaWan.Tests.E2E")]
-    public sealed class RetryFactAttribute : FactAttribute
+    [XunitTestCaseDiscoverer(typeof(RetryFactTestDiscoverer))]
+    public sealed class RetryFactAttribute(
+        [CallerFilePath] string? sourceFilePath = null,
+        [CallerLineNumber] int sourceLineNumber = -1)
+        : FactAttribute(sourceFilePath, sourceLineNumber)
     {
-        public RetryFactAttribute()
-        {
-        }
-
-        public RetryFactAttribute(int maxRetries)
-        {
-            MaxRetries = maxRetries;
-        }
-
-        public int MaxRetries { get; } = Constants.DefaultMaxRetries;
+        public int MaxRetries { get; set; } = Constants.DefaultMaxRetries;
     }
 }

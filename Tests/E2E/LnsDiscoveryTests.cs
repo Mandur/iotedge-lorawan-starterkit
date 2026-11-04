@@ -69,9 +69,9 @@ namespace LoRaWan.Tests.E2E
                                                  .Concat(StationInfo.Select(s => s.StationEui.ToString()))
                          select this.registryManager.RemoveDeviceAsync(deviceId));
 
-        public Task DisposeAsync() => CleanupDevicesAsync();
+        public ValueTask DisposeAsync() => new(CleanupDevicesAsync());
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             try
             {

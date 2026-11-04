@@ -19,7 +19,6 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
 
     public sealed class LoRaDeviceClientConnectionManagerTests : IAsyncDisposable
     {

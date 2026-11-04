@@ -100,18 +100,26 @@ namespace LoRaWan.Tests.Common
             this.tcpLogListener?.ResetEvents();
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            if (IoTHubMessages is { } iotHubMessages)
+            try
             {
-                try
+                if (IoTHubMessages is { } iotHubMessages)
                 {
-                    await iotHubMessages.StopAsync();
+                    try
+                    {
+                        await iotHubMessages.StopAsync();
+                    }
+                    finally
+                    {
+                        await iotHubMessages.DisposeAsync();
+                    }
                 }
-                finally
-                {
-                    await iotHubMessages.DisposeAsync();
-                }
+            }
+            finally
+            {
+                Dispose();
+                GC.SuppressFinalize(this);
             }
         }
 
@@ -238,7 +246,7 @@ namespace LoRaWan.Tests.Common
             }
         }
 
-        public virtual async Task InitializeAsync()
+        public virtual async ValueTask InitializeAsync()
         {
             SetupTestDevices();
 

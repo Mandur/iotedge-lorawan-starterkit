@@ -11,7 +11,6 @@ namespace LoRaWan.Tests.Simulation
     using LoRaWan.Tests.Common;
     using Newtonsoft.Json;
     using Xunit;
-    using Xunit.Abstractions;
     using static MoreLinq.Extensions.RepeatExtension;
 
     [Trait("Category", "SkipWhenLiveUnitTesting")]
@@ -91,13 +90,13 @@ namespace LoRaWan.Tests.Simulation
                                                                 Configuration.LnsEndpointsForSimulator.Count);
         }
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             await Task.WhenAll(from basicsStation in this.simulatedBasicsStations
                                select basicsStation.StartAsync());
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             foreach (var basicsStation in this.simulatedBasicsStations)
             {

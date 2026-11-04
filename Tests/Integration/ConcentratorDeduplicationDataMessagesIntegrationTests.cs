@@ -19,7 +19,6 @@ namespace LoRaWan.Tests.Integration
     using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
     using static ReceiveWindowNumber;
 
     public sealed class ConcentratorDeduplicationDataMessagesIntegrationTests : MessageProcessorTestBase
@@ -40,14 +39,14 @@ namespace LoRaWan.Tests.Integration
             int expectedFrameCounterDownCalls,
             int expectedMessagesUp,
             int expectedMessagesDown,
-            int expectedTwinSaves) : Xunit.Sdk.DataAttribute
+            int expectedTwinSaves) : Xunit.v3.DataAttribute
         {
             private readonly object[] args = [station1, station2, deduplicationMode, expectedFrameCounterResets, expectedBundlerCalls, expectedFrameCounterDownCalls, expectedMessagesUp, expectedMessagesDown, expectedTwinSaves];
 
-            public override IEnumerable<object[]> GetData(MethodInfo testMethod)
-            {
-                yield return this.args;
-            }
+            public override ValueTask<IReadOnlyCollection<ITheoryDataRow>> GetData(MethodInfo testMethod, Xunit.Sdk.DisposalTracker disposalTracker) =>
+                new([new TheoryDataRow(this.args)]);
+
+            public override bool SupportsDiscoveryEnumeration() => true;
         }
 
         public ConcentratorDeduplicationDataMessagesIntegrationTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)

@@ -9,7 +9,6 @@ namespace LoRaWan.Tests.Integration
     using LoraKeysManagerFacade.FunctionBundler;
     using LoRaWan.Tests.Common;
     using Xunit;
-    using Xunit.Abstractions;
 
     /// <summary>
     /// Tests to run against a real redis instance.

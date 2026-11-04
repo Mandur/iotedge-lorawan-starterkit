@@ -14,7 +14,6 @@ namespace LoRaWan.Tests.Unit.NetworkServer
     using Microsoft.Extensions.Caching.Memory;
     using Moq;
     using Xunit;
-    using Xunit.Abstractions;
 
     public sealed class LoRaDeviceRegistryTest(ITestOutputHelper testOutputHelper) : MessageProcessorTestBase(testOutputHelper)
     {
