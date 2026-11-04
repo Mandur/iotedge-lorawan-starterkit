@@ -510,7 +510,7 @@ namespace LoRaWan.Tests.Integration
         public async Task Delta_Update_Perform_Correctly_On_Empty_Cache()
         {
             var gatewayId = NewUniqueEUI64();
-            var dateTime = DateTime.UtcNow;
+            var dateTime = DateTime.UtcNow.AddMinutes(-5);
 
             var managerInput = new List<DevAddrCacheInfo>();
             for (var i = 0; i < 5; i++)
