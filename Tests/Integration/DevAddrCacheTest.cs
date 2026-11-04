@@ -531,6 +531,7 @@ namespace LoRaWan.Tests.Integration
             // initialize locks for test to run correctly
             var locksToTake = new string[1] { FullUpdateKey };
             await LockDevAddrHelper.PrepareLocksForTests(this.cache, locksToTake);
+            this.cache.KeyDelete(LoRaDevAddrCache.LastDeltaUpdateKeyValue);
 
             var devAddrCache = new LoRaDevAddrCache(this.cache, null, gatewayId);
             await devAddrCache.PerformNeededSyncs(registryManagerMock.Object);
