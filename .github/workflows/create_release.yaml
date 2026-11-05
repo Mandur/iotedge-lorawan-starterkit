@@ -21,7 +21,7 @@ jobs:
           - arm64v8
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v3
         id: buildx
@@ -40,7 +40,7 @@ jobs:
   CreateManifests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v3
         id: buildx
@@ -68,7 +68,7 @@ jobs:
   CreateBranchToUpdateDoc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: docs/main
       - name: Update doc URL with new version
@@ -95,7 +95,7 @@ jobs:
     env:
       ARM_FILE: Template/azuredeploy.json
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: dev
       - name: Update the default LoRaWAN Starter Kit version to use in Bicep.
@@ -127,7 +127,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v3.2.0
         with:
           global-json-file: global.json
